@@ -1189,8 +1189,8 @@
 	regenerate_icons()
 
 	if(species)
-		//if(mind) //VOREStation Removal
-			//apply_traits() //VOREStation Removal
+		if(mind)
+			apply_traits()
 		return 1
 	else
 		return 0

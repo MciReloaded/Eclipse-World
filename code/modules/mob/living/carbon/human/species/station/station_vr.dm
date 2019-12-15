@@ -70,7 +70,7 @@
 	darksight = 8
 	slowdown = -0.5
 	brute_mod = 1.15
-	burn_mod =  1.10
+//	burn_mod =  1.10
 	//gluttonous = 1
 	num_alternate_languages = 3
 	secondary_langs = list(LANGUAGE_SKRELLIAN)
@@ -78,6 +78,8 @@
 	assisted_langs = list(LANGUAGE_EAL, LANGUAGE_TERMINUS, LANGUAGE_SKRELLIANFAR, LANGUAGE_ROOTLOCAL, LANGUAGE_ROOTGLOBAL, LANGUAGE_VOX)	//Eclipse edit: Removes Skrellian from assisted languages as a patch
 	color_mult = 1
 //	inherent_verbs = list(/mob/living/proc/shred_limb)
+
+	racial_traits = list(/datum/modifier/trait/racial/amphibian)
 
 	min_age = 18
 	max_age = 80

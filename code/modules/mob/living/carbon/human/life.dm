@@ -900,7 +900,10 @@
 
 	if(!isSynthetic())
 		if(hydration > 0 && stat != DEAD)
-			adjust_hydration(-species.thirst_factor)
+			if(alternative_thirst)
+				adjust_hydration(-alt_thirst_modifier)
+			else
+				adjust_hydration(-species.thirst_factor)
 
 
 

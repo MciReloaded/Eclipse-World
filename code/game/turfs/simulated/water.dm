@@ -116,6 +116,8 @@
 	return FALSE
 
 /mob/living/carbon/human/can_breathe_water()
+	if(waterbreathing)
+		return TRUE
 	if(species)
 		return species.can_breathe_water()
 	return ..()

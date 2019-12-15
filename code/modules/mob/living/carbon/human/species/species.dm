@@ -67,6 +67,8 @@
 	// This list is a guess at things that no one other than the parent species should be able to speak
 	var/list/assisted_langs = list(LANGUAGE_EAL, LANGUAGE_SKRELLIAN, LANGUAGE_SKRELLIANFAR, LANGUAGE_ROOTLOCAL, LANGUAGE_ROOTGLOBAL, LANGUAGE_VOX)
 
+	var/list/racial_traits = list()
+
 	//Soundy emotey things.
 	var/scream_verb = "screams"
 	/* ECLIPSE EDIT - Re-added and updated with new GOON CODE sounds. Check the License file for details. - HTG */

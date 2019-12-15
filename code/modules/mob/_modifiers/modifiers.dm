@@ -46,6 +46,7 @@
 	var/icon_width_percent				// Makes the holder's icon get scaled up or down.
 	var/attack_speed_percent			// Makes the holder's 'attack speed' (click delay) shorter or longer.
 	var/pain_immunity					// Makes the holder not care about pain while this is on. Only really useful to human mobs.
+	var/thirst_modifier					// Gives the holder alternative thirst modifier
 
 /datum/modifier/New(var/new_holder, var/new_origin)
 	holder = new_holder
@@ -230,6 +231,10 @@
 	if(!isnull(metabolism_percent))
 		effects += "Your metabolism is [metabolism_percent > 1.0 ? "faster" : "slower"], \
 		causing reagents in your body to process, and hunger to occur [multipler_to_percentage(metabolism_percent, TRUE)] [metabolism_percent > 1.0 ? "faster" : "slower"]."
+
+	if(!isnull(thirst_modifier))
+		effects += "Your body needs [thirst_modifier > 0.05 ? "more" : "less"] \
+		water to function."
 
 //	if(!isnull(icon_scale_percent))
 //		effects += "Your appearance is [multipler_to_percentage(icon_scale_percent, TRUE)] [icon_scale_percent > 1 ? "larger" : "smaller"]."

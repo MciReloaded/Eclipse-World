@@ -2,7 +2,7 @@
 
 /mob/living/carbon/human/zombie
 	name = "Zombie"
-	desc = "A shambling abomination of a once-human. As you look at this thing you realise dinner can go both ways."
+	desc = "A shambling abomination of a once-living. As you look at this thing you realise dinner can go both ways."
 	a_intent = I_HURT
 
 #define STANDARD_EVOLUTION 1

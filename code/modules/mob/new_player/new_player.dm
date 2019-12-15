@@ -444,7 +444,7 @@
 	// Equip our custom items only AFTER deploying to spawn points eh?
 	equip_custom_items(character)
 
-//	character.apply_traits()
+	character.apply_traits()
 
 	// Moving wheelchair if they have one
 	if(character.buckled && istype(character.buckled, /obj/structure/bed/chair/wheelchair))
@@ -551,7 +551,7 @@
 			new_character.real_name = pick(clown_names)	//I hate this being here of all places but unfortunately dna is based on real_name!
 			new_character.rename_self("clown")
 		mind.original = new_character
-		//mind.traits = client.prefs.traits.Copy()
+		mind.traits = client.prefs.traits.Copy()
 		mind.transfer_to(new_character)					//won't transfer key since the mind is not active
 
 	new_character.name = real_name

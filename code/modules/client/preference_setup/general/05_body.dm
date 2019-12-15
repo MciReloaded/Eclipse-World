@@ -434,6 +434,12 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 
 			reset_limbs() // Safety for species with incompatible manufacturers; easier than trying to do it case by case.
 			pref.body_markings.Cut() // Basically same as above.
+			var/datum/species/spec = all_species[pref.species]
+			for(var/datum/trait/modifier/racial/Tr in pref.traits)
+				pref.traits -= Tr
+
+			for(var/datum/trait/T in spec.racial_traits)
+				pref.traits += T.name
 
 			var/min_age = get_min_age()
 			var/max_age = get_max_age()

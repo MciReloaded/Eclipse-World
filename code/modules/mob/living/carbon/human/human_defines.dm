@@ -38,6 +38,10 @@
 	var/lip_style = null	//arguably misleading, intended for all kinds of face design, not just lips. like face paint or eyeshadow
 	var/lip_color
 
+	var/waterbreathing = FALSE
+	var/alternative_thirst = FALSE
+	var/alt_thirst_modifier = 0.05
+
 	var/age = 30		//Player's age (pure fluff)
 	var/birth_day = 28
 	var/birth_month = 3
