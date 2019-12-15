@@ -27,3 +27,11 @@
 /datum/event/carp_migration/end()
 	for(var/datum/planet/planet in SSplanets.planets)
 		planet.weather_holder.change_weather(WEATHER_CLEAR)
+
+/datum/event/carp_migration/short
+	announceWhen	= 5
+	endWhen 		= 100
+
+/datum/event/carp_migration/short/setup()
+	announceWhen = rand(1, 10)
+	endWhen = rand(50, 100)
