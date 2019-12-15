@@ -50,6 +50,8 @@
 
 	set_species("Zombie")
 
+	faction = "zombie"
+
 	for(var/obj/item/W in src)
 		src.drop_from_inventory(W)
 
