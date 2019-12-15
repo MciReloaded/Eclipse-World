@@ -286,10 +286,8 @@ var/list/wrapped_species_by_ref = list()
 
 	spawn(0)
 		regenerate_icons()
-/* VOREStation Edit - Our own trait system, sorry.
 	if(species && mind)
 		apply_traits()
-*/
 	return
 
 /mob/living/carbon/human/proc/shapeshifter_select_eye_colour()
@@ -306,11 +304,11 @@ var/list/wrapped_species_by_ref = list()
 	var/new_eyes = input("Pick a new color for your eyes.","Eye Color", current_color) as null|color
 	if(!new_eyes)
 		return
-	
+
 	shapeshifter_set_eye_color(new_eyes)
 
 /mob/living/carbon/human/proc/shapeshifter_set_eye_color(var/new_eyes)
-	
+
 	var/list/new_color_rgb_list = hex2rgb(new_eyes)
 	// First, update mob vars.
 	r_eyes = new_color_rgb_list[1]

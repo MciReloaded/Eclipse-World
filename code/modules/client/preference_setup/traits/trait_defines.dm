@@ -4,6 +4,7 @@
 /datum/trait/modifier
 	var/modifier_type = null // Type to add to the mob post spawn.
 
+
 /datum/trait/modifier/apply_trait_post_spawn(mob/living/L)
 	L.add_modifier(modifier_type)
 
@@ -30,14 +31,14 @@
 	name = "Flimsy"
 	desc = "You're more fragile than most, and have less of an ability to endure harm."
 	modifier_type = /datum/modifier/trait/flimsy
-	mutually_exclusive = list(/datum/trait/modifier/physical/frail)
+	mutually_exclusive = list(/datum/trait/modifier/physical/frail, /datum/trait/modifier/racial/reptilian)
 
 
 /datum/trait/modifier/physical/frail
 	name = "Frail"
 	desc = "Your body is very fragile, and has even less of an ability to endure harm."
 	modifier_type = /datum/modifier/trait/frail
-	mutually_exclusive = list(/datum/trait/modifier/physical/flimsy)
+	mutually_exclusive = list(/datum/trait/modifier/physical/flimsy, /datum/trait/modifier/racial/reptilian)
 
 
 /datum/trait/modifier/physical/haemophilia
@@ -56,14 +57,14 @@
 	name = "Weak"
 	desc = "A lack of physical strength causes a diminshed capability in close quarters combat."
 	modifier_type = /datum/modifier/trait/weak
-	mutually_exclusive = list(/datum/trait/modifier/physical/wimpy)
+	mutually_exclusive = list(/datum/trait/modifier/physical/wimpy, /datum/trait/modifier/racial/reptilian)
 
 
 /datum/trait/modifier/physical/wimpy
 	name = "Wimpy"
 	desc = "An extreme lack of physical strength causes a greatly diminished capability in close quarters combat."
 	modifier_type = /datum/modifier/trait/wimpy
-	mutually_exclusive = list(/datum/trait/modifier/physical/weak)
+	mutually_exclusive = list(/datum/trait/modifier/physical/weak, /datum/trait/modifier/racial/reptilian)
 
 
 /datum/trait/modifier/physical/inaccurate

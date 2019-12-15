@@ -40,11 +40,11 @@
 	suit_storage_icon = 'icons/mob/species/seromi/belt_mirror.dmi'
 
 	fire_icon_state = "generic" // Humanoid is too big for them and spriting a new one is really annoying.
-
-	slowdown = -1
+	racial_traits = list(/datum/modifier/trait/extra_haste)
+//	slowdown = -1
 	snow_movement = -2	// Ignores light snow
 	item_slowdown_mod = 2	// Tiny birds don't like heavy things
-	total_health = 50
+//	total_health = 50
 	brute_mod = 1.35
 	burn_mod =  1.35
 	mob_size = MOB_SMALL

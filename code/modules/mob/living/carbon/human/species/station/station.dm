@@ -42,15 +42,16 @@
 	darksight = 3
 	ambiguous_genders = TRUE
 	gluttonous = 1
-	slowdown = 0.5
-	total_health = 125
-	brute_mod = 0.85
-	burn_mod = 0.85
-	metabolic_rate = 0.85
+//	slowdown = 0.5 //Moved to traits
+//	total_health = 125
+//	brute_mod = 0.85
+//	burn_mod = 0.85
+//	metabolic_rate = 0.85
 	item_slowdown_mod = 0.25
 	mob_size = MOB_LARGE
 	blood_volume = 840
-	bloodloss_rate = 0.75
+	racial_traits = list(/datum/trait/modifier/racial/reptilian)
+//	bloodloss_rate = 0.75
 	num_alternate_languages = 3
 	secondary_langs = list(LANGUAGE_UNATHI)
 	name_language = LANGUAGE_UNATHI
@@ -265,6 +266,8 @@
 	bloodloss_rate = 1.5
 
 	ambiguous_genders = TRUE
+
+	racial_traits = list(/datum/modifier/trait/racial/amphibian)
 
 	spawn_flags = SPECIES_CAN_JOIN | SPECIES_IS_WHITELISTED
 	appearance_flags = HAS_HAIR_COLOR | HAS_LIPS | HAS_UNDERWEAR | HAS_SKIN_COLOR

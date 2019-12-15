@@ -1,5 +1,4 @@
 
-
 /mob/living/carbon/human/proc/handle_weight()
 	if(!species.uses_calories)
 		return

@@ -32,6 +32,20 @@ var/list/trait_categories = list() // The categories available for the trait men
 
 /datum/category_item/player_setup_item/traits/load_character(var/savefile/S)
 	S["traits"] >> pref.traits
+	if(pref.traits.len)
+		for(var/trait_name in trait_datums)
+			var/datum/trait/T = trait_datums[trait_name]
+
+			if(!T.selectable)
+				continue
+
+			if(T.racial)
+				var/datum/trait/modifier/racial/R = T
+				if(!(pref.species in R.allowed_races) && pref.species != SPECIES_HUMAN)//Humans have the most adaptive DNA also because they get extra trait points
+					continue
+				else
+					if(pref.species != SPECIES_HUMAN)
+						pref.traits += T.name
 
 /datum/category_item/player_setup_item/traits/save_character(var/savefile/S)
 	S["traits"] << pref.traits
@@ -66,6 +80,13 @@ var/list/trait_categories = list() // The categories available for the trait men
 
 		if(!T.selectable)
 			continue
+
+		if(T.racial)
+			var/datum/trait/modifier/racial/R = T
+			if(!(pref.species in R.allowed_races) && pref.species != SPECIES_HUMAN)//Humans have the most adaptive DNA also because they get extra trait points
+				if(pref.species != SPECIES_HUMAN && (R.name in pref.traits))
+					pref.traits -= R.name
+				continue
 
 		var/ticked = (T.name in pref.traits)
 		var/style_class
@@ -123,7 +144,10 @@ var/list/trait_categories = list() // The categories available for the trait men
 	if(href_list["toggle_trait"])
 		var/datum/trait/T = trait_datums[href_list["toggle_trait"]]
 		if(T.name in pref.traits)
-			pref.traits -= T.name
+			if(T.can_be_removed)
+				pref.traits -= T.name
+			else
+				to_chat(user, "<span class='warning'>This racial trait cannot be removed!</span>")
 		else
 			var/invalidity = T.test_for_invalidity(src)
 			if(invalidity)
@@ -148,7 +172,10 @@ var/list/trait_categories = list() // The categories available for the trait men
 	var/desc = null							// Description of what it does, also shown on UI.
 	var/list/mutually_exclusive = list()	// List of trait types which cannot be taken alongside this trait.
 	var/category = null						// What section to place this trait inside.
+	var/racial = FALSE
+	var/can_be_removed = TRUE
 	var/selectable = 1
+	var/cost = 0
 // Applies effects to the newly spawned mob.
 /datum/trait/proc/apply_trait_post_spawn(var/mob/living/L)
 	return
