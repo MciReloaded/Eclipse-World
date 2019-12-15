@@ -4,6 +4,8 @@
 	icon_state = "zombie"
 	icon_living = "zombie"
 
+	faction =  "zombie"
+
 	attacktext = list("bitten")
 
 	maxHealth = 75
@@ -40,6 +42,8 @@
 /mob/living/simple_animal/hostile/zombie/PunchTarget()
 	if(!Adjacent(target_mob))
 		return
+
+	custom_emote(1, pick( list("slashes at [target_mob]", "bites [target_mob]") ) )
 
 	var/damage = rand(melee_damage_lower, melee_damage_upper)
 
