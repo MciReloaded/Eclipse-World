@@ -72,6 +72,11 @@
 	max_storage_space = ITEMSIZE_COST_NORMAL * 100 // can store a ton of shit!
 	item_state_slots = null
 
+/obj/item/weapon/storage/backpack/santabag/mrsacks
+	name = "\improper Mr Sacks' sack"
+	desc = "Mr Sack uses this to demand tribute from all the naughty colonists in space on Sacksmas! Gee, it's rather sizeable!"
+	max_storage_space = ITEMSIZE_COST_NORMAL * 75 // can store slightly less than a ton of shit!
+
 /obj/item/weapon/storage/backpack/cultpack
 	name = "trophy rack"
 	desc = "It's useful for both carrying extra gear and proudly declaring your insanity."

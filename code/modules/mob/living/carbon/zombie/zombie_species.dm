@@ -80,6 +80,7 @@
 	if(H.mind)
 		H.mind.assigned_role = "Zombie"
 		H.mind.special_role = "Zombie"
+		H.faction = "zombie"
 	H.real_name = "[src] ([rand(1, 1000)])"
 	H.name = H.real_name
 	H.mutations.Add(CLUMSY)
