@@ -126,7 +126,7 @@ var/const/RESIZE_A_SMALLTINY = (RESIZE_SMALL + RESIZE_TINY) / 2
  * Attempt to scoop up this mob up into H's hands, if the size difference is large enough.
  * @return false if normal code should continue, 1 to prevent normal code.
  */
-/mob/living/proc/attempt_to_scoop(var/mob/living/M)
+/mob/living/proc/attempt_to_scoop(var/mob/living/M, var/ignoresizediff = 0)
 	var/size_diff = M.get_effective_size() - get_effective_size()
 	if(!holder_default && holder_type)
 		holder_default = holder_type
@@ -139,7 +139,7 @@ var/const/RESIZE_A_SMALLTINY = (RESIZE_SMALL + RESIZE_TINY) / 2
 	if(M.buckled)
 		to_chat(usr,"<span class='notice'>You have to unbuckle \the [M] before you pick them up.</span>")
 		return 0
-	if(size_diff >= 0.50)
+	if(size_diff >= 0.50 || ignoresizediff)
 		holder_type = /obj/item/weapon/holder/micro
 		var/obj/item/weapon/holder/m_holder = get_scooped(M)
 		holder_type = holder_default

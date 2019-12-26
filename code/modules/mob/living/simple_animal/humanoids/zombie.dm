@@ -52,7 +52,7 @@
 		var/dam_zone = pick(BP_TORSO, BP_L_HAND, BP_R_HAND, BP_L_LEG, BP_R_LEG)
 		var/obj/item/organ/external/affecting = H.get_organ(ran_zone(dam_zone))
 		H.apply_damage(damage, BRUTE, affecting, H.run_armor_check(affecting, "melee"), H.get_armor_soak(affecting, "melee"))
-		var/infection_chance = 25
+		var/infection_chance = 20
 		var/armor = H.run_armor_check(affecting,"melee")
 		infection_chance = infection_chance - armor
 		if(prob(infection_chance))
