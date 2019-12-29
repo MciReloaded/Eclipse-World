@@ -74,6 +74,7 @@
 		O_LUNGS =    /obj/item/organ/internal/lungs/vox,
 		O_VOICE =	 /obj/item/organ/internal/voicebox,
 		O_LIVER =    /obj/item/organ/internal/liver/vox,
+		O_VOICE =	 /obj/item/organ/internal/voicebox,
 		O_KIDNEYS =  /obj/item/organ/internal/kidneys/vox,
 		O_BRAIN =    /obj/item/organ/internal/brain/vox,
 		O_EYES =     /obj/item/organ/internal/eyes,

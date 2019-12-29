@@ -155,7 +155,6 @@ proc/get_radio_key_from_channel(var/channel)
 	//Parse the mode
 	var/message_mode = parse_message_mode(message, "headset")
 
-
 	//Allow them use to markup, if used.
 	message = process_chat_markup(message, list("~", "_"))
 
