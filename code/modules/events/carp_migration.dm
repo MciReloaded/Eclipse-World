@@ -35,3 +35,9 @@
 /datum/event/carp_migration/short/setup()
 	announceWhen = rand(1, 10)
 	endWhen = rand(50, 100)
+
+/datum/event/carp_migration/short/start()
+	if(prob(50))
+		return
+	else
+		..()
