@@ -25,6 +25,12 @@ var/datum/announcement/minor/captain_announcement = new(do_newscast = 1)
 	hard_whitelisted = 1
 
 	outfit_type = /decl/hierarchy/outfit/job/heads/captain
+
+
+/datum/job/captain/get_job_email()	// whatever this is set to will be the job's communal email. should be persistent.
+	return using_map.council_email
+
+
 //	alt_titles = list("Site Manager", "Overseer")
 
 /*
@@ -72,6 +78,10 @@ var/datum/announcement/minor/captain_announcement = new(do_newscast = 1)
 			            access_chapel_office, access_library, access_research, access_mining, access_heads_vault, access_mining_station,
 			            access_hop, access_RC_announce, access_keycard_auth, access_gateway)
 
+
+/datum/job/hop/get_job_email()	// whatever this is set to will be the job's communal email. should be persistent.
+	return using_map.council_email
+
 /datum/job/judge
 	title = "Judge"
 	flag = JUDGE
@@ -94,3 +104,6 @@ var/datum/announcement/minor/captain_announcement = new(do_newscast = 1)
 	alt_titles = list("Magistrate")
 
 	outfit_type = /decl/hierarchy/outfit/job/heads/judge
+
+/datum/job/judge/get_job_email()	// whatever this is set to will be the job's communal email. should be persistent.
+	return using_map.council_email
