@@ -152,16 +152,22 @@ var/list/slot_equipment_priority = list( \
 //Drops the item in our active hand. TODO: rename this to drop_active_hand or something
 /mob/proc/drop_item(var/atom/Target)
 	var/obj/item/item_dropped = null
-	if(item_dropped.nodrop)
-		return
 	if (hand)
 		item_dropped = l_hand
-		. = drop_l_hand(Target)
+		if(item_dropped.nodrop)
+			return
+		else
+			. = drop_l_hand(Target)
 	else
 		item_dropped = r_hand
-		. = drop_r_hand(Target)
+		if(item_dropped.nodrop)
+			return
+		else
+			. = drop_r_hand(Target)
+
 	if (istype(item_dropped) && !QDELETED(item_dropped))
 		make_item_drop_sound(item_dropped)
+
 
 /mob/proc/make_item_drop_sound(obj/item/I)
     if(QDELETED(I))

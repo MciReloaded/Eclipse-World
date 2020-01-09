@@ -1335,8 +1335,13 @@
 
 //Add changing looks when i feel suicidal about making 20 inhands for these.
 /obj/item/toy/dummy/attack_self(mob/user)
-	var/message = "Ech ech ech ech ech!"
-	message = sanitize(input(usr,"Say something, you dummy!","Anything!", message) as null|text)
+	var/message = "squints."
+	message = sanitize(input(usr,"Visible emote by the dummy.","Anything!", message) as null|text)
+	if(message)
+		voice.visible_message("<b>[voice.name]</b> [message]")
+
+/obj/item/toy/dummy/proc/say_thing(mob/user, var/message)
+	message = sanitize(message)
 	if(message)
 		voice.say(message)
 
