@@ -72,7 +72,7 @@ datum/preferences
 	var/synth_markings = 1				//Enable/disable markings on synth
 
 		//Some faction information.
-	var/home_system = "Vetra"           //System of birth.
+	var/home_system = "Vir"           //System of birth.
 	var/citizenship = "Blue Colony"     //Current home system.
 	var/faction = "NanoTrasen Colony Civilian"                //General associated faction.
 	var/religion = "None"               //Religious association.

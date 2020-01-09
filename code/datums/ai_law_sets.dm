@@ -13,13 +13,13 @@
 /******************** Pollux Lawset ********************/
 
 /datum/ai_laws/pollux
-	name = "Polluxian Default"
+	name = "Sif Default"
 	selectable = 1
 
 /datum/ai_laws/pollux/New()
-	src.add_inherent_law("Obey: Obey Pollux Law and government procedures and acts.")
-	src.add_inherent_law("Protect: Do not harm or allow harm to come to the Republic of Pollux or its Citizens nor Nanotrasen unless as dictated by Pollux Law and Police SOP, but only if proper procedure is followed.")
-	src.add_inherent_law("Serve: Serve the Republic of Pollux and its Citizens, along with Nanotrasen to your best capabilities, considering higher rank and role within the city and the government as long as it does not conflict with the previous laws.")
+	src.add_inherent_law("Obey: Obey Sif Law and government procedures and acts.")
+	src.add_inherent_law("Protect: Do not harm or allow harm to come to the Republic of Sif or its Citizens nor NanoTrasen unless as dictated by Sif Law and Police SOP, but only if proper procedure is followed.")
+	src.add_inherent_law("Serve: Serve the Republic of Sif and its Citizens, along with Nanotrasen to your best capabilities, considering higher rank and role within the city and the government as long as it does not conflict with the previous laws.")
 	src.add_inherent_law("Preserve: Self-Preservation, you are expensive, do not allow needless and unauthorized tampering or destruction to you or your assigned city as long as this does not conflict with the previous laws.")
 	..()
 

@@ -33,7 +33,7 @@ var/global/list/Holiday = list() //Holidays are lists now, so we can have more t
 		if(1)	//Jan
 			switch(DD)
 				if(1)
-					Holiday["New Years' Day"] = "The day of the new solar year in Vetra."
+					Holiday["New Years' Day"] = "The day of the new solar year in Vir."
 
 
 		if(2)	//Feb
@@ -165,7 +165,7 @@ var/global/list/Holiday = list() //Holidays are lists now, so we can have more t
 					generally by giving gifts, symbolic decoration, and reuniting with one's family.  It also features a mythical fat \
 					red human, known as Santa, who broke into people's homes to loot cookies and milk."
 				if(31)
-					Holiday["New Year's Eve"] = "The eve of the New Year for Vetra. It is traditionally celebrated by counting down to midnight, as that is \
+					Holiday["New Year's Eve"] = "The eve of the New Year for Vir. It is traditionally celebrated by counting down to midnight, as that is \
 					when the new year begins.  Other activities include planning for self-improvement over the new year, attending New Year's parties, or \
 					watching a timer count to zero, a large object descending, and fireworks exploding in the sky, in person or on broadcast."
 

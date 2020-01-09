@@ -815,11 +815,11 @@
 
 
 /obj/item/weapon/book/manual/security_space_law
-	name = "Pollux Law Book"
+	name = "Sif Law Book"
 	desc = "A official law book designed to keep law and order within the colony."
 	icon_state = "bookSpaceLaw"
 	author = "NanoTrasen"
-	title = "Pollux Law"
+	title = "Sif Law"
 
 /obj/item/weapon/book/manual/security_space_law/attack_self(mob/user)
 	user.client.view_laws()

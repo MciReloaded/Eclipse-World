@@ -7,7 +7,7 @@
 	icon_state = "passport"
 
 	var/forged = FALSE
-	var/citizenship = "Vetra"	// other options
+	var/citizenship = "Vir"	// other options
 	var/owner = "the owner"
 
 	var/edits_left = 1
@@ -27,10 +27,10 @@
 		to_chat(user, "The holographic seal appears strangely duller than usual.")
 
 /mob/proc/update_passport(var/obj/item/weapon/passport/pass)
-	if(pass.citizenship == "Unset") pass.citizenship = "Vetra" //Defaults unset birth systems to a vetra passport. Otherwise, it will say "X was born in Unset".
+	if(pass.citizenship == "Unset") pass.citizenship = "Vir" //Defaults unset birth systems to a Vir passport. Otherwise, it will say "X was born in Unset".
 
 	if(pass.citizenship == "Andromeda") icon_state = "androgov_passport"  //Matches icon to location
-	else if(pass.citizenship == "Vetra") icon_state = "polgov_passport"
+	else if(pass.citizenship == "Vir") icon_state = "polgov_passport"
 	else if(pass.citizenship == "Sol") icon_state = "solgov_passport"
 	else if(pass.citizenship == "Cobrastan") icon_state = "cobrastan_passport" //a cheeky little easter egg for fans of Papers, Please
 	else icon_state = "passport"
@@ -79,7 +79,7 @@
 		src.owner = user.real_name
 		src.name = "[owner]'s temporary passport"
 		src.citizenship = user.mind.prefs.home_system
-		if(src.citizenship == "Unset") src.citizenship = "Vetra"
+		if(src.citizenship == "Unset") src.citizenship = "Vir"
 
 	else if(forged && edits_left)
 		src.owner = sanitize(copytext(input(usr, "Enter your desired name (You can only change this once!)", "Owner Name", null)  as text,1,30))
@@ -125,7 +125,7 @@
 		src.owner = user.real_name
 		src.name = "[owner]'s temporary passport"
 		src.citizenship = user.mind.prefs.home_system
-		if(src.citizenship == "Unset") src.citizenship = "Vetra"
+		if(src.citizenship == "Unset") src.citizenship = "Vir"
 		src.source_colony = sanitize(copytext(input(usr, "Enter the colony you represent.", "Representative Colony", null)  as text,1,30))
 	else
 		user.visible_message("\The [user] flashes their diplomatic passport. It shows that [owner] was born in [citizenship]. They are a diplomat for [source_colony]",\

@@ -136,7 +136,7 @@ var/global/list/station_departments = list("City Council", "Public Healthcare", 
 		T.amount = 950000
 		T.date = current_date_string
 		T.time = "11:24"
-		T.source_terminal = "Pollux Gov Terminal #277"
+		T.source_terminal = "Sif Gov Terminal #277"
 
 		//add the account
 		station_account.transaction_log.Add(T)
@@ -160,7 +160,7 @@ var/global/list/station_departments = list("City Council", "Public Healthcare", 
 	T.amount = department_account.money
 	T.date = current_date_string
 	T.time = "11:24"
-	T.source_terminal = "Pollux Gov Terminal #277"
+	T.source_terminal = "Sif Gov Terminal #277"
 
 	//add the account
 	department_account.transaction_log.Add(T)

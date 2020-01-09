@@ -214,7 +214,7 @@
 
 		dat += "<h3>Voting Policies:</h3><p>"
 		dat += "<b>Voting Rights of Synthetics:</b> [persistent_economy.synth_vote ? "Can Vote" : "Cannot Vote"]<br>"
-		dat += "<b>Voting Rights of Non-Vetra Citizens:</b> [persistent_economy.citizenship_vote ? "Can Vote" : "Cannot Vote"]<br>"
+		dat += "<b>Voting Rights of Non-Vir Citizens:</b> [persistent_economy.citizenship_vote ? "Can Vote" : "Cannot Vote"]<br>"
 		dat += "<b>Voting Rights of Former Convicts:</b> [persistent_economy.criminal_vote ? "Can Vote" : "Cannot Vote"]<br>"
 
 		dat += "<h3>Contraband Policies:</h3><p>"
@@ -237,11 +237,11 @@
 		dat += "<b>Krokodil:</b> [persistent_economy.law_KROKODIL]<br>"
 
 		dat += "<br>"
-    
-		dat += "<b>Guns:</b> [persistent_economy.law_GUNS]<br>"	
-		dat += "<b>Small Knives:</b> [persistent_economy.law_SMALLKNIVES]<br>"	
-		dat += "<b>Large Knives:</b> [persistent_economy.law_LARGEKNIVES]<br>"	
-		dat += "<b>Explosives and High-Detonating Devices:</b> [persistent_economy.law_EXPLOSIVES]<br>"	
+
+		dat += "<b>Guns:</b> [persistent_economy.law_GUNS]<br>"
+		dat += "<b>Small Knives:</b> [persistent_economy.law_SMALLKNIVES]<br>"
+		dat += "<b>Large Knives:</b> [persistent_economy.law_LARGEKNIVES]<br>"
+		dat += "<b>Explosives and High-Detonating Devices:</b> [persistent_economy.law_EXPLOSIVES]<br>"
 
 	dat += "</body></html>"
 

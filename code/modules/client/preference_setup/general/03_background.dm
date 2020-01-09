@@ -78,7 +78,7 @@
 /datum/category_item/player_setup_item/general/background/content(var/mob/user)
 	. += "<h1>Character Background:</h1><hr>"
 	if(!pref.existing_character)
-		. += "Geminus City is on the planet Pollux, and is located in Blue Colony, in the Vetra star system. You may choose a different background. Social class and the system you are born in cannot be changed once set.</br><br>"
+		. += "Geminus City is on the planet Sif, and is located in Blue Colony, in the Vir star system. You may choose a different background. Social class and the system you are born in cannot be changed once set.</br><br>"
 		. += "Economic Class: [pref.economic_status]<br>"
 		. += "Social Class: <a href='?src=\ref[src];soc_class=1'>[pref.social_class]</a><br/>"
 		. += "Birth System: <a href='?src=\ref[src];home_system=1'>[pref.home_system]</a><br/>"

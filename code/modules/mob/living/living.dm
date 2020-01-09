@@ -1159,6 +1159,12 @@ default behaviour is:
 
 	if(!item) return
 
+	if(isitem(item))
+		var/obj/item/thrownitem = item
+		if(thrownitem.nodrop)
+			return
+
+
 	var/throw_range = item.throw_range
 	if (istype(item, /obj/item/weapon/grab))
 		var/obj/item/weapon/grab/G = item

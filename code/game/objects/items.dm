@@ -93,6 +93,8 @@ var/global/image/fire_overlay = image("icon" = 'icons/effects/fire.dmi', "icon_s
 	var/icon/default_worn_icon	//Default on-mob icon
 	var/worn_layer				//Default on-mob layer
 
+	var/nodrop = 0 //Eclipse add - similar to canremove, but for dropping
+
 /obj/item/New()
 	..()
 	if(embed_chance < 0)

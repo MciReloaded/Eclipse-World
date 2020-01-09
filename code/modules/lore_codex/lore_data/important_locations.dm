@@ -16,7 +16,7 @@
 		)
 
 /datum/lore/codex/page/vir/add_content()
-	name = "Vetra (Star)"
+	name = "Vir (Star)"
 	keywords += list("Vir")
 	data = "Vir is an A-type main sequence star with 81% more mass than Sol (the humans' home star), and almost nine times as bright.  It \
 	has a white glow, and a diameter that is about 34% larger than Sol. It has six major planets in its orbit.\

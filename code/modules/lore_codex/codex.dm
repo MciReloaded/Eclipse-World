@@ -36,7 +36,7 @@ obj/item/weapon/book/codex/lore/news
 */
 
 /obj/item/weapon/book/codex/lore/vir
-	name = "The Traveler's Guide to Human Space: Pollux Edition"
+	name = "The Traveler's Guide to Human Space: Sif Edition"
 	desc = "Contains useful information about the world around you.  It seems to have been written for travelers to Vir, human or not.   It also \
 	has the words 'Don't Panic' in small, friendly letters on the cover."
 	icon_state = "codex"
