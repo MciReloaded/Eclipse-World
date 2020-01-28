@@ -223,16 +223,17 @@
 	if(item_place)
 		if(isrobot(user))
 			return
-		user.drop_item(src.loc)
-		if(!W.fixed_position)
-			W.pixel_x = clickedx
-			W.pixel_y = clickedy
-			W.Move(loc)
-			W.plane = ABOVE_MOB_PLANE
+		if(user.drop_item(src.loc))
+			if(!W.fixed_position)
+				W.pixel_x = clickedx
+				W.pixel_y = clickedy
+				W.Move(loc)
+				W.plane = ABOVE_MOB_PLANE
 
 	return
 
-	if(W && W.loc)	W.loc = src.loc
+	if(W && W.loc)
+		W.loc = src.loc
 		return 1
 
 /obj/structure/table/attack_hand(mob/user as mob)

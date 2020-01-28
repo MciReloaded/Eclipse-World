@@ -57,16 +57,21 @@ var/global/datum/global_init/init = new ()
 		game_id = "[c[(t % l) + 1]][game_id]"
 		t = round(t / l)
 
-
+/world/proc/enable_debugger()
+    var/dll = world.GetConfig("env", "EXTOOLS_DLL")
+    if (dll)
+        call(dll, "debug_initialize")()
 
 #define RECOMMENDED_VERSION 501
 /world/New()
+	enable_debugger()
 	world.log << "Map Loading Complete"
 	//logs
 	log_path += time2text(world.realtime, "YYYY/MM-Month/DD-Day/[game_id]/round-hh-mm-ss")
 	diary = file("[log_path].log")
 	href_logfile = file("[log_path]-hrefs.htm")
 	error_log = file("[log_path]-error.log")
+	money_log = file("[log_path]-money.log")
 	debug_log = file("[log_path]-debug.log")
 	debug_log << "[log_end]\n[log_end]\nStarting up. [time_stamp()][log_end]\n---------------------[log_end]"
 	changelog_hash = md5('html/changelog.html')					//used for telling if the changelog has changed recently
@@ -103,12 +108,6 @@ var/global/datum/global_init/init = new ()
 	// This is kinda important. Set up details of what the hell things are made of.
 	populate_material_list()
 
-	// Loads all the pre-made submap templates.
-	load_map_templates()
-
-	if(config.generate_map)
-		if(using_map.perform_map_generation())
-			using_map.refresh_mining_turfs()
 /*
 	if(config.generate_asteroid)
 		// These values determine the specific area that the map is applied to.

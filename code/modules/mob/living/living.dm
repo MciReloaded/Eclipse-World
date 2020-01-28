@@ -550,7 +550,7 @@ default behaviour is:
 	return 0
 
 
-/mob/living/proc/can_inject()
+/mob/living/proc/can_inject(var/mob/user, var/error_msg, var/target_zone, var/ignore_thickness = FALSE)
 	return 1
 
 /mob/living/proc/get_organ_target()
@@ -1158,6 +1158,12 @@ default behaviour is:
 	var/atom/movable/item = src.get_active_hand()
 
 	if(!item) return
+
+	if(isitem(item))
+		var/obj/item/thrownitem = item
+		if(thrownitem.nodrop)
+			return
+
 
 	var/throw_range = item.throw_range
 	if (istype(item, /obj/item/weapon/grab))

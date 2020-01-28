@@ -13,7 +13,12 @@ datum/preferences
 	var/muted = 0
 	var/last_ip
 	var/last_id
-
+	var/first_seen
+	var/last_seen
+	
+	var/list/ips_associated	= list()
+	var/list/cids_associated = list()
+	
 	//game-preferences
 	var/lastchangelog = ""				//Saved changlog filesize to detect if there was a change
 	var/ooccolor = "#010000"			//Whatever this is set to acts as 'reset' color and is thus unusable as an actual custom color
@@ -72,7 +77,7 @@ datum/preferences
 	var/synth_markings = 1				//Enable/disable markings on synth
 
 		//Some faction information.
-	var/home_system = "Vetra"           //System of birth.
+	var/home_system = "Vir"           //System of birth.
 	var/citizenship = "Blue Colony"     //Current home system.
 	var/faction = "NanoTrasen Colony Civilian"                //General associated faction.
 	var/religion = "None"               //Religious association.
@@ -140,8 +145,6 @@ datum/preferences
 	// Antag and Prison stuff
 
 	var/criminal_status = "None"
-	var/prison_date				//date someone was put in prison
-	var/prison_release_date			//date someone is due to be released from prison
 
 	var/disabilities = 0
 

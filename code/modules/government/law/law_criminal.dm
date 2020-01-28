@@ -76,7 +76,7 @@
 
 	notes = "Your personal records (security, medical and employment), confidential \
 	information passed toyour doctor or lawyer as well as your identification card, \
-	personal items and property are protected by the Polluxian privacy laws. \
+	personal items and property are protected by the Sif privacy laws. \
 	Spreading suchinformation without your approval,neglecting to properly \
 	secure it fallsunder this charge as well as unauthorized searches of \
 	your personal property. If a police officer is theoffender, refer \
@@ -206,7 +206,7 @@
 	cell_time = 30
 
 	description = "Inciting, or attempting to incite, an unlawful demonstration."
-	notes = "If a Non-Pollux citizen incites any demonstration, lawful or not, they can be charged with this."
+	notes = "If a Non-Sif citizen incites any demonstration, lawful or not, they can be charged with this."
 
 /datum/law/criminal/demo
 	name = "Participating in an Unlawful Demonstration"
@@ -219,7 +219,7 @@
 
 	notes = "A protest calling for a law to be changed isn't unlawful, a protest calling for that law to \
 	be broken, or breaking that law, is. Radio spam, harassing passersby, blocking roads, etc. is considered \
-	undue impact. Non-Pollux citizens participating in demonstrations may be charged with this, whether the \
+	undue impact. Non-Sif citizens participating in demonstrations may be charged with this, whether the \
 	demonstration is lawful or not."
 
 /datum/law/criminal/trespass
@@ -232,19 +232,19 @@
 
 /datum/law/criminal/misconduct
 	name = "Weapon Handling Misconduct"
-	description = "Any citizen of Pollux with a valid weapon permit found to be committing a crime with it or not following proper concealment protocol for said weapon can be charged for this. \
+	description = "Any citizen of Sif with a valid weapon permit found to be committing a crime with it or not following proper concealment protocol for said weapon can be charged for this. \
 	After three strikes, counting repeat offender price/timer modifiers, the weapon permit shall be hereby null and the weapon confiscated."
 
 	fine = 1570
 	cell_time = 30
-	
+
 /datum/law/criminal/impersonating_city
 	name = "Impersonating City Officials"
 	description = "To impersonate a member of city council, law enforcement, or health personnel."
 
 	fine = 1140
 	cell_time = 30
-	
+
 /datum/law/criminal/contempt
 	name = "Contempt of Court"
 	description = "To be disrespectful towards the Court of law, in the form of \

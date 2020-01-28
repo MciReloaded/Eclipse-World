@@ -8,7 +8,7 @@
 	path = "geminus"
 
 	lobby_icon = 'icons/misc/title.dmi'
-	lobby_screens = list("pollux")
+	lobby_screens = list("nox")
 
 	holomap_smoosh = list(list(
 		Z_LEVEL_FIRST_GEMINUS,
@@ -18,12 +18,12 @@
 
 	station_name  = "Geminus City"
 	station_short = "Geminus"
-	dock_name     = "Geminus City Spaceport"
-	boss_name     = "Central Polluxian Government"
-	boss_short    = "Pollux Gov"
-	company_name  = "Nanotrasen"
+	dock_name     = "Geminus City Airbus"
+	boss_name     = "Central Sif Government"
+	boss_short    = "Sif Gov"
+	company_name  = "NanoTrasen"
 	company_short = "NT"
-	starsys_name  = "Vetra"
+	starsys_name  = "Vir"
 
 	shuttle_docked_message = "The scheduled air shuttle to the %dock_name% has arrived far west of the city. It will depart in approximately %ETD%."
 	shuttle_leaving_dock = "The Civilian Transfer shuttle has left. Estimate %ETA% until the airbus docks at %dock_name%."
@@ -57,6 +57,8 @@
 							NETWORK_SECURITY,
 							NETWORK_INTERROGATION
 							)
+
+	council_email = "city-council@geminus.nt"
 
 // For making the 6-in-1 holomap, we calculate some offsets
 #define GEMINUS_MAP_SIZE 177 // Width and height of compiled in Southern Cross z levels.
@@ -109,8 +111,8 @@
 
 /datum/map/geminus/get_map_info()
 	. = list()
-	. +=  "[full_name] is a very well-known metropolitan city in Blue Colony located on the planet Pollux.<br>"
-	. +=  "Pollux exists in the Vetra star system which is entirely monopolized by NanoTrasen acting as a quasi-corporate government."
+	. +=  "[full_name] is a very well-known metropolitan city in Blue Colony located on the planet Sif.<br>"
+	. +=  "Sif exists in the Vir star system which is entirely monopolized by NanoTrasen acting as a quasi-corporate government."
 	. +=  "Being one of the first cities and initially a mining colony, Geminus has a rich history and is home to many descendants of the first prospectors.<br> "
 	. +=  "There's a definite class struggle, as working class Geminians feel pushed out by the richer colonists who wish to further gentrify the city and make it... <i>more profitable, more corporate, more <b>chic</b></i>."
 	return jointext(., "<br>")

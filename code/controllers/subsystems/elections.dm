@@ -45,7 +45,7 @@ SUBSYSTEM_DEF(elections)
 	var/ckey
 	var/datum/party/polticial_party
 	var/slogan = "Vote for me!"
-	var/pitch = "Make Pollux Great Again."
+	var/pitch = "Make Sif Great Again."
 	var/list/ckeys_voted = list()
 	var/list/no_confidence_votes = list()
 	var/party
@@ -87,7 +87,25 @@ SUBSYSTEM_DEF(elections)
 /datum/controller/subsystem/elections/proc/get_president()
 	var/prez
 	if(SSelections.current_president && current_president.ckey)
-		prez = "<b>[SSelections.current_president.name]</b> - Played by </b>[SSelections.current_president.ckey]</b> (Won [SSelections.current_president.ckeys_voted.len] out of [SSelections.last_election_votes].)"
+		prez = "<b>[SSelections.current_president.name]</b> - Played by </b>[SSelections.current_president.ckey]</b> (Won [SSelections.current_president.ckeys_voted.len] out of [SSelections.last_election_votes].)<br>"
+
+	var/day = get_game_day()
+
+	if(is_registration_days(day))
+		prez += "It is currently <b>the registration period</b>, you may go to city hall and use the computers there to register for presidential candidacy."
+
+	if(is_campaign_days(day))
+		prez += "It is currently <b>the campaign period</b>, already registered candidates are advised to go out and campaign to gain popularity. "
+		if(!snap_election)
+			prez += "No more registrations will be taken on at this time."
+		else
+			prez += "Due to the snap election, candidates are still able to register up until voting period."
+	if(is_voting_days(day))
+		prez += "It's <b>voting period</b>! The entire city is encouraged to go to the ballot box in city hall to vote for their favourite candidate."
+
+	if(is_election_day(day))
+		prez += "It's <b>election day</b>! Congratulate [SSelections.current_president.ckey] for their success in the election!"
+
 	return prez
 
 /proc/get_president_info()
@@ -335,9 +353,9 @@ SUBSYSTEM_DEF(elections)
 
 	message = "<b>Castor Headquarters: [full_game_time()]</b> - Electoral Assistants of [using_map.boss_name] have counted the final votes and \
 	presented the electoral results to all, there were [last_election_votes] total. \
-	People from several continents on Pollux watched as the name was pulled from the traditional ballot hat. \
+	People from several continents on Sif watched as the name was pulled from the traditional ballot hat. \
 	<br><br>Millions of people gathered in-person to watch the event, others stayed home to observe their televisions and communicator screens \
-	as they watch Pollux's moon through their screens. Many [pick(prospectors)] [pick(getformernames())] would win based on the monthly election president website \
+	as they watch Sif's moon through their screens. Many [pick(prospectors)] [pick(getformernames())] would win based on the monthly election president website \
 	electionpredictions.nt."
 
 

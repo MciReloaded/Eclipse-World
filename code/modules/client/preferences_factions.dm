@@ -24,7 +24,7 @@ var/global/list/citizenship_choices = list(
 	)
 
 var/global/list/home_system_choices = list(
-	"Vetra",
+	"Vir",
 	"Sol",
 	"Andromeda"
 	)
@@ -38,7 +38,9 @@ var/global/list/antag_faction_choices = list(	//Should be populated after brains
 	"Worker's Union",
 	"Blue Moon Cartel",
 	"Trust Fund",
-	"Quercus Coalition"
+	"Quercus Coalition",
+	"House of Joshua",
+	"Sol Union"
 	)
 
 var/global/list/antag_visiblity_choices = list(
