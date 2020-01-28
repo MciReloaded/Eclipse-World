@@ -10,6 +10,10 @@
 	faction = "geese"
 	intelligence_level = SA_ANIMAL
 
+
+	universal_speak = FALSE
+	universal_understand = TRUE
+
 	maxHealth = 15
 	health = 15
 	speed = 4

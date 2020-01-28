@@ -5,6 +5,7 @@
 	desc = "This is an electronic passport that allows you to travel between colonies."
 	icon = 'icons/obj/passport.dmi'
 	icon_state = "passport"
+	w_class = ITEMSIZE_SMALL
 
 	var/forged = FALSE
 	var/citizenship = "Vir"	// other options
@@ -29,10 +30,10 @@
 /mob/proc/update_passport(var/obj/item/weapon/passport/pass)
 	if(pass.citizenship == "Unset") pass.citizenship = "Vir" //Defaults unset birth systems to a Vir passport. Otherwise, it will say "X was born in Unset".
 
-	if(pass.citizenship == "Andromeda") icon_state = "androgov_passport"  //Matches icon to location
-	else if(pass.citizenship == "Vir") icon_state = "polgov_passport"
-	else if(pass.citizenship == "Sol") icon_state = "solgov_passport"
-	else if(pass.citizenship == "Cobrastan") icon_state = "cobrastan_passport" //a cheeky little easter egg for fans of Papers, Please
+	if(pass.citizenship == "Andromeda") pass.icon_state = "androgov_passport"  //Matches icon to location
+	else if(pass.citizenship == "Vir") pass.icon_state = "polgov_passport"
+	else if(pass.citizenship == "Sol") pass.icon_state = "solgov_passport"
+	else if(pass.citizenship == "Cobrastan") pass.icon_state = "cobrastan_passport" //a cheeky little easter egg for fans of Papers, Please
 	else icon_state = "passport"
 
 /obj/item/weapon/passport/attack_self(mob/user as mob)
