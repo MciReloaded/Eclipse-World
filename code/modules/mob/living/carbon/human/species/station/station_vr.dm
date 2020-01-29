@@ -237,7 +237,7 @@
 	icobase = 'icons/mob/human_races/r_vulpkanin.dmi'
 	deform = 'icons/mob/human_races/r_vulpkanin.dmi'
 //	path = /mob/living/carbon/human/vulpkanin
-//	default_language = "Sol Common"
+	default_language = "Canilunzt"
 	secondary_langs = list(LANGUAGE_CANILUNZT)
 	name_language = LANGUAGE_CANILUNZT
 	primitive_form = "Wolpin"
