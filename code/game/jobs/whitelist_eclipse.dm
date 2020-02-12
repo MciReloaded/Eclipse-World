@@ -17,7 +17,7 @@ var/list/job_whitelist = list()
 		return 1
 	if(rank == "Civilian")
 		return 1
-	if(check_rights(R_ADMIN, 0) && !config.wl_admins_too)		//If the admins aren't restricted, too... ^Spitzer
+	if(check_rights(R_ADMIN, 0))
 		return 1
 	if(!job_whitelist)
 		return 0
@@ -32,4 +32,3 @@ var/list/job_whitelist = list()
 			if(findtext(s,"[M.ckey] - All"))
 				return 1
 	return 0
-

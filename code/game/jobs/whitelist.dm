@@ -87,20 +87,38 @@ var/list/whitelist = list()
 	return 1
 
 /proc/load_hardwhitelist()
-	var/text = file2text("config/jobwhitelist.txt")
+	var/text = file2text("config/jobwhitelist.txt")		//Eclipse edit?
 	if (!text)
-		log_misc("Failed to load config/hardwhitelist.txt")
+		log_misc("Failed to load config/jobwhitelist.txt")		//Eclipse edit
 	else
 		hard_whitelist = splittext(text, "\n")
 
-/proc/is_hard_whitelisted(mob/M, var/datum/job/jobs)
+/proc/is_hard_whitelisted(mob/M, var/datum/job/jobs)		//Eclipse Note: "Is Player (Hard-) Whitelisted?"
 	//They are admin or the whitelist isn't in use
 //	if(whitelist_overrides(M))
 //		return 1
-
+	
+	
+	// // // BEGIN ECLIPSE EDITS // // //
+	// Rationale: Config-based job whitelisting.
+	
+	// Job whitelist disabled
+	if(!config.usejobwhitelist)
+		return 1
+	
 	//The job isn't even whitelisted
 	if(!jobs.hard_whitelisted)
 		return 1
+	
+	//Admin overrides
+	if(!config.wl_admins_too && check_rights(R_ADMIN, 0))		//"If the admins are not required to go through whitelist checks, and they have the perms flag R_ADMIN, they pass whitelisting." Note for future Spitzer. ^Past Spitzer
+		return 1
+		
+	//Admin-only jobs
+	if(jobs.wl_admin_only && check_rights(R_ADMIN, 0))		//"If the job is admin-only and the admin has the perms flag R_ADMIN, pass 'em."
+		return 1
+
+	// // // END ECLIPSE EDITS // // //
 
 	if(jobs.title == "President") // Only the player who is president and their allotted character can be president
 		if(!SSelections.current_president.ckey || !SSelections.current_president.name) //Just in case.

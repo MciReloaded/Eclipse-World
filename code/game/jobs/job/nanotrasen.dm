@@ -25,6 +25,8 @@
 
 	hard_whitelisted = 1
 	clean_record_required = TRUE
+	
+	wl_admin_only = TRUE		//Eclipse Edit.
 
 /datum/job/nanotrasen/get_job_email()	// whatever this is set to will be the job's communal email. should be persistent.
 	return using_map.rep_email
@@ -98,6 +100,8 @@
 	minimum_character_age = 30
 	ideal_character_age = 50
 	outfit_type = /decl/hierarchy/outfit/job/heads/president
+	
+	wl_admin_only = FALSE		//Eclipse Edit: Necessary since it inherits above.
 
 
 /datum/job/nanotrasen/president/get_job_email()	// whatever this is set to will be the job's communal email. should be persistent.
