@@ -44,7 +44,7 @@
 
 		switch (name)
 			if("use_job_whitelisting")
-					config.usejobwhitelist = TRUE
+				config.usejobwhitelist = TRUE
 			if("whitelist_heads")
 				config.wl_heads = TRUE
 			if("whitelist_security")
