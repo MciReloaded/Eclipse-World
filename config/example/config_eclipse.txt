@@ -1,0 +1,7 @@
+# Eclipse-specific configurations, for downstream servers and dev environments.
+
+#########
+# WHITELISTING
+#########
+
+# Todo: add everything
