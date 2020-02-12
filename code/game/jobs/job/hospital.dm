@@ -24,7 +24,11 @@
 	////minimal_player_age = 3
 	ideal_character_age = 50
 
-	hard_whitelisted = 1
+	// // // BEGIN ECLIPSE EDIT // // //
+	// Config-based job whitelisting.
+//	hard_whitelisted = 1
+	wl_config_heads = TRUE		//replaces hard whitelisting above, which is honestly just going to do the same thing
+	// // // END ECLIPSE EDIT // // //
 
 	outfit_type = /decl/hierarchy/outfit/job/medical/cmo
 	alt_titles = list(

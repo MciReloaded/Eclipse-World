@@ -11,6 +11,12 @@
 	minimal_player_age = 0
 	account_allowed = 0
 	wage = 0
+	
+	// // // BEGIN ECLIPSE EDIT // // //
+	// Config-based job whitelisting.
+	wl_config_heads = TRUE		//Technically a head of the borgs.
+	wl_config_borgs = TRUE		//silicon whitelisting
+	// // // END ECLIPSE EDIT // // //
 
 /datum/job/ai/equip(var/mob/living/carbon/human/H)
 	if(!H)	return 0
@@ -45,6 +51,8 @@
 	alt_titles = list("Robot", "Drone")
 	account_allowed = 0
 	wage = 0
+	
+	wl_config_borgs = TRUE		//Eclipse Edit: silicon whitelisting
 
 /datum/job/cyborg/equip(var/mob/living/carbon/human/H)
 	if(!H)	return 0

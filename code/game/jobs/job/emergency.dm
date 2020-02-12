@@ -14,6 +14,8 @@
 	email_domain = "cityworks.gov.nt"
 	wage = 330
 
+	wl_config_heads = TRUE
+
 	minimum_character_age = 30
 	ideal_character_age = 50
 

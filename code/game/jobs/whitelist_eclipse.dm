@@ -17,7 +17,7 @@ var/list/job_whitelist = list()
 		return 1
 	if(rank == "Civilian")
 		return 1
-	if(check_rights(R_ADMIN, 0))
+	if(check_rights(R_ADMIN, 0) && !config.wl_admins_too)		//If the admins aren't restricted, too... ^Spitzer
 		return 1
 	if(!job_whitelist)
 		return 0

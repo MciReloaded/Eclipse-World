@@ -23,8 +23,14 @@
 			            access_RC_announce, access_keycard_auth, access_tcomsat, access_gateway, access_xenoarch, access_network)
 
 	minimum_character_age = 27
-	hard_whitelisted = 1
 	ideal_character_age = 50
+	
+	// // // BEGIN ECLIPSE EDIT // // //
+	// Config-based job whitelisting.
+//	hard_whitelisted = 1
+	wl_config_heads = TRUE		//replaces hard whitelisting above, which is honestly just going to do the same thing
+	// // // END ECLIPSE EDIT // // //
+
 
 	outfit_type = /decl/hierarchy/outfit/job/science/rd
 	alt_titles = list("Research Supervisor")
