@@ -20,7 +20,14 @@
 			            access_forensics_lockers, access_morgue, access_maint_tunnels, access_all_personal_lockers,
 			            access_heads, access_hos, access_RC_announce, access_keycard_auth, access_gateway, access_external_airlocks)
 	minimum_character_age = 27
-	hard_whitelisted = 1
+	
+	// // // BEGIN ECLIPSE EDIT // // //
+	// Config-based job whitelisting.
+//	hard_whitelisted = 1
+	wl_config_heads = TRUE		//replaces hard whitelisting above, which is honestly just going to do the same thing
+	wl_config_sec = TRUE		//security role, if enabled will be whitelist only
+	// // // END ECLIPSE EDIT // // //
+
 
 	outfit_type = /decl/hierarchy/outfit/job/security/hos
 	alt_titles = list("Head of Police", "Police Commander", "Police Commissioner", "Police Chief")
@@ -52,6 +59,8 @@
 	alt_titles = list("Correctional Officer", "Brig Attendant")
 
 	clean_record_required = TRUE
+	wl_config_sec = TRUE		//Eclipse Edit: security role, if enabled will be whitelist only
+
 
 /datum/job/detective
 	title = "Detective"
@@ -75,6 +84,7 @@
 	alt_titles = list("Forensic Technician" = /decl/hierarchy/outfit/job/security/detective/forensic, "Investigator")
 
 	clean_record_required = TRUE
+	wl_config_sec = TRUE		//Eclipse Edit: security role, if enabled will be whitelist only
 
 /datum/job/officer
 	title = "Police Officer"
@@ -98,6 +108,7 @@
 	alt_titles = list("Police Cadet","Traffic Warden" = /decl/hierarchy/outfit/job/security/traffic)
 
 	clean_record_required = TRUE
+	wl_config_sec = TRUE		//Eclipse Edit: security role, if enabled will be whitelist only
 
 /datum/job/prosecutor
 	title = "District Prosecutor"
@@ -122,6 +133,7 @@
 	outfit_type = /decl/hierarchy/outfit/job/prosecution
 
 	clean_record_required = TRUE
+	wl_config_sec = TRUE		//Eclipse Edit; questionable whether it's a security role but we'll flag it as one anyway
 
 /datum/job/bguard
 	title = "City Hall Guard"
@@ -145,3 +157,4 @@
 	alt_titles = list("Council Bodyguard", "City Hall Security", "Bailiff")
 
 	clean_record_required = TRUE
+	wl_config_sec = TRUE		//Eclipse Edit: security role, if enabled will be whitelist only

@@ -118,6 +118,8 @@
 
 	outfit_type = /decl/hierarchy/outfit/job/civilian/defense/defense
 
+	wl_config_sec = TRUE		//Eclipse Edit - for consistency with district prosecutor.
+
 	clean_record_required = TRUE
 
 /datum/job/barber
@@ -184,6 +186,8 @@
 
 	outfit_type = /decl/hierarchy/outfit/job/cargo/qm
 	alt_titles = list("Supply Chief")
+	
+	wl_config_heads = FALSE		//Eclipse Edit: Redundancy - the quartermaster is not a head of staff and will never be one.
 
 /datum/job/cargo_tech
 	title = "Factory Worker"

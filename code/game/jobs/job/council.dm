@@ -22,7 +22,13 @@ var/datum/announcement/minor/captain_announcement = new(do_newscast = 1)
 	minimum_character_age = 27
 	ideal_character_age = 50 // Old geezer captains ftw // Get your MILF/DILF fetish out of here //OwO What's this? // what the fuck - myo
 
-	hard_whitelisted = 1
+
+	// // // BEGIN ECLIPSE EDIT // // //
+	// Config-based job whitelisting.
+//	hard_whitelisted = 1
+	wl_config_heads = TRUE		//replaces hard whitelisting above, which is honestly just going to do the same thing
+	// // // END ECLIPSE EDIT // // //
+
 
 	outfit_type = /decl/hierarchy/outfit/job/heads/captain
 
@@ -60,6 +66,7 @@ var/datum/announcement/minor/captain_announcement = new(do_newscast = 1)
 	//minimal_player_age = 10
 	wage = 300
 
+	wl_config_heads = TRUE
 
 	minimum_character_age = 25
 	ideal_character_age = 40

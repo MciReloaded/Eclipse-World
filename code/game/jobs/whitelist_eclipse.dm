@@ -32,4 +32,3 @@ var/list/job_whitelist = list()
 			if(findtext(s,"[M.ckey] - All"))
 				return 1
 	return 0
-
