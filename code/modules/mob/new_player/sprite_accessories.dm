@@ -879,6 +879,10 @@
 		name = "Long Braid"
 		icon_state = "hair_longbraid"
 
+	longbraidalt
+		name = "Long Braid Alt"
+		icon_state = "hair_braidalt"
+
 	longundercut
 		name = "Long Undercut"
 		icon_state = "hair_undercutlong"
@@ -934,6 +938,14 @@
 	elize
 		name = "Elize"
 		icon_state = "hair_elize"
+
+	flipped
+		name = "Flipped"
+		icon_state = "hair_flipped"
+
+	angelique
+		name = "Angelique"
+		icon_state = "hair_angelique"
 
 /*
 ///////////////////////////////////

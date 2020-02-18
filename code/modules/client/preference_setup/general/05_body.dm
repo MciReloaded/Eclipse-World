@@ -22,12 +22,16 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	S["skin_red"]			>> pref.r_skin
 	S["skin_green"]			>> pref.g_skin
 	S["skin_blue"]			>> pref.b_skin
-	S["hair_style_name"]	>> pref.h_style
-	S["facial_style_name"]	>> pref.f_style
+	S["hair_style_name"]		>> pref.h_style
+	S["facial_style_name"]		>> pref.f_style
 	S["eyes_red"]			>> pref.r_eyes
 	S["eyes_green"]			>> pref.g_eyes
 	S["eyes_blue"]			>> pref.b_eyes
 	S["b_type"]				>> pref.b_type
+	S["weight"]			>> pref.weight
+	S["calories"]			>> pref.calories
+	S["hydration"]			>> pref.hydration
+	S["nutrition"]			>> pref.nutrition
 	S["disabilities"]		>> pref.disabilities
 	S["organ_data"]			>> pref.organ_data
 	S["rlimb_data"]			>> pref.rlimb_data
@@ -53,12 +57,16 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	S["skin_red"]			<< pref.r_skin
 	S["skin_green"]			<< pref.g_skin
 	S["skin_blue"]			<< pref.b_skin
-	S["hair_style_name"]	<< pref.h_style
-	S["facial_style_name"]	<< pref.f_style
+	S["hair_style_name"]		<< pref.h_style
+	S["facial_style_name"]		<< pref.f_style
 	S["eyes_red"]			<< pref.r_eyes
 	S["eyes_green"]			<< pref.g_eyes
 	S["eyes_blue"]			<< pref.b_eyes
-	S["b_type"]				<< pref.b_type
+	S["b_type"]			<< pref.b_type
+	S["weight"]			<< pref.weight
+	S["calories"]			<< pref.calories
+	S["hydration"]			<< pref.hydration
+	S["nutrition"]			<< pref.nutrition
 	S["disabilities"]		<< pref.disabilities
 	S["organ_data"]			<< pref.organ_data
 	S["rlimb_data"]			<< pref.rlimb_data
@@ -71,25 +79,66 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	S["bgstate"]			<< pref.bgstate
 	S["body_descriptors"]	<< pref.body_descriptors
 
+/datum/category_item/player_setup_item/general/body/delete_character(var/savefile/S)
+	pref.species = null
+	pref.r_hair = null
+	pref.g_hair = null
+	pref.b_hair = null
+	pref.r_facial = null
+	pref.g_facial = null
+	pref.b_facial = null
+	pref.s_tone = null
+	pref.r_skin = null
+	pref.g_skin = null
+	pref.b_skin = null
+	pref.h_style = null
+	pref.f_style = null
+	pref.lip_style = null
+	pref.lip_color = null
+	pref.r_eyes = null
+	pref.g_eyes = null
+	pref.b_eyes = null
+	pref.b_type = null
+	pref.weight = null
+	pref.disabilities = null
+	pref.organ_data = null
+	pref.rlimb_data = null
+	pref.body_markings = null
+	pref.synth_color = null
+	pref.r_synth = null
+	pref.g_synth = null
+	pref.b_synth	= null
+	pref.bgstate = null
+	pref.calories = null
+	pref.weight = null
+	pref.hydration = initial(pref.hydration)
+	pref.nutrition = initial(pref.nutrition)
+
 /datum/category_item/player_setup_item/general/body/sanitize_character(var/savefile/S)
 	if(!pref.species || !(pref.species in playable_species))
 		pref.species = SPECIES_HUMAN
 	pref.r_hair			= sanitize_integer(pref.r_hair, 0, 255, initial(pref.r_hair))
 	pref.g_hair			= sanitize_integer(pref.g_hair, 0, 255, initial(pref.g_hair))
 	pref.b_hair			= sanitize_integer(pref.b_hair, 0, 255, initial(pref.b_hair))
-	pref.r_facial		= sanitize_integer(pref.r_facial, 0, 255, initial(pref.r_facial))
-	pref.g_facial		= sanitize_integer(pref.g_facial, 0, 255, initial(pref.g_facial))
-	pref.b_facial		= sanitize_integer(pref.b_facial, 0, 255, initial(pref.b_facial))
+	pref.r_facial			= sanitize_integer(pref.r_facial, 0, 255, initial(pref.r_facial))
+	pref.g_facial			= sanitize_integer(pref.g_facial, 0, 255, initial(pref.g_facial))
+	pref.b_facial			= sanitize_integer(pref.b_facial, 0, 255, initial(pref.b_facial))
 	pref.s_tone			= sanitize_integer(pref.s_tone, -185, 34, initial(pref.s_tone))
 	pref.r_skin			= sanitize_integer(pref.r_skin, 0, 255, initial(pref.r_skin))
 	pref.g_skin			= sanitize_integer(pref.g_skin, 0, 255, initial(pref.g_skin))
 	pref.b_skin			= sanitize_integer(pref.b_skin, 0, 255, initial(pref.b_skin))
-	pref.h_style		= sanitize_inlist(pref.h_style, hair_styles_list, initial(pref.h_style))
-	pref.f_style		= sanitize_inlist(pref.f_style, facial_hair_styles_list, initial(pref.f_style))
+	pref.h_style			= sanitize_inlist(pref.h_style, hair_styles_list, initial(pref.h_style))
+	pref.f_style			= sanitize_inlist(pref.f_style, facial_hair_styles_list, initial(pref.f_style))
 	pref.r_eyes			= sanitize_integer(pref.r_eyes, 0, 255, initial(pref.r_eyes))
 	pref.g_eyes			= sanitize_integer(pref.g_eyes, 0, 255, initial(pref.g_eyes))
 	pref.b_eyes			= sanitize_integer(pref.b_eyes, 0, 255, initial(pref.b_eyes))
 	pref.b_type			= sanitize_text(pref.b_type, initial(pref.b_type))
+	pref.weight			= sanitize_integer(pref.weight, WEIGHT_MIN / CALORIES_MUL, WEIGHT_MAX / CALORIES_MUL, initial(pref.weight))
+	pref.calories			= sanitize_integer(pref.calories, WEIGHT_MIN, WEIGHT_MAX, initial(pref.calories))
+
+	pref.hydration			= sanitize_integer(pref.hydration, 0, 400, initial(pref.hydration))
+	pref.nutrition			= sanitize_integer(pref.nutrition, 0, 400, initial(pref.nutrition))
+
 
 	pref.disabilities	= sanitize_integer(pref.disabilities, 0, 65535, initial(pref.disabilities))
 	if(!pref.organ_data) pref.organ_data = list()
@@ -125,6 +174,8 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	character.g_synth	= pref.g_synth
 	character.b_synth	= pref.b_synth
 	character.synth_markings = pref.synth_markings
+	character.hydration	= pref.hydration
+	character.nutrition	= pref.nutrition
 
 	// Destroy/cyborgize organs and limbs.
 	for(var/name in list(BP_HEAD, BP_L_HAND, BP_R_HAND, BP_L_ARM, BP_R_ARM, BP_L_FOOT, BP_R_FOOT, BP_L_LEG, BP_R_LEG, BP_GROIN, BP_TORSO))

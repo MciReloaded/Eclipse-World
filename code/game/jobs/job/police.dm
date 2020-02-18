@@ -34,8 +34,8 @@
 
 	clean_record_required = TRUE
 
-/datum/job/hos/get_job_email()	// whatever this is set to will be the job's communal email. should be persistent.
-	return using_map.council_email
+/datum/job/hos/get_job_email()
+	return using_map.police_email
 
 /datum/job/warden
 	title = "Prison Warden"
@@ -61,6 +61,8 @@
 	clean_record_required = TRUE
 	wl_config_sec = TRUE		//Eclipse Edit: security role, if enabled will be whitelist only
 
+/datum/job/warden/get_job_email()
+	return using_map.police_email
 
 /datum/job/detective
 	title = "Detective"
@@ -86,6 +88,9 @@
 	clean_record_required = TRUE
 	wl_config_sec = TRUE		//Eclipse Edit: security role, if enabled will be whitelist only
 
+/datum/job/detective/get_job_email()
+	return using_map.police_email
+
 /datum/job/officer
 	title = "Police Officer"
 	email_domain = "secure.plux.gov.nt"
@@ -110,6 +115,9 @@
 	clean_record_required = TRUE
 	wl_config_sec = TRUE		//Eclipse Edit: security role, if enabled will be whitelist only
 
+/datum/job/officer/get_job_email()
+	return using_map.police_email
+
 /datum/job/prosecutor
 	title = "District Prosecutor"
 	email_domain = "prosecute.nt"
@@ -124,8 +132,8 @@
 	selection_color = "#601C1C"
 	idtype = /obj/item/weapon/card/id/security/prosecutor
 	wage = 100
-	access = list(access_prosecutor, access_sec_doors, access_maint_tunnels, access_heads)
-	minimal_access = list(access_prosecutor, access_sec_doors, access_heads)
+	access = list(access_prosecutor, access_sec_doors, access_maint_tunnels, access_heads, access_legal, access_warrant)
+	minimal_access = list(access_prosecutor, access_sec_doors, access_heads, access_legal, access_warrant)
 //	//minimal_player_age = 7 (need more prostitut-- prosecutors.)
 	minimum_character_age = 21
 	alt_titles = list("Prosecutor","Prosecuting Attorney","Prosecution Officer","Prosecuting Lawyer")
@@ -134,6 +142,9 @@
 
 	clean_record_required = TRUE
 	wl_config_sec = TRUE		//Eclipse Edit; questionable whether it's a security role but we'll flag it as one anyway
+
+/datum/job/prosecutor/get_job_email()
+	return using_map.police_email
 
 /datum/job/bguard
 	title = "City Hall Guard"
@@ -150,8 +161,8 @@
 	//minimal_player_age = 5
 	wage = 90
 	minimum_character_age = 25
-	access = list(access_heads, access_bodyguard, access_keycard_auth, access_security, access_sec_doors)
-	minimal_access = list(access_heads, access_bodyguard, access_keycard_auth, access_security, access_sec_doors)
+	access = list(access_heads, access_bodyguard, access_keycard_auth, access_security, access_legal)
+	minimal_access = list(access_heads, access_bodyguard, access_keycard_auth, access_security, access_legal)
 
 	outfit_type = /decl/hierarchy/outfit/job/heads/secretary
 	alt_titles = list("Council Bodyguard", "City Hall Security", "Bailiff")

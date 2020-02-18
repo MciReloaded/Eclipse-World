@@ -108,7 +108,7 @@ var/list/whitelist = list()
 	
 	//The job isn't even whitelisted
 	if(!jobs.hard_whitelisted)
-		return 1
+		return TRUE
 	
 	//Admin overrides
 	if(!config.wl_admins_too && check_rights(R_ADMIN, 0))		//"If the admins are not required to go through whitelist checks, and they have the perms flag R_ADMIN, they pass whitelisting." Note for future Spitzer. ^Past Spitzer
@@ -121,13 +121,13 @@ var/list/whitelist = list()
 	// // // END ECLIPSE EDITS // // //
 
 	if(jobs.title == "President") // Only the player who is president and their allotted character can be president
-		if(!SSelections.current_president.ckey || !SSelections.current_president.name) //Just in case.
-			return 0
+		if(!SSelections.current_president || !SSelections.current_president.ckey || !SSelections.current_president.name) //Just in case. Also prevents runtimes in local testing
+			return FALSE
 
 		if(M.ckey == SSelections.current_president.ckey && M.client.prefs.real_name == SSelections.current_president.name)
-			return 1
+			return TRUE
 		else
-			return 0
+			return FALSE
 
 	//If we have a loaded file, search it
 	if(jobs.hard_whitelisted)
