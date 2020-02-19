@@ -175,7 +175,23 @@
 	"ist","ein","entch","zwichs","tut","mir","wo","bis","es","vor","nic","gro","lll","enem","zandt","tzch","noch", \
 	"hel","ischt","far","wa","baram","iereng","tech","lach","sam","mak","lich","gen","or","ag","eck","gec","stag","onn", \
 	"bin","ket","jarl","vulf","einech","cresthz","azunein","ghzth")
-	
+
+/datum/language/birdsong
+	name = LANGUAGE_BIRDSONG
+	desc = "A language primarily spoken by Nevreans"
+	speech_verb = "chirps"
+	colour = "birdsongc"
+	key = "7"
+	syllables = list ("cheep", "peep", "tweet")
+
+/datum/language/sergal
+	name = LANGUAGE_SAGARU
+	desc = "The dominant language of the Sergal homeworld, Vilous. It consists of aggressive low-pitched hissing and throaty growling."
+	speech_verb = "snarls"
+	colour = "sergal"
+	key = "z"
+	syllables = list ("grr", "gah", "woof", "arf", "arra", "rah", "wor", "sarg")
+
 /datum/language/seromi
 	name = LANGUAGE_SCHECHI
 	desc = "A trilling language spoken by the diminutive Teshari."
