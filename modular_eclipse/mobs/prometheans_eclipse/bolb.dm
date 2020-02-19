@@ -380,10 +380,6 @@
 		I.appearance_flags = RESET_COLOR
 		overlays += I
 
-/mob/living/simple_animal/promethean_blob/say(var/message,var/datum/language/language)
-	..(message, language)
-	update_icon()
-
 /mob/living/simple_animal/promethean_blob/proc/handle_consumption()
 	if(victim && can_consume(victim) && !stat)
 

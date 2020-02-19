@@ -108,9 +108,9 @@
 	var/can_drive = 1
 
 	// Environment tolerance/life processes vars.
-	var/reagent_tag											//Used for metabolizing reagents.
-	var/breath_type = "oxygen"								// Non-oxygen gas breathed, if any.
-	var/poison_type = "phoron"								// Poisonous air.
+	var/reagent_tag									//Used for metabolizing reagents.
+	var/breath_type = "oxygen"							// Non-oxygen gas breathed, if any.
+	var/poison_type = "phoron"							// Poisonous air.
 	var/exhale_type = "carbon_dioxide"						// Exhaled gas type.
 
 	var/body_temperature = 310.15							// Species will try to stabilize at this temperature. (also affects temperature processing)

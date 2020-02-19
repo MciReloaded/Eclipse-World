@@ -84,18 +84,17 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 #define EYES_LAYER				22		//Mob's eyes (used for glowing eyes)
 #define FACEMASK_LAYER			23		//Mask-slot item
 #define HEAD_LAYER				24		//Head-slot item
-#define HEAD_LAYER				25		//Head-slot item
-#define HANDCUFF_LAYER			26		//Handcuffs, if the human is handcuffed, in a secret inv slot
-#define LEGCUFF_LAYER			27		//Same as handcuffs, for legcuffs
-#define L_HAND_LAYER			28		//Left-hand item
-#define R_HAND_LAYER			29		//Right-hand item
-#define WING_LAYER				30		//VOREStation edit. Simply move this up a number if things are added.
-#define TAIL_LAYER_ALT			31		//VOREStation edit. Simply move this up a number if things are added.
-#define MODIFIER_EFFECTS_LAYER	32		//Effects drawn by modifiers
-#define FIRE_LAYER				33		//'Mob on fire' overlay layer
-#define WATER_LAYER				34		//'Mob submerged' overlay layer
-#define TARGETED_LAYER			35		//'Aimed at' overlay layer
-#define TOTAL_LAYERS			35//<---- KEEP THIS UPDATED, should always equal the highest number here, used to initialize a list.
+#define HANDCUFF_LAYER			25		//Handcuffs, if the human is handcuffed, in a secret inv slot
+#define LEGCUFF_LAYER			26		//Same as handcuffs, for legcuffs
+#define L_HAND_LAYER			27		//Left-hand item
+#define R_HAND_LAYER			28		//Right-hand item
+#define WING_LAYER				29		//VOREStation edit. Simply move this up a number if things are added.
+#define TAIL_LAYER_ALT			30		//VOREStation edit. Simply move this up a number if things are added.
+#define MODIFIER_EFFECTS_LAYER	31		//Effects drawn by modifiers
+#define FIRE_LAYER				32		//'Mob on fire' overlay layer
+#define WATER_LAYER				33		//'Mob submerged' overlay layer
+#define TARGETED_LAYER			34		//'Aimed at' overlay layer
+#define TOTAL_LAYERS			34//<---- KEEP THIS UPDATED, should always equal the highest number here, used to initialize a list.
 //////////////////////////////////
 
 /mob/living/carbon/human
@@ -755,6 +754,8 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 
 	if(suit.index)
 		suit_sprite = "[INV_SUIT_DEF_ICON]_[suit.index].dmi"
+	else if(istype(suit, /obj/item/clothing) && !isnull(suit.update_icon_define))
+		suit_sprite = suit.update_icon_define
 	else
 		suit_sprite = "[INV_SUIT_DEF_ICON].dmi"
 
@@ -884,7 +885,7 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 	//This one is actually not that bad I guess.
 	if(species_tail && !(wear_suit && wear_suit.flags_inv & HIDETAIL))
 		var/icon/tail_s = get_tail_icon()
-			overlays_standing[used_tail_layer] = image(icon = tail_s, icon_state = "[species_tail]_s", layer = BODY_LAYER+used_tail_layer)
+		overlays_standing[used_tail_layer] = image(icon = tail_s, icon_state = "[species_tail]_s", layer = BODY_LAYER+used_tail_layer)
 		animate_tail_reset()
 //TODO: Is this the appropriate place for this, and not on species...?
 /mob/living/carbon/human/proc/get_tail_icon()
