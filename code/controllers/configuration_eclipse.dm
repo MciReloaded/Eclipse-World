@@ -16,6 +16,7 @@
 	var/wl_security = FALSE			//Whitelist Security?
 	var/wl_silicons = FALSE			//Whitelist silicons?
 	var/wl_admins_too = FALSE		//Do admins go through whitelist checks?
+	var/sellatron_auto = FALSE	//Do we want the Sellatron to be manual?
 
 /hook/startup/proc/read_eclipse_config()
 	var/list/Lines = file2list("config/config_eclipse.txt")		//We don't want to add shit to the main config when we update this (merge conflicts)
@@ -53,6 +54,8 @@
 				config.wl_silicons = TRUE
 			if("admins_restricted_by_whitelist")
 				config.wl_admins_too = TRUE
+			if("sellatron_auto_department")
+				config.sellatron_auto = TRUE
 
 
 	config.eclipse_config_loaded = TRUE		//config is loaded

@@ -31,3 +31,14 @@ WHITELIST_HEADS
 ## Should silicons be whitelisted? This will not affect pAIs, only AI and borgs.
 ## Uncomment to whitelist.
 #WHITELIST_SILICONS
+
+#########
+# MISCELLANY
+#########
+
+## SELLATRON AUTOMATIC DEPARTMENT SELECTION
+## Should the Sellatron automatically read the department from the user's ID?
+## This can cause issues when a person with a Nanotrasen ID tries to sell things
+## but can prevent an issue where the Sellatron is set to the wrong department.
+## Uncomment to enable ID-based department selection.
+#SELLATRON_AUTO_DEPARTMENT
