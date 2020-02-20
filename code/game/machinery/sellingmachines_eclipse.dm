@@ -8,7 +8,7 @@
 	
 	//Config should be loaded now that the while-loop is broken
 	
-	allow_select_department = !sellatron_auto
+	allow_select_department = !config.sellatron_auto
 	//I know that looks ass-backwards, but if it's NOT set to allow you to
 	//choose your department, it will automatically pick it based on your ID.
 	
