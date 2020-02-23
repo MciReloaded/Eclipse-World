@@ -20,6 +20,7 @@
 	var/obj/item/stored_item				// What's in it, right now.
 
 	var/allow_select_department = 0			// If this is set to 0, it will pull your department from your ID instead.
+	// ECLIPSE NOTE: This is overwritten by the active relevant config option in sellingmachines_eclipse.dm.
 
 	var/department_charged					// If we want this to charge a certain department. If left null, it will charge from city account.
 
