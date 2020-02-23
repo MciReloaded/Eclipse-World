@@ -1,6 +1,6 @@
 #define LANGUAGE_BIRDSONG "Birdsong"
 #define LANGUAGE_SAGARU "Sagaru"
-#define LANGUAGE_CANILUNZT "Canilunzt"
+#define LANGUAGE_CANILUNZT "Yueldisch"
 #define LANGUAGE_ECUREUILIAN "Ecureuilian"
 #define LANGUAGE_DAEMON "Daemon"
 #define LANGUAGE_ENOCHIAN "Enochian"
