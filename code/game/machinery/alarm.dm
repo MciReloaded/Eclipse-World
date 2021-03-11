@@ -1001,7 +1001,7 @@ FIRE ALARM
 /obj/machinery/firealarm/initialize()
 	. = ..()
 	if(z in using_map.contact_levels)
-		set_security_level(security_level? get_security_level() : "green")
+		set_security_level(SECURITY_LEVEL ? get_security_level() : SEC_LEVEL_GREEN)
 
 /*
 FIRE ALARM CIRCUIT
@@ -1029,6 +1029,7 @@ Just a object used in constructing fire alarms
 	use_power = 1
 	idle_power_usage = 2
 	active_power_usage = 6
+	table_drag = TRUE
 
 /obj/machinery/partyalarm/attack_hand(mob/user as mob)
 	if(user.stat || stat & (NOPOWER|BROKEN))

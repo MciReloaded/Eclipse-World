@@ -56,13 +56,15 @@
 
 /obj/effect/spider/stickyweb
 	icon_state = "stickyweb1"
-	New()
-		if(prob(50))
-			icon_state = "stickyweb2"
+
+/obj/effect/spider/stickyweb/initialize()
+	if(prob(50))
+		icon_state = "stickyweb2"
+	return ..()
 
 /obj/effect/spider/stickyweb/CanPass(atom/movable/mover, turf/target, height=0, air_group=0)
 	if(air_group || (height==0)) return 1
-	if(istype(mover, /mob/living/simple_animal/hostile/giant_spider))
+	if(istype(mover, /mob/living/simple_mob/animal/giant_spider))
 		return 1
 	else if(istype(mover, /mob/living))
 		if(prob(50))
@@ -80,10 +82,12 @@
 	var/spiders_min = 6
 	var/spiders_max = 24
 	var/spider_type = /obj/effect/spider/spiderling
-	New()
-		pixel_x = rand(3,-3)
-		pixel_y = rand(3,-3)
-		processing_objects |= src
+
+/obj/effect/spider/eggcluster/initialize()
+	pixel_x = rand(3,-3)
+	pixel_y = rand(3,-3)
+	processing_objects |= src
+	return ..()
 
 /obj/effect/spider/eggcluster/New(var/location, var/atom/parent)
 	get_light_and_color(parent)
@@ -129,10 +133,10 @@
 	var/amount_grown = -1
 	var/obj/machinery/atmospherics/unary/vent_pump/entry_vent
 	var/travelling_in_vent = 0
-	var/list/grow_as = list(/mob/living/simple_animal/hostile/giant_spider, /mob/living/simple_animal/hostile/giant_spider/nurse, /mob/living/simple_animal/hostile/giant_spider/hunter)
+	var/list/grow_as = list(/mob/living/simple_mob/animal/giant_spider, /mob/living/simple_mob/animal/giant_spider/nurse, /mob/living/simple_mob/animal/giant_spider/hunter)
 
 /obj/effect/spider/spiderling/frost
-	grow_as = list(/mob/living/simple_animal/hostile/giant_spider/frost)
+	grow_as = list(/mob/living/simple_mob/animal/giant_spider/frost)
 
 /obj/effect/spider/spiderling/New(var/location, var/atom/parent)
 	pixel_x = rand(6,-6)
@@ -264,12 +268,18 @@
 	desc = "Something wrapped in silky spider web"
 	icon_state = "cocoon1"
 	health = 60
+	var/silk_amt = 3
 
 /obj/effect/spider/cocoon/New()
-		icon_state = pick("cocoon1","cocoon2","cocoon3")
+	icon_state = pick("cocoon1","cocoon2","cocoon3")
+	silk_amt = rand(3,5)
 
 /obj/effect/spider/cocoon/Destroy()
 	src.visible_message("<span class='warning'>\The [src] splits open.</span>")
+	var/obj/item/stack/material/silk/new_silk = new(src.loc)
+	new_silk.amount = silk_amt
+	new_silk.update_icon()
+
 	for(var/atom/movable/A in contents)
 		A.loc = src.loc
 	return ..()

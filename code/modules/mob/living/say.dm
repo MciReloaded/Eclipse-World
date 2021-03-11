@@ -1,23 +1,25 @@
 var/list/department_radio_keys = list(
-	  ":r" = "right ear",	".r" = "right ear",
-	  ":l" = "left ear",	".l" = "left ear",
-	  ":i" = "intercom",	".i" = "intercom",
-	  ":h" = "department",	".h" = "department",
-	  ":+" = "special",		".+" = "special", //activate radio-specific special functions
-	  ":c" = "Command",		".c" = "Command",
-	  ":n" = "Science",		".n" = "Science",
-	  ":m" = "Hospital",	".m" = "Hospital",
-	  ":e" = "Fire", 		".e" = "Fire",
-	  ":s" = "Police",		".s" = "Police",
-	  ":w" = "whisper",		".w" = "whisper",
-	  ":t" = "Mercenary",	".t" = "Mercenary",
-	  ":x" = "Raider",		".x" = "Raider",
-	  ":u" = "Factory",		".u" = "Factory",
-	  ":d" = "Diner",		".d" = "Diner",
-	  ":o" = "Legal",		".o" = "Legal",
-	  ":v" = "Government",	".v" = "Government",
-	  ":p" = "AI Private",	".p" = "AI Private",
-	  ":y" = "Explorer",	".y" = "Explorer",
+	  ":r" = "right ear",		".r" = "right ear",
+	  ":l" = "left ear",		".l" = "left ear",
+	  ":i" = "intercom",		".i" = "intercom",
+	  ":h" = "department",		".h" = "department",
+	  ":+" = "special",			".+" = "special", //activate radio-specific special functions
+	  ":c" = "Command",			".c" = "Command",
+	  ":n" = "Science",			".n" = "Science",
+	  ":m" = "Hospital",		".m" = "Hospital",
+	  ":e" = "Fire", 			".e" = "Fire",
+	  ":s" = "Police",			".s" = "Police",
+	  ":w" = "whisper",			".w" = "whisper",
+	  ":t" = "Mercenary",		".t" = "Mercenary",
+	  ":x" = "Raider",			".x" = "Raider",
+	  ":u" = "Factory",			".u" = "Factory",
+	  ":d" = "Diner",			".d" = "Diner",
+	  ":o" = "Legal",			".o" = "Legal",
+	  ":v" = "Government",		".v" = "Government",
+	  ":p" = "AI Private",		".p" = "AI Private",
+	  ":y" = "Explorer",		".y" = "Explorer",
+	  ":j" = "Pax Synthetica",	".j" = "Pax Synthetica",
+	  ":d" = "Dummy",		".d" = "Dummy",
 	  ":d" = "Dummy",		".d" = "Dummy",
 
 	  ":R" = "right ear",	".R" = "right ear",
@@ -220,7 +222,8 @@ proc/get_radio_key_from_channel(var/channel)
 	//Whisper vars
 	var/w_scramble_range = 5	//The range at which you get ***as*th**wi****
 	var/w_adverb				//An adverb prepended to the verb in whispers
-	var/w_not_heard				//The message for people in watching range
+	var/w_not_heard
+		//The message for people in watching range
 
 	//Handle language-specific verbs and adverb setup if necessary
 	if(!whispering) //Just doing normal 'say' (for now, may change below)
@@ -278,8 +281,11 @@ proc/get_radio_key_from_channel(var/channel)
 		for(var/mob/living/M in hearers(5, src))
 			if((M != src) && msg)
 				M.show_message(msg)
+
 			if (speech_sound)
 				sound_vol *= 0.5
+
+
 
 	//Set vars if we're still whispering by this point
 	if(whispering)
@@ -345,6 +351,9 @@ proc/get_radio_key_from_channel(var/channel)
 			listening_obj |= results["objs"]
 		above = above.shadow
 
+
+	var/list/speech_bubble_recipients = list()
+
 	//Main 'say' and 'whisper' message delivery
 	for(var/mob/M in listening)
 		spawn(0) //Using spawns to queue all the messages for AFTER this proc is done, and stop runtimes
@@ -368,6 +377,9 @@ proc/get_radio_key_from_channel(var/channel)
 					if(dst > w_scramble_range && dst <= world.view) //Inside whisper 'visible' range
 						M.show_message("<span class='game say'><span class='name'>[src.name]</span> [w_not_heard].</span>", 2)
 
+			if(M.client)
+				speech_bubble_recipients += M.client
+
 	//Object message delivery
 	for(var/obj/O in listening_obj)
 		spawn(0)
@@ -387,11 +399,15 @@ proc/get_radio_key_from_channel(var/channel)
 					C.images -= I
 			qdel(I)
 
+	animate_speechbubble(speech_bubble, speech_bubble_recipients, 30)
+
 	if(whispering)
 		log_whisper(message,src)
 	else
 		log_say(message, src)
 	return 1
+
+
 
 /mob/living/proc/say_signlang(var/message, var/verb="gestures", var/datum/language/language)
 	var/turf/T = get_turf(src)
@@ -417,3 +433,17 @@ proc/get_radio_key_from_channel(var/channel)
 
 /mob/proc/speech_bubble_appearance()
 	return "normal"
+
+/proc/animate_speechbubble(image/I, list/show_to, duration)
+	var/matrix/M = matrix()
+	M.Scale(0,0)
+	I.transform = M
+	I.alpha = 0
+	for(var/client/C in show_to)
+		C.images += I
+	animate(I, transform = 0, alpha = 255, time = 5, easing = ELASTIC_EASING)
+	sleep(duration-5)
+	animate(I, alpha = 0, time = 5, easing = EASE_IN)
+	sleep(5)
+	for(var/client/C in show_to)
+		C.images -= I

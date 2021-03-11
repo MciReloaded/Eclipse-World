@@ -25,7 +25,7 @@
 
 	var/storage_type = "crewmembers"
 	var/storage_name = "Cryogenic Oversight Control"
-	var/allow_items = 1
+	var/allow_items = 0
 
 /obj/machinery/computer/cryopod/update_icon()
 	..()
@@ -432,7 +432,7 @@
 	//Handle job slot/tater cleanup.
 	var/job = to_despawn.mind.assigned_role
 
-	job_master.FreeRole(job)
+	SSjobs.FreeRole(job)
 
 	if(to_despawn.mind.objectives.len)
 		qdel(to_despawn.mind.objectives)
@@ -532,10 +532,10 @@
 		usr << "<span class='notice'><B>\The [src] is in use.</B></span>"
 		return
 
-	for(var/mob/living/simple_animal/slime/M in range(1,usr))
-		if(M.victim == usr)
-			usr << "You're too busy getting your life sucked out of you."
-			return
+	if(isliving(usr))
+		var/mob/living/L = usr
+		if(L.has_buckled_mobs())
+			to_chat(L, span("warning", "You have other entities attached to yourself. Remove them first."))
 
 	visible_message("[usr] [on_enter_visible_message] [src].", 3)
 
@@ -625,6 +625,9 @@
 	if(M.client)
 		if(alert(M,"Would you like to enter long-term storage?",,"Yes","No") == "Yes")
 			if(!M) return
+			if(!M.Adjacent(src))
+				to_chat(M, span("warning", "You are too far away from \the [src]!"))
+				return
 			willing = 1
 	else
 		willing = 1

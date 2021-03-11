@@ -47,18 +47,33 @@
 	var/const/STATUS_DISPLAY_TIME = 4
 	var/const/STATUS_DISPLAY_CUSTOM = 99
 
+	var/seclevel = "green"
+
 	//If any of these are set, they'll override the default.
 	var/font_size = "5pt"
 	var/font_color = "#09f"
 	var/font_style = "Arial Black"
+
+	pixel_y = 25
+
+	wall_drag = TRUE
+	wall_shift = 25	// If dragged onto a wall, what's the pixel y of this?
+
 
 /obj/machinery/status_display/Destroy()
 	if(radio_controller)
 		radio_controller.remove_object(src,frequency)
 	return ..()
 
-/obj/machinery/status_display/attackby(I as obj, user as mob)
-	if(computer_deconstruction_screwdriver(user, I))
+/obj/machinery/status_display/attackby(obj/item/weapon/W, user as mob)
+	if(W.is_wrench())
+		playsound(src.loc, W.usesound, 50, 1)
+		if(do_after(user, 20 * W.toolspeed))
+			anchored = !anchored
+			to_chat(user,"<span class='notice'>You [anchored ? "fasten" : "unfasten"] [src]'s bolts.</span>")
+		return
+
+	if(computer_deconstruction_screwdriver(user, W))
 		return
 	else
 		attack_hand(user)
@@ -168,6 +183,32 @@
 		message2 = ""
 		index2 = 0
 
+/obj/machinery/status_display/proc/display_alert(var/newlevel)
+	remove_display()
+	if(seclevel != newlevel)
+		seclevel = newlevel
+	switch(seclevel)
+		if("green")	set_light(l_range = 2, l_power = 0.25, l_color = "#00ff00")
+		if("yellow")	set_light(l_range = 2, l_power = 0.25, l_color = "#ffff00")
+		if("violet")	set_light(l_range = 2, l_power = 0.25, l_color = "#9933ff")
+		if("orange")	set_light(l_range = 2, l_power = 0.25, l_color = "#ff9900")
+		if("blue")	set_light(l_range = 2, l_power = 0.25, l_color = "#1024A9")
+		if("red")	set_light(l_range = 4, l_power = 0.9, l_color = "#ff0000")
+		if("delta")	set_light(l_range = 4, l_power = 0.9, l_color = "#FF6633")
+	set_picture("status_display_[seclevel]")
+
+// Called when the alert level is changed.
+/obj/machinery/status_display/proc/on_alert_changed(new_level)
+	// On most alerts, this will change to a flashing alert picture in a specific color.
+	// Doing that for green alert automatically doesn't really make sense, but it is still available on the comm consoles/PDAs.
+	if(seclevel2num(new_level) == SEC_LEVEL_GREEN)
+		mode = STATUS_DISPLAY_TIME
+		set_light(0) // Remove any glow we had from the alert previously.
+		update()
+		return
+	mode = STATUS_DISPLAY_ALERT
+	display_alert(new_level)
+
 /obj/machinery/status_display/proc/set_picture(state)
 	remove_display()
 	if(!picture || picture_state != state)
@@ -237,13 +278,16 @@
 	switch(signal.data["command"])
 		if("blank")
 			mode = STATUS_DISPLAY_BLANK
+			set_light(0)
 
 		if("shuttle")
 			mode = STATUS_DISPLAY_TRANSFER_SHUTTLE_TIME
+			set_light(0)
 
 		if("message")
 			mode = STATUS_DISPLAY_MESSAGE
 			set_message(signal.data["msg1"], signal.data["msg2"])
+			set_light(0)
 
 		if("alert")
 			mode = STATUS_DISPLAY_ALERT
@@ -251,6 +295,7 @@
 
 		if("time")
 			mode = STATUS_DISPLAY_TIME
+			set_light(0)
 	update()
 
 #undef FONT_COLOR
@@ -268,62 +313,105 @@
 
 /obj/machinery/status_display/money_display
 	ignore_friendc = 1
-	desc = "This displays the current funding of a particular institution or company."
+	desc = "This displays the current funding of a particular institution or company. Alt-Click to department or business."
 	name = "funding display"
-	var/department = "Civilian"
-	var/dept_name = "PUBLIC FUNDS"
+	var/department = "public"
+	var/datum/department/linked_department
 	icon = 'icons/obj/status_display_wide.dmi'
+	icon_state = "frame_gold"
 	maptext_height = 26
 	maptext_width = 62
 	font_color = "#84ff00"
+	var/business = TRUE
+
+	unique_save_vars = list("department")
+
+
+/obj/machinery/status_display/money_display/examine(mob/user)
+	if(linked_department)
+		to_chat(user, "<b>[message1]:</b> [cash2text(linked_department.get_balance(), FALSE, TRUE, TRUE )]")
+
+/obj/machinery/status_display/money_display/on_persistence_load()
+	link_to_account()
+
+/obj/machinery/status_display/money_display/AltClick(mob/user)
+	if(!business)
+		return
+	if(Adjacent(user))
+		select_business(user)
+
+/obj/machinery/status_display/money_display/proc/select_business(mob/user)
+	var/list/all_bizzies = list()
+	for(var/datum/business/B in GLOB.all_businesses)
+		all_bizzies += B.name
+
+	var/login_biz = input(user, "Please select a business to log into.", "Business Login") as null|anything in all_bizzies
+	var/datum/business/login_business = get_business_by_name(login_biz)
+
+	if(!login_business)
+		alert("No business found with that name, it may have been deleted - contact an administrator.")
+		return
+	var/access_password = sanitize(copytext(input(user, "Please provide the password. (Max 40 letters)", "Business Management Utility")  as text,1,40))
+
+	if(!login_business || (access_password != login_business.access_password))
+		alert("Incorrect password, please try again.")
+		return
+
+	department = login_business.get_department_id()
+
+	link_to_account()
+
+/obj/machinery/status_display/money_display/initialize()
+	..()
+	link_to_account()
+	GLOB.money_displays += src
+
+/obj/machinery/status_display/money_display/proc/link_to_account()
+	if(SSeconomy)
+		linked_department = dept_by_id(department)
 
 /obj/machinery/status_display/money_display/update()
+	if(!linked_department)
+		return
 	update_display(message1, message2)
-	message1 = "[dept_name]:"
-	message2 = "[department_accounts[department].money]CR"
+	message1 = linked_department.name
+	message2 = cash2text( linked_department.get_balance())
 
+/obj/machinery/status_display/money_display/city
+	department = DEPT_COLONY
 
-/obj/machinery/status_display/money_display/city/initialize()
-	department = "[station_name()] Funds"
-	dept_name = "City Funds"
-	..()
+/obj/machinery/status_display/money_display/nanotrasen
+	department = DEPT_NANOTRASEN
 
 /obj/machinery/status_display/money_display/civilian
-	department = "Civilian"
-	dept_name = "Public Funds"
+	department = DEPT_PUBLIC
 
 /obj/machinery/status_display/money_display/police
-	department = "Police"
-	dept_name = "Police Funds"
+	department = DEPT_POLICE
 
-/obj/machinery/status_display/money_display/cargo
-	department = "Cargo"
-	dept_name = "Cargo Funds"
+/obj/machinery/status_display/money_display/factory
+	department = DEPT_FACTORY
 
 /obj/machinery/status_display/money_display/council
-	department = "City Council"
-	dept_name = "Council Funds"
-
+	department = DEPT_COUNCIL
 
 /obj/machinery/status_display/money_display/hospital
-	department = "Public Healthcare"
-	dept_name = "Health Funds"
+	department = DEPT_HEALTHCARE
 
 /obj/machinery/status_display/money_display/emt
-	department = "Emergency and Maintenance"
-	dept_name = "EMT Funds"
-
+	department = DEPT_MAINTENANCE
 
 /obj/machinery/status_display/money_display/rnd
-	department = "Research and Science"
-	dept_name = "R&D Funds"
-
+	department = DEPT_RESEARCH
 
 /obj/machinery/status_display/money_display/bar
-	department = "Bar"
-	dept_name = "Bar Funds"
-
+	department = DEPT_BAR
 
 /obj/machinery/status_display/money_display/botany
-	department = "Botany"
-	dept_name = "Botany Funds"
+	department = DEPT_BOTANY
+
+/obj/machinery/status_display/money_display/legal
+	department = DEPT_LEGAL
+
+/obj/machinery/status_display/money_display/botany
+	department = DEPT_BOTANY

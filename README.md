@@ -1,3 +1,5 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/GeneriedJenelle/The-World-Server-Redux) 
+
 # The-World-Server-Redux
 
 [Our Website](https://www.eclipse-station.space) - [Wiki](http://www.eclipse-station.space//wiki//index.php?title=Main_Page) - [Discord](https://discordapp.com/invite/xuS4t9U)

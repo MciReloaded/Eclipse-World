@@ -16,6 +16,9 @@
 //	var/spent_icon = null
 	drop_sound = 'sound/items/drop/ring.ogg'
 
+	tax_type = WEAPONS_TAX
+	contraband_type = CONTRABAND_GUN
+
 /obj/item/ammo_casing/New()
 	..()
 	if(ispath(projectile_type))
@@ -91,6 +94,10 @@
 	//because BYOND doesn't support numbers as keys in associative lists
 	var/list/icon_keys = list()		//keys
 	var/list/ammo_states = list()	//values
+
+	tax_type = WEAPONS_TAX
+	contraband_type = CONTRABAND_GUN
+
 
 /obj/item/ammo_magazine/New()
 	..()

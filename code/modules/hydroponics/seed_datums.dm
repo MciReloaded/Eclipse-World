@@ -192,7 +192,7 @@
 	display_name = "killer tomato plant"
 	mutants = null
 	can_self_harvest = 1
-	has_mob_product = /mob/living/simple_animal/hostile/tomato
+	has_mob_product = /mob/living/simple_mob/tomato
 
 /datum/seed/tomato/killer/New()
 	..()
@@ -275,7 +275,7 @@
 	name = "poisonapple"
 	mutants = null
 	chems = list("cyanide" = list(1,5))
-	fruit_price	= 6
+	fruit_price = 6
 
 /datum/seed/apple/gold
 	name = "goldapple"
@@ -284,7 +284,7 @@
 	mutants = null
 	chems = list("nutriment" = list(1,10), "gold" = list(1,5))
 	kitchen_tag = "goldapple"
-	fruit_price	= 25
+	fruit_price = 25
 
 /datum/seed/apple/gold/New()
 	..()
@@ -303,6 +303,9 @@
 	chems = list("nutriment" = list(1), "cannabis" = list(3,8))
 	kitchen_tag = "cannabis"
 	fruit_price	= 20
+
+	tax_type = CANNABIS_TAX
+	contraband_type = CONTRABAND_CANNABIS
 
 /datum/seed/cannabis/New()
 	..()
@@ -340,7 +343,7 @@
 	chems = list("nutriment" = list(1,25))
 	splat_type = /obj/effect/plant
 	kitchen_tag = "mushroom"
-	fruit_price	= 9
+	fruit_price = 9
 
 /datum/seed/mushroom/New()
 	..()
@@ -957,7 +960,7 @@
 	set_trait(TRAIT_PRODUCTION,6)
 	set_trait(TRAIT_YIELD,4)
 	set_trait(TRAIT_POTENCY,15)
-	set_trait(TRAIT_PRODUCT_ICON,"treefruit")
+	set_trait(TRAIT_PRODUCT_ICON,"lemon")
 	set_trait(TRAIT_PRODUCT_COLOUR,"#3AF026")
 	set_trait(TRAIT_PLANT_ICON,"tree")
 	set_trait(TRAIT_FLESH_COLOUR,"#3AF026")
@@ -988,6 +991,7 @@
 
 /datum/seed/citrus/orange/New()
 	..()
+	set_trait(TRAIT_PRODUCT_ICON,"lemon2")
 	set_trait(TRAIT_PRODUCT_COLOUR,"#FFC20A")
 	set_trait(TRAIT_FLESH_COLOUR,"#FFC20A")
 
@@ -1265,7 +1269,7 @@
 	seed_name = "coca"
 	display_name = "coca"
 	chems = list("coca" = list(3,5))
-	fruit_price	= 25
+	fruit_price = 25
 
 /datum/seed/coca/New()
 	..()
@@ -1285,6 +1289,7 @@
 	display_name = "tobacco"
 	chems = list("nicotine" = list(3,7))
 	fruit_price	= 10
+	tax_type = TOBACCO_TAX
 
 /datum/seed/tobacco/New()
 	..()
@@ -1293,10 +1298,45 @@
 	set_trait(TRAIT_PRODUCTION,6)
 	set_trait(TRAIT_YIELD,6)
 	set_trait(TRAIT_POTENCY,10)
-	set_trait(TRAIT_PRODUCT_ICON,"nettles")
+	set_trait(TRAIT_PRODUCT_ICON,"tobacco")
 	set_trait(TRAIT_PRODUCT_COLOUR, "#a89854")
 	set_trait(TRAIT_PLANT_ICON,"bush2")
 	set_trait(TRAIT_IDEAL_LIGHT, 6)
+
+/datum/seed/tobacco/finetobacco
+	name = "finetobacco"
+	seed_name = "fine tobacco"
+	display_name = "fine tobacco leaves"
+	chems = list("nicotine" = list(5,10))
+
+/datum/seed/tobacco/finetobacco/New()
+	..()
+	set_trait(TRAIT_YIELD,4)
+	set_trait(TRAIT_PRODUCT_COLOUR,"#33571b")
+	set_trait(TRAIT_PLANT_COLOUR,"#33571b")
+	set_trait(TRAIT_NUTRIENT_CONSUMPTION, 0.20)
+
+/datum/seed/tobacco/puretobacco //provides the pure nicotine reagent
+	name = "puretobacco"
+	seed_name = "succulent tobacco"
+	display_name = "succulent tobacco leaves"
+	chems = list("nicotine" = list(10,20))
+
+/datum/seed/tobacco/puretobacco/New()
+	..()
+	set_trait(TRAIT_YIELD,3)
+	set_trait(TRAIT_JUICY,1)
+	set_trait(TRAIT_PRODUCT_COLOUR,"#b7c61a")
+	set_trait(TRAIT_PLANT_COLOUR,"#b7c61a")
+	set_trait(TRAIT_NUTRIENT_CONSUMPTION, 0.30)
+
+/datum/seed/tobacco/bad
+	name = "badtobacco"
+	seed_name = "low-grade tobacco"
+	display_name = "low-grade tobacco leaves"
+	mutants = list("tobacco")
+	chems = list("nicotine" = list(1,3))
+
 
 /datum/seed/caapi
 	name = "caapi"
@@ -1304,6 +1344,8 @@
 	display_name = "caapi"
 	chems = list("caapi_extract" = list(3,5))
 	fruit_price	= 13
+	tax_type = DRUG_TAX
+	contraband_type = CONTRABAND_CAAPI
 
 /datum/seed/caapi/New()
 	..()
@@ -1323,6 +1365,8 @@
 	display_name = "chacruna"
 	chems = list("chacruna_extract" = list(3,5))
 	fruit_price	= 13
+	tax_type = DRUG_TAX
+	contraband_type = CONTRABAND_CHACRUNA
 
 /datum/seed/chacruna/New()
 	..()
@@ -1335,3 +1379,67 @@
 	set_trait(TRAIT_PRODUCT_COLOUR, "#a89854")
 	set_trait(TRAIT_PLANT_ICON,"bush2")
 	set_trait(TRAIT_IDEAL_LIGHT, 6)
+
+/datum/seed/cotton
+	name = "cotton"
+	seed_name = "cotton"
+	display_name = "cotton"
+	fruit_price = 3
+
+/datum/seed/cotton/New()
+	..()
+	set_trait(TRAIT_HARVEST_REPEAT,1)
+	set_trait(TRAIT_MATURATION,6)
+	set_trait(TRAIT_PRODUCTION,6)
+	set_trait(TRAIT_YIELD,6)
+	set_trait(TRAIT_POTENCY,10)
+	set_trait(TRAIT_PRODUCT_ICON,"wheat")
+	set_trait(TRAIT_PRODUCT_COLOUR, "#E6E0B1")
+	set_trait(TRAIT_PLANT_ICON,"bush2")
+	set_trait(TRAIT_IDEAL_LIGHT, 6)
+
+/datum/seed/algae
+	name = "algae"
+	seed_name = "algae"
+	display_name = "algae"
+	chems = list(
+		"nutriment" = list(5,10)
+	)
+	kitchen_tag = "algae"
+
+/datum/seed/algae/New()
+	..()
+	set_trait(TRAIT_HARVEST_REPEAT,1)
+	set_trait(TRAIT_MATURATION,3)
+	set_trait(TRAIT_PRODUCTION,5)
+	set_trait(TRAIT_YIELD,4)
+	set_trait(TRAIT_POTENCY,10)
+	set_trait(TRAIT_PRODUCT_ICON,"alien2")
+	set_trait(TRAIT_PRODUCT_COLOUR,"#84bd82")
+	set_trait(TRAIT_PLANT_COLOUR,"#6d9c6b")
+	set_trait(TRAIT_PLANT_ICON,"algae")
+	set_trait(TRAIT_IDEAL_LIGHT, 6)
+	set_trait(TRAIT_WATER_CONSUMPTION, 6)
+	set_trait(TRAIT_NUTRIENT_CONSUMPTION, 0.15)
+
+/datum/seed/bamboo
+	name = "bamboo"
+	seed_name = "bamboo"
+	display_name = "bamboo"
+	chems = list(
+	"nutriment" = list(1,6)
+	)
+
+/datum/seed/bamboo/New()
+	..()
+	set_trait(TRAIT_MATURATION,5)
+	set_trait(TRAIT_PRODUCTION,1)
+	set_trait(TRAIT_YIELD,5)
+	set_trait(TRAIT_POTENCY,1)
+	set_trait(TRAIT_PRODUCT_ICON,"stalk")
+	set_trait(TRAIT_PRODUCT_COLOUR, WOOD_COLOR_GENERIC)
+	set_trait(TRAIT_PLANT_COLOUR,"#99bc20")
+	set_trait(TRAIT_PLANT_ICON,"stalk3")
+	set_trait(TRAIT_IDEAL_HEAT, 298)
+	set_trait(TRAIT_IDEAL_LIGHT, 6)
+	set_trait(TRAIT_WATER_CONSUMPTION, 6)

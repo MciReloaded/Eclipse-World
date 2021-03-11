@@ -9,6 +9,7 @@
 	S["expenses"]   	>> pref.expenses
 
 /datum/category_item/player_setup_item/general/economy/save_character(var/savefile/S)
+	if(!S) return
 	S["money_balance"]	<< pref.money_balance
 	S["bank_account"]	<< pref.bank_account
 	S["bank_pin"]		<< pref.bank_pin
@@ -16,6 +17,8 @@
 
 
 /datum/category_item/player_setup_item/general/economy/sanitize_character()
+	if(!pref.money_balance)
+		pref.money_balance = 0
 
 	if(!pref.bank_pin)
 		pref.bank_pin = rand(1111,9999)
@@ -47,16 +50,19 @@
 /datum/category_item/player_setup_item/general/economy/content(var/mob/user)
 	. = list()
 	. += "<h1>Income and Expenses:</h1><hr>"
-	. += "<b>Money:</b> [pref.money_balance] credits<br>"
-
+	. += "<b>Money:</b> [cash2text( pref.money_balance, FALSE, TRUE, TRUE )] credits<br>"
+	var/datum/business/B = get_business_by_owner_uid(pref.unique_id) // no escape from tax amounts in business funds LOL
+	if(B)
+		. += "<b>Business Funds:</b> [cash2text( B.get_funds(), FALSE, TRUE, TRUE )] credits<br>"
 	if(pref.bank_account)
 		. += "<b>Account ID:</b> [pref.bank_account]<br>"
 
 	if(pref.bank_pin)
 		. += "<b>Account Pin:</b> [pref.bank_pin]<br>"
 	. += "<b>Economic Class:</b> [pref.economic_status]<br>"
-	if(persistent_economy)
-		. += "<b>[pref.economic_status] Tax Rate:</b> [get_tax_rate(pref.economic_status)]%<br>"
+
+	if(SSpersistent_options)
+		. += "<b>[pref.economic_status] Tax Rate:</b> [get_tax_rate(pref.economic_status)]<br>"
 
 	. += "<b>Debts:</b></br>"
 	if(isemptylist(pref.expenses))

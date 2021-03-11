@@ -14,8 +14,9 @@
 	var/det_time = 50
 	var/loadable = 1
 
-	get_tax()
-		return WEAPONS_TAX
+	tax_type = WEAPONS_TAX
+	contraband_type = CONTRABAND_EXPLOSIVES
+
 
 /obj/item/weapon/grenade/proc/clown_check(var/mob/living/user)
 	if((CLUMSY in user.mutations) && prob(50))
@@ -58,6 +59,10 @@
 
 
 /obj/item/weapon/grenade/attack_self(mob/user as mob)
+	if(user.IsAntiGrief())
+		to_chat(user, "<span class='danger'>How do these things work again?</span>")
+		return 0
+
 	if(!active)
 		if(clown_check(user))
 			user << "<span class='warning'>You prime \the [name]! [det_time/10] seconds!</span>"

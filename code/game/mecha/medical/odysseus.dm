@@ -11,6 +11,7 @@
 	deflect_chance = 15
 	step_energy_drain = 6
 	var/obj/item/clothing/glasses/hud/health/mech/hud
+	icon_scale = 1.2
 
 	New()
 		..()
@@ -108,7 +109,7 @@
 			else if(foundVirus)
 				holder.icon_state = "hudill"
 			else if(patient.has_brain_worms())
-				var/mob/living/simple_animal/borer/B = patient.has_brain_worms()
+				var/mob/living/simple_mob/animal/borer/B = patient.has_brain_worms()
 				if(B.controlling)
 					holder.icon_state = "hudbrainworm"
 				else

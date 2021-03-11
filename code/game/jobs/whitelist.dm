@@ -97,27 +97,29 @@ var/list/whitelist = list()
 	//They are admin or the whitelist isn't in use
 //	if(whitelist_overrides(M))
 //		return 1
-	
-	
+
+
 	// // // BEGIN ECLIPSE EDITS // // //
 	// Rationale: Config-based job whitelisting.
-	
+
 	// Job whitelist disabled
 	if(!config.usejobwhitelist)
 		return 1
-	
+
 	//The job isn't even whitelisted
 	if(!jobs.hard_whitelisted)
 		return TRUE
-	
+
 	//Admin overrides
 	if(!config.wl_admins_too && check_rights(R_ADMIN, 0))		//"If the admins are not required to go through whitelist checks, and they have the perms flag R_ADMIN, they pass whitelisting." Note for future Spitzer. ^Past Spitzer
 		return 1
-		
+
 	//Admin-only jobs
 	if(jobs.wl_admin_only && check_rights(R_ADMIN, 0))		//"If the job is admin-only and the admin has the perms flag R_ADMIN, pass 'em."
 		return 1
 
+	if(jobs.portal_whitelist)
+		var/list/person = SSpersistent_options.get_persistent_option_value(jobs.portal_whitelist)
 	// // // END ECLIPSE EDITS // // //
 
 	if(jobs.title == "President") // Only the player who is president and their allotted character can be president
@@ -129,18 +131,21 @@ var/list/whitelist = list()
 		else
 			return FALSE
 
+	if(jobs.title == "President" && SSelections && SSelections.current_president) // Only the player who is president and their allotted character can be president
+		if(M.ckey == SSelections.current_president.ckey && M.client.prefs.real_name == SSelections.current_president.name)
+			return TRUE
+
 	//If we have a loaded file, search it
 	if(jobs.hard_whitelisted)
 		for (var/s in hard_whitelist)
 			if(findtext(s,"[lowertext(M.ckey)] - [lowertext(jobs.title)]"))
 				return 1
 			if(findtext(s,"[M.ckey] - [jobs.title]"))
-				return 1
+				return TRUE
 			if(findtext(s,"[M.ckey] - [lowertext(jobs.title)]"))
 				return 1
 			if(findtext(s,"[M.ckey] - All"))
-				return 1
-
+				return TRUE
 
 /proc/get_available_classes(client/C)
 
@@ -157,7 +162,7 @@ var/list/whitelist = list()
 		return CLASS_WORKING
 
 
-	return CLASS_WORKING
+
 
 
 

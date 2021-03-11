@@ -4,10 +4,20 @@
 	icon_state = "carpet"
 	initial_flooring = /decl/flooring/carpet
 
+/turf/simulated/floor/carpet/browcarpet
+	name = "brown carpet"
+	icon_state = "browncarpet"
+	initial_flooring = /decl/flooring/carpet/browcarpet
+
 /turf/simulated/floor/carpet/bcarpet
 	name = "black carpet"
-	icon_state = "bcarpet"
+	icon_state = "blackcarpet"
 	initial_flooring = /decl/flooring/carpet/bcarpet
+
+/turf/simulated/floor/carpet/wcarpet
+	name = "white carpet"
+	icon_state = "whitecarpet"
+	initial_flooring = /decl/flooring/carpet/wcarpet
 
 /turf/simulated/floor/carpet/blucarpet
 	name = "blue carpet"
@@ -21,17 +31,17 @@
 	initial_flooring = /decl/flooring/carpet/blucarpet
 
 /turf/simulated/floor/carpet/turcarpet
-	name = "tur carpet"
+	name = "green carpet"
 	icon_state = "turcarpet"
 	initial_flooring = /decl/flooring/carpet/turcarpet
 
 /turf/simulated/floor/carpet/sblucarpet
-	name = "sblue carpet"
+	name = "light blue carpet"
 	icon_state = "sblucarpet"
 	initial_flooring = /decl/flooring/carpet/sblucarpet
 
 /turf/simulated/floor/carpet/gaycarpet
-	name = "clown carpet"
+	name = "pink carpet"
 	icon_state = "gaycarpet"
 	initial_flooring = /decl/flooring/carpet/gaycarpet
 
@@ -44,6 +54,16 @@
 	name = "orange carpet"
 	icon_state = "oracarpet"
 	initial_flooring = /decl/flooring/carpet/oracarpet
+
+/turf/simulated/floor/carpet/tealcarpet
+	name = "teal carpet"
+	icon_state = "tealcarpet"
+	initial_flooring = /decl/flooring/carpet/tealcarpet
+
+/turf/simulated/floor/carpet/blackcarpet
+	name = "black carpet"
+	icon_state = "blackcarpet"
+	initial_flooring = /decl/flooring/carpet/blackcarpet
 
 /turf/simulated/floor/bluegrid
 	name = "mainframe floor"
@@ -61,7 +81,7 @@
 	name = "wooden floor"
 	icon = 'icons/turf/flooring/wood.dmi'
 	icon_state = "wood"
-	color = "#8f5a25"
+	color = WOOD_COLOR_GENERIC
 	initial_flooring = /decl/flooring/wood
 
 /turf/simulated/floor/wood/sif
@@ -83,6 +103,14 @@
 	color = WOOD_COLOR_CHOCOLATE
 	initial_flooring = /decl/flooring/wood/walnut
 
+/turf/simulated/floor/wood/bamboo
+	color = WOOD_COLOR_CHOCOLATE
+	initial_flooring = /decl/flooring/wood/bamboo
+
+/turf/simulated/floor/wood/yew
+	color = WOOD_COLOR_YELLOW
+	initial_flooring = /decl/flooring/wood/yew
+
 /turf/simulated/floor/grass
 	name = "grass patch"
 	icon = 'icons/turf/flooring/grass.dmi'
@@ -94,12 +122,6 @@
 	icon = 'icons/turf/flooring/tiles.dmi'
 	icon_state = "tiled"
 	initial_flooring = /decl/flooring/tiling
-
-/turf/simulated/floor/decor
-	name = "floor"
-	icon = 'icons/turf/flooring/decorative.dmi'
-	icon_state = "square"
-
 
 /turf/simulated/floor/tiled/techmaint
 	name = "floor"
@@ -144,23 +166,38 @@
 	name = "floor"
 	icon_state = "tile_full"
 	initial_flooring = /decl/flooring/tiling/new_tile
+
 /turf/simulated/floor/tiled/old_tile/white
 	color = "#d9d9d9"
+	initial_flooring = /decl/flooring/tiling/new_tile/white
+
 /turf/simulated/floor/tiled/old_tile/blue
 	color = "#8ba7ad"
+	initial_flooring = /decl/flooring/tiling/new_tile/blue
+
 /turf/simulated/floor/tiled/old_tile/yellow
 	color = "#8c6d46"
+	initial_flooring = /decl/flooring/tiling/new_tile/yellow
+
 /turf/simulated/floor/tiled/old_tile/gray
 	color = "#687172"
+	initial_flooring = /decl/flooring/tiling/new_tile/gray
+
 /turf/simulated/floor/tiled/old_tile/beige
 	color = "#385e60"
+	initial_flooring = /decl/flooring/tiling/new_tile/beige
+
 /turf/simulated/floor/tiled/old_tile/red
 	color = "#964e51"
+	initial_flooring = /decl/flooring/tiling/new_tile/red
+
 /turf/simulated/floor/tiled/old_tile/purple
 	color = "#906987"
+	initial_flooring = /decl/flooring/tiling/new_tile/purple
+
 /turf/simulated/floor/tiled/old_tile/green
 	color = "#46725c"
-
+	initial_flooring = /decl/flooring/tiling/new_tile/green
 
 
 /turf/simulated/floor/tiled/old_cargo
@@ -318,6 +355,24 @@
 	icon_state = "white"
 	initial_flooring = /decl/flooring/tiling/yellow
 
+/turf/simulated/floor/tiled/paleblue
+	name = "pale blue floor"
+	color = COLOR_PALE_BLUE_GRAY
+	icon_state = "white"
+	initial_flooring = /decl/flooring/tiling/paleblue
+
+/turf/simulated/floor/tiled/lime
+	name = "lime floor"
+	color = COLOR_PALE_GREEN_GRAY
+	icon_state = "white"
+	initial_flooring = /decl/flooring/tiling/lime
+
+/turf/simulated/floor/tiled/yellow
+	name = "yellow floor"
+	color = COLOR_BROWN
+	icon_state = "white"
+	initial_flooring = /decl/flooring/tiling/yellow
+
 /turf/simulated/floor/tiled/freezer
 	name = "tiles"
 	icon_state = "freezer"
@@ -452,7 +507,32 @@
 	name = "black diamond floor"
 	icon = 'icons/turf/flooring/decorative.dmi'
 	icon_state = "tiles1"
-	initial_flooring = /decl/flooring/diamond
+	initial_flooring = /decl/flooring/tiling/diamond
+
+/turf/simulated/floor/bluegeo
+	name = "blue geometric floor"
+	icon = 'icons/turf/flooring/decorative.dmi'
+	icon_state = "tiled4"
+	initial_flooring = /decl/flooring/bluegeo
+
+/turf/simulated/floor/bluegeo_light
+	name = "light blue geometric floor"
+	icon = 'icons/turf/flooring/decorative.dmi'
+	icon_state = "tiles2"
+	initial_flooring = /decl/flooring/bluegeo_light
+
+/turf/simulated/floor/bluegeo_contrast
+	name = "contrast blue geometric floor"
+	icon = 'icons/turf/flooring/decorative.dmi'
+	icon_state = "tiled5"
+	initial_flooring = /decl/flooring/bluegeo_contrast
+
+/turf/simulated/floor/padded
+	name = "padded floor"
+	icon = 'icons/turf/flooring/decorative.dmi'
+	icon_state = "padded"
+	initial_flooring = /decl/flooring/padded
+
 
 /turf/simulated/floor/discoedge
 	name = "disco floor"
@@ -501,3 +581,8 @@
 /turf/simulated/floor/stairs/stairsdark/west
 	dir = 8
 	icon_state = "rampbottom"
+
+/turf/simulated/floor/glass_bottom
+	icon_state = "glass_bottom"
+	icon = 'icons/turf/flooring/misc.dmi'
+	initial_flooring = /decl/flooring/glass_bottom

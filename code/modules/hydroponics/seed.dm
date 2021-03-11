@@ -26,6 +26,9 @@
 
 	var/fruit_price = 3				// How much the grown produce costs.
 
+	var/tax_type = AGRICULTURE_TAX
+	var/contraband_type = null
+
 /datum/seed/New()
 
 	set_trait(TRAIT_IMMUTABLE,            0)            // If set, plant will never mutate. If -1, plant is highly mutable.
@@ -106,10 +109,10 @@
 		return
 
 	if(!istype(target))
-		if(istype(target, /mob/living/simple_animal/mouse))
+		if(istype(target, /mob/living/simple_mob/animal/passive/mouse))
 			new /obj/effect/decal/remains/mouse(get_turf(target))
 			qdel(target)
-		else if(istype(target, /mob/living/simple_animal/lizard))
+		else if(istype(target, /mob/living/simple_mob/animal/passive/lizard))
 			new /obj/effect/decal/remains/lizard(get_turf(target))
 			qdel(target)
 		return
@@ -507,7 +510,7 @@
 //Mutates the plant overall (randomly).
 /datum/seed/proc/mutate(var/degree,var/turf/source_turf)
 
-	if(!degree || get_trait(TRAIT_IMMUTABLE) > 0) return
+	if(!source_turf || !degree || get_trait(TRAIT_IMMUTABLE) > 0) return
 
 	source_turf.visible_message("<span class='notice'>\The [display_name] quivers!</span>")
 

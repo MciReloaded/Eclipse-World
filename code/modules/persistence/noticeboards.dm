@@ -9,6 +9,15 @@
 	var/base_icon_state = "nboard0"
 	var/const/max_notices = 35
 
+/obj/structure/noticeboard/get_saveable_contents()
+	return notices
+
+/obj/structure/noticeboard/on_persistence_load()
+	notices = contents
+	update_icon()
+	return TRUE
+
+
 /obj/structure/noticeboard/initialize()
 	. = ..()
 
@@ -39,15 +48,15 @@
 		switch(placing)
 			if(NORTH)
 				pixel_x = 0
-				pixel_y = 32
+				pixel_y = 30
 			if(SOUTH)
 				pixel_x = 0
-				pixel_y = -32
+				pixel_y = -30
 			if(EAST)
-				pixel_x = 32
+				pixel_x = 30
 				pixel_y = 0
 			if(WEST)
-				pixel_x = -32
+				pixel_x = -30
 				pixel_y = 0
 
 	update_icon()
@@ -67,7 +76,7 @@
 		if(!skip_icon_update)
 			update_icon()
 
-/obj/structure/noticeboard/proc/dismantle()
+/obj/structure/noticeboard/dismantle()
 	for(var/thing in notices)
 		remove_paper(thing, skip_icon_update = TRUE)
 	new /obj/item/stack/material(get_turf(src), 10, MATERIAL_WOOD)
@@ -162,6 +171,9 @@
 		. = TOPIC_HANDLED
 
 	if(href_list["remove"])
+		if(usr.IsAntiGrief())
+			to_chat(user, "<span class='notice'>You don't want to remove this paper.</span>")
+			return
 		remove_paper(locate(href_list["remove"]))
 		add_fingerprint(user)
 		. = TOPIC_REFRESH
@@ -221,4 +233,25 @@
 	P.info = "Do you people think the anomaly suits are cheap to come by? I'm about a hair trigger away from instituting a log book for the damn things. Only wear them if you're going out for a dig, and for god's sake don't go tramping around in them unless you're field testing something, R"
 	P.stamped = list(/obj/item/weapon/stamp/rd)
 	P.overlays = list("paper_stamped_rd")
+	src.contents += P
+
+/obj/structure/noticeboard/abendrot_1
+	notices = 3
+	icon_state = "nboard03"
+
+/obj/structure/noticeboard/abendrot_1/New()
+	var/obj/item/weapon/paper/P = new()
+	P.name = "Notice: This NOT a Bulletin Board"
+	P.info = "<b><center>THIS IS NOT A BULLETIN BOARD.<br>DO NOT POST FLYERS HERE.</b></center>"
+	src.contents += P
+
+	P = new()
+	P.name = "New Password For Maintenance"
+	P.info = "Dr. North,<br>it's that time of the year again and all of our passwords have been reset for security reasons. Your new maintenance password is Ke1$3nif23t429g3. Please memorize \
+	it and shred of this document utilizing a NanoTrasen-certified documents shredder."
+	src.contents += P
+
+	P = new()
+	P.name = "Poxball Game on Sunday"
+	P.info = "No flyers on this noticeboard - cry me a river. We're getting the guys together for a poxball game next Sunday. Gear will be provided, just BYOB.<br>- Ted"
 	src.contents += P

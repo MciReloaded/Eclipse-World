@@ -86,14 +86,17 @@
 		/datum/unarmed_attack/bite
 		)
 	var/list/unarmed_attacks = null							// For empty hand harm-intent attack
-	var/brute_mod =     1									// Physical damage multiplier.
-	var/burn_mod =      1									// Burn damage multiplier.
-	var/oxy_mod =       1									// Oxyloss modifier
-	var/toxins_mod =    1									// Toxloss modifier
-	var/radiation_mod = 1									// Radiation modifier
-	var/flash_mod =     1									// Stun from blindness modifier.
-	var/sound_mod =     1									// Stun from sounds, I.E. flashbangs.
-	var/chemOD_mod =	1									// Damage modifier for overdose
+	var/brute_mod =			1								// Physical damage multiplier.
+	var/burn_mod =			1								// Burn damage multiplier.
+	var/oxy_mod =			1								// Oxyloss modifier
+	var/toxins_mod =		1								// Toxloss modifier
+	var/radiation_mod =		1								// Radiation modifier
+	var/flash_mod =			1								// Stun from blindness modifier.
+	var/chem_strength_heal =	1						// Multiplier to most beneficial chem strength
+	var/chem_strength_pain =	1						// Multiplier to painkiller strength (could be used in a negative trait to simulate long-term addiction reducing effects, etc.)
+	var/chem_strength_tox =		1						// Multiplier to toxic chem strength (inc. chloral/sopo/mindbreaker/etc. thresholds)
+	var/chemOD_threshold =		1						// Multiplier to overdose threshold; lower = easier overdosing
+	var/chemOD_mod =		1								// Damage modifier for overdose
 	var/vision_flags = SEE_SELF								// Same flags as glasses.
 
 	// Death vars.
@@ -204,6 +207,14 @@
 	var/rarity_value = 1									// Relative rarity/collector value for this species.
 	var/economic_modifier = 2								// How much money this species makes
 
+	//Eclipse add - descriptors
+
+
+	var/list/descriptors = list(
+		/datum/mob_descriptor/height,
+		/datum/mob_descriptor/build
+		)
+
 	// Determines the organs that the species spawns with and
 	var/list/has_organ = list(								// which required-organ checks are conducted.
 		O_HEART =		/obj/item/organ/internal/heart,
@@ -245,10 +256,7 @@
 
 	var/pass_flags = 0
 
-	var/list/descriptors = list(
-		/datum/mob_descriptor/height,
-		/datum/mob_descriptor/build
-		)
+	var/portal_vote_id = "voting_human" // determines voting identification
 
 /datum/species/New()
 	if(hud_type)
@@ -256,14 +264,6 @@
 	else
 		hud = new()
 
-	// Prep the descriptors for the species
-	if(LAZYLEN(descriptors))
-		var/list/descriptor_datums = list()
-		for(var/desctype in descriptors)
-			var/datum/mob_descriptor/descriptor = new desctype
-			descriptor.comparison_offset = descriptors[desctype]
-			descriptor_datums[descriptor.name] = descriptor
-		descriptors = descriptor_datums
 
 	//If the species has eyes, they are the default vision organ
 	if(!vision_organ && has_organ[O_EYES])

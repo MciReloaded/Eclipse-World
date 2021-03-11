@@ -9,6 +9,9 @@
 		if(C.name == "carpspawn")
 			possible_spawns.Add(C)
 
+	if(!LAZYLEN(possible_spawns))
+		return
+
 	//25% chance for this to be a false alarm
 	var/num
 	if(prob(25))
@@ -16,7 +19,7 @@
 	else
 		num = rand(1,3)
 	for(var/i=0, i<num, i++)
-		var/mob/living/simple_animal/hostile/goose/D = new(get_turf(pick(possible_spawns)))
+		var/mob/living/simple_mob/animal/space/goose/D = new(get_turf(pick(possible_spawns)))
 		geese.Add(D)
 
 /datum/event/goose_is_loose/announce()

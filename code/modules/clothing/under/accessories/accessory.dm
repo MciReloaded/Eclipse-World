@@ -4,16 +4,12 @@
 	icon = 'icons/obj/clothing/ties.dmi'
 	icon_state = "bluetie"
 	item_state_slots = list(slot_r_hand_str = "", slot_l_hand_str = "")
+	appearance_flags = RESET_COLOR	// Stops has_suit's color from being multiplied onto the accessory
 	slot_flags = SLOT_TIE
 	w_class = ITEMSIZE_SMALL
-	var/slot = "decor"
-/*	var/obj/item/clothing/has_suit = null		//the suit the tie may be attached to
-	var/image/inv_overlay = null	//overlay used when attached to clothing.
-	var/image/mob_overlay = null
-	var/overlay_state = null
-	var/concealed_holster = 0
-	var/mob/living/carbon/human/wearer = null //To check if the wearer changes, so species spritesheets change properly.
-*/
+	var/slot = ACCESSORY_SLOT_DECOR
+	concealed_holster = 0
+	var/list/on_rolled = list()					// Used when jumpsuit sleevels are rolled ("rolled" entry) or it's rolled down ("down"). Set to "none" to hide in those states.
 	sprite_sheets = list(SPECIES_TESHARI = 'icons/mob/species/seromi/ties.dmi') //Teshari can into webbing, too!
 
 /obj/item/clothing/accessory/Destroy()
@@ -29,34 +25,46 @@
 			inv_overlay = image(icon = icon_override, icon_state = tmp_icon_state, dir = SOUTH)
 		else
 			inv_overlay = image(icon = INV_ACCESSORIES_DEF_ICON, icon_state = tmp_icon_state, dir = SOUTH)
+
+		inv_overlay.color = src.color
+		inv_overlay.appearance_flags = appearance_flags	// Stops has_suit's color from being multiplied onto the accessory
 	return inv_overlay
 
 /obj/item/clothing/accessory/get_mob_overlay()
-	if(!mob_overlay || has_suit.loc != wearer)
-		var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
-		if(ishuman(has_suit.loc))
-			wearer = has_suit.loc
-		else
-			wearer = null
+	if(!istype(loc,/obj/item/clothing/))	//don't need special handling if it's worn as normal item.
+		return ..()
+	var/tmp_icon_state = "[overlay_state? "[overlay_state]" : "[icon_state]"]"
+	if(ishuman(has_suit.loc))
+		wearer = has_suit.loc
+	else
+		wearer = null
 
-		if(icon_override)
-			if("[tmp_icon_state]_mob" in icon_states(icon_override))
-				tmp_icon_state = "[tmp_icon_state]_mob"
-			mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]")
-		else if(wearer && sprite_sheets[wearer.species.get_bodytype(wearer)]) //Teshari can finally into webbing, too!
-			mob_overlay = image("icon" = sprite_sheets[wearer.species.get_bodytype(wearer)], "icon_state" = "[tmp_icon_state]")
-		else
-			mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]")
-		if(addblends)
-			var/icon/base = new/icon("icon" = mob_overlay.icon, "icon_state" = mob_overlay.icon_state)
-			var/addblend_icon = new/icon("icon" = mob_overlay.icon, "icon_state" = src.addblends)
-			if(color)
-				base.Blend(src.color, ICON_MULTIPLY)
-			base.Blend(addblend_icon, ICON_ADD)
-			mob_overlay = image(base)
-		else
-			mob_overlay.color = src.color
+	if(istype(loc,/obj/item/clothing/under))
+		var/obj/item/clothing/under/C = loc
+		if(on_rolled["down"] && C.rolled_down > 0)
+			tmp_icon_state = on_rolled["down"]
+		else if(on_rolled["rolled"] && C.rolled_sleeves > 0)
+			tmp_icon_state = on_rolled["rolled"]
 
+	if(icon_override)
+		if("[tmp_icon_state]_mob" in icon_states(icon_override))
+			tmp_icon_state = "[tmp_icon_state]_mob"
+		mob_overlay = image("icon" = icon_override, "icon_state" = "[tmp_icon_state]")
+	else if(wearer && sprite_sheets[wearer.species.get_bodytype(wearer)]) //Teshari can finally into webbing, too!
+		mob_overlay = image("icon" = sprite_sheets[wearer.species.get_bodytype(wearer)], "icon_state" = "[tmp_icon_state]")
+	else
+		mob_overlay = image("icon" = INV_ACCESSORIES_DEF_ICON, "icon_state" = "[tmp_icon_state]")
+	if(addblends)
+		var/icon/base = new/icon("icon" = mob_overlay.icon, "icon_state" = mob_overlay.icon_state)
+		var/addblend_icon = new/icon("icon" = mob_overlay.icon, "icon_state" = src.addblends)
+		if(color)
+			base.Blend(src.color, ICON_MULTIPLY)
+		base.Blend(addblend_icon, ICON_ADD)
+		mob_overlay = image(base)
+	else
+		mob_overlay.color = src.color
+
+	mob_overlay.appearance_flags = appearance_flags	// Stops has_suit's color from being multiplied onto the accessory
 	return mob_overlay
 
 //when user attached an accessory to S
@@ -64,22 +72,22 @@
 	if(!istype(S))
 		return
 	has_suit = S
-	loc = has_suit
-	has_suit.overlays += get_inv_overlay()
+	src.forceMove(S)
+	has_suit.add_overlay(get_inv_overlay())
 
 	if(user)
-		user << "<span class='notice'>You attach \the [src] to \the [has_suit].</span>"
+		to_chat(user, "<span class='notice'>You attach \the [src] to \the [has_suit].</span>")
 		add_fingerprint(user)
 
 /obj/item/clothing/accessory/proc/on_removed(var/mob/user)
 	if(!has_suit)
 		return
-	has_suit.overlays -= get_inv_overlay()
+	has_suit.cut_overlay(get_inv_overlay())
 	has_suit = null
 	if(user)
 		usr.put_in_hands(src)
 		add_fingerprint(user)
-	else
+	else if(get_turf(src))		//We actually exist in space
 		forceMove(get_turf(src))
 
 //default attackby behaviour
@@ -93,6 +101,13 @@
 	..()
 
 /obj/item/clothing/accessory/tie
+	name = "tie"
+	icon_state = "whitetie"
+
+/obj/item/clothing/accessory/tie/silk
+	matter = list("silk" = 930)
+
+/obj/item/clothing/accessory/tie/blue
 	name = "blue tie"
 	icon_state = "bluetie"
 
@@ -148,14 +163,29 @@
 
 
 /obj/item/clothing/accessory/tie/sash
-	name = "red sash"
-	desc = "A red banner that may or may not have some kind of meaning. Who knows?"
+	name = "sash"
+	desc = "A banner that may or may not have some kind of meaning. Who knows?"
 	icon_state = "sash"
+
+	matter = list("silk" = 950)
+
+/obj/item/clothing/accessory/tie/sash/red
+	color = COLOR_RED
+
+/obj/item/clothing/accessory/tie/sash/gold
+	color = COLOR_YELLOW
 
 /obj/item/clothing/accessory/tie/cravat
 	name = "cravat"
 	desc = "The class on this poofy thing is almost unbearable."
 	icon_state = "cravat"
+
+	matter = list("silk" = 1050)
+
+/obj/item/clothing/accessory/tie/neckerchief
+	name = "neckerchief"
+	desc = "It's tempting to tie it just a liiiittle tighter."
+	icon_state = "neckerchief"
 
 /obj/item/clothing/accessory/stethoscope
 	name = "stethoscope"
@@ -273,8 +303,12 @@
 //Scarves
 
 /obj/item/clothing/accessory/scarf
-	name = "green scarf"
+	name = "scarf"
 	desc = "A stylish scarf. The perfect winter accessory for those with a keen fashion sense, and those who just can't handle a cold breeze on their necks."
+	icon_state = "whitescarf"
+
+/obj/item/clothing/accessory/scarf/green
+	name = "green scarf"
 	icon_state = "greenscarf"
 
 /obj/item/clothing/accessory/scarf/red
@@ -406,3 +440,72 @@
 	..(newloc, "glass")
 
 	..()
+
+/obj/item/clothing/accessory/necklace
+	name = "necklace"
+	desc = "A simple silver colored necklace."
+	icon = 'icons/obj/clothing/ties.dmi'
+	icon_state = "necklace"
+	w_class = ITEMSIZE_TINY
+	slot_flags = SLOT_TIE
+
+/obj/item/clothing/accessory/necklace/bottle
+	name = "bottle necklace"
+	desc = "A cute heart shaped gold necklace with a decorative bottle in the middle."
+	icon_state = "bottlenecklace"
+	var/obj/item/weapon/reagent_containers/glass/bottle/open/bottle
+
+/obj/item/clothing/accessory/necklace/bottle/New()
+	..()
+	bottle = new /obj/item/weapon/reagent_containers/glass/bottle/open(src)
+
+/obj/item/clothing/accessory/necklace/bottle/attackby(var/obj/item/I, var/mob/user)
+	if(bottle)
+		if(istype(I, /obj/item/weapon/reagent_containers/syringe) || istype(I, /obj/item/weapon/reagent_containers/dropper))
+			var/obj/item/weapon/reagent_containers/extractor = I
+			extractor.afterattack(bottle, user, TRUE)
+
+/obj/item/clothing/accessory/necklace/material/New(var/newloc, var/new_material)
+	..(newloc)
+	if(!new_material)
+		new_material = DEFAULT_WALL_MATERIAL
+	material = get_material_by_name(new_material)
+	if(!istype(material))
+		qdel(src)
+		return
+	name = "[material.display_name] necklace"
+	desc = "A necklace made from [material.display_name]."
+	color = material.icon_colour
+
+/obj/item/clothing/accessory/necklace/material/get_material()
+	return material
+
+/obj/item/clothing/accessory/necklace/material/wood/New(var/newloc)
+	..(newloc, "wood")
+
+/obj/item/clothing/accessory/necklace/material/plastic/New(var/newloc)
+	..(newloc, "plastic")
+
+/obj/item/clothing/accessory/necklace/material/iron/New(var/newloc)
+	..(newloc, "iron")
+
+/obj/item/clothing/accessory/necklace/material/steel/New(var/newloc)
+	..(newloc, "steel")
+
+/obj/item/clothing/accessory/necklace/material/silver/New(var/newloc)
+	..(newloc, "silver")
+
+/obj/item/clothing/accessory/necklace/material/gold/New(var/newloc)
+	..(newloc, "gold")
+
+/obj/item/clothing/accessory/necklace/material/platinum/New(var/newloc)
+	..(newloc, "platinum")
+
+/obj/item/clothing/accessory/necklace/material/phoron/New(var/newloc)
+	..(newloc, "phoron")
+
+/obj/item/clothing/accessory/necklace/material/glass/New(var/newloc)
+	..(newloc, "glass")
+
+	..()
+

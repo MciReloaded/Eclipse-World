@@ -114,6 +114,58 @@
 	icon_state = "ntballoon"
 	w_class = ITEMSIZE_LARGE
 
+/obj/item/toy/colorballoon /// To color it, VV the 'color' var with a hex color code with the # included.
+	name = "balloon"
+	desc = "It's a plain little balloon. Comes in many colors!"
+	throwforce = 0
+	throw_speed = 4
+	throw_range = 20
+	force = 0
+	icon = 'icons/obj/weapons.dmi'
+	icon_state = "colorballoon"
+	w_class = ITEMSIZE_LARGE
+	drop_sound = 'sound/items/drop/rubber.ogg'
+
+/// Balloon structures
+
+/obj/structure/balloon
+	name = "generic balloon"
+	desc = "A generic balloon. How boring."
+	icon = 'icons/obj/toy.dmi'
+	icon_state = "ghostballoon"
+	anchored = 0
+	density = 0
+
+/obj/structure/balloon/attack_hand(mob/user)
+	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+
+	if(user.a_intent == I_HELP)
+		user.visible_message("<span class='notice'><b>\The [user]</b> pokes [src]!</span>","<span class='notice'>You poke [src]!</span>")
+	else if (user.a_intent == I_HURT)
+		user.visible_message("<span class='warning'><b>\The [user]</b> punches [src]!</span>","<span class='warning'>You punch [src]!</span>")
+	else if (user.a_intent == I_GRAB)
+		user.visible_message("<span class='warning'><b>\The [user]</b> attempts to pop [src]!</span>","<span class='warning'>You attempt to pop [src]!</span>")
+	else
+		user.visible_message("<span class='notice'><b>\The [user]</b> lightly bats the [src].</span>","<span class='notice'>You lightly bat the [src].</span>")
+
+/obj/structure/balloon/random/New()
+	color = "#[get_random_colour()]"
+	..()
+
+/obj/item/toy/colorballoon/random/New()
+	color = "#[get_random_colour()]"
+	..()
+
+/obj/structure/balloon/bat
+	name = "giant bat balloon"
+	desc = "A large balloon in the shape of a spooky bat with orange eyes."
+	icon_state = "batballoon"
+
+/obj/structure/balloon/ghost
+	name = "giant ghost balloon"
+	desc = "Oh no, it's a ghost! Oh wait, it's just a balloon. Phew!"
+	icon_state = "ghostballoon"
+
 /*
  * Fake telebeacon
  */
@@ -361,6 +413,11 @@
 	return
 
 /obj/item/toy/waterflower/afterattack(atom/A as mob|obj, mob/user as mob)
+	if (istype(A, /obj/machinery/inventory_machine ))
+		return
+
+	if(!reagents)
+		return
 
 	if (istype(A, /obj/item/weapon/storage/backpack ))
 		return
@@ -535,7 +592,7 @@
 	name = "Assistant action figure"
 	desc = "A \"Space Life\" brand Assistant action figure."
 	icon_state = "assistant"
-	toysay = "Grey tide station wide!"
+	toysay = "Grey tide city wide!"
 
 /obj/item/toy/figure/atmos
 	name = "Atmospheric Technician action figure"
@@ -562,8 +619,8 @@
 	toysay = "Dude, I see colors..."
 
 /obj/item/toy/figure/captain
-	name = "Colony Director action figure"
-	desc = "A \"Space Life\" brand Colony Director action figure."
+	name = "Mayor action figure"
+	desc = "A \"Space Life\" brand Mayor action figure."
 	icon_state = "captain"
 	toysay = "How do I open this display case?"
 
@@ -844,9 +901,40 @@
 	anchored = 0
 	density = 1
 	var/phrase = "I don't want to exist anymore!"
+	var/opened = FALSE
+	var/searching = FALSE
+	var/obj/item/stored_item
+
+	unique_save_vars = list("opened")
+
+/obj/structure/plushie/examine(mob/user)
+	..()
+	if(opened)
+		to_chat(user, "<i>You notice an incision has been made on [src].</i>")
+		if(in_range(user, src) && stored_item)
+			to_chat(user, "<i>You can see something in there...</i>")
+
+/obj/structure/plushie/on_persistence_load()
+	if(isemptylist(contents))
+		return TRUE
+
+	if(contents[1])
+		stored_item = contents[1]
+
 
 /obj/structure/plushie/attack_hand(mob/user)
 	user.setClickCooldown(DEFAULT_ATTACK_COOLDOWN)
+	if(stored_item && opened && !searching)
+		searching = TRUE
+		if(do_after(user, 10))
+			to_chat(user, "You find \icon[stored_item] [stored_item] in [src]!")
+			stored_item.forceMove(get_turf(src))
+			stored_item = null
+			searching = FALSE
+			return
+		else
+			searching = FALSE
+
 	if(user.a_intent == I_HELP)
 		user.visible_message("<span class='notice'><b>\The [user]</b> hugs [src]!</span>","<span class='notice'>You hug [src]!</span>")
 	else if (user.a_intent == I_HURT)
@@ -857,6 +945,34 @@
 		user.visible_message("<span class='notice'><b>\The [user]</b> pokes the [src].</span>","<span class='notice'>You poke the [src].</span>")
 		visible_message("[src] says, \"[phrase]\"")
 
+
+/obj/structure/plushie/attackby(obj/item/I as obj, mob/user as mob)
+	if(istype(I, /obj/item/device/threadneedle) && opened)
+		to_chat(user, "You sew the hole in [src].")
+		opened = FALSE
+		return
+
+	if(is_sharp(I) && !opened)
+		to_chat(user, "You open a small incision in [src]. You can place tiny items inside.")
+		opened = TRUE
+		return
+
+	if(opened)
+		if(stored_item)
+			to_chat(user, "There is already something in here.")
+			return
+
+		if(!(I.w_class > w_class))
+			to_chat(user, "You place [I] inside [src].")
+			user.drop_from_inventory(I, src)
+			I.forceMove(src)
+			stored_item = I
+			return
+		else
+			to_chat(user, "You open a small incision in [src]. You can place tiny items inside.")
+
+
+	..()
 
 /obj/structure/plushie/ian
 	name = "plush corgi"
@@ -891,7 +1007,39 @@
 	w_class = ITEMSIZE_TINY
 	var/last_message = 0
 
+	var/searching = FALSE
+	var/opened = FALSE	// has this been slit open? this will allow you to store an object in a plushie.
+	var/obj/item/stored_item	// Note: Stored items can't be bigger than the plushie itself.
+
+	unique_save_vars = list("opened")
+
+/obj/item/toy/plushie/on_persistence_load()
+	if(isemptylist(contents))
+		return TRUE
+
+	if(contents[1])
+		stored_item = contents[1]
+
+
+/obj/item/toy/plushie/examine(mob/user)
+	..()
+	if(opened)
+		to_chat(user, "<i>You notice an incision has been made on [src].</i>")
+		if(in_range(user, src) && stored_item)
+			to_chat(user, "<i>You can see something in there...</i>")
+
 /obj/item/toy/plushie/attack_self(mob/user as mob)
+	if(stored_item && opened && !searching)
+		searching = TRUE
+		if(do_after(user, 10))
+			to_chat(user, "You find \icon[stored_item] [stored_item] in [src]!")
+			stored_item.forceMove(get_turf(src))
+			stored_item = null
+			searching = FALSE
+			return
+		else
+			searching = FALSE
+
 	if(world.time - last_message <= 1 SECOND)
 		return
 	if(user.a_intent == I_HELP)
@@ -1312,102 +1460,55 @@
 	desc = "Roxie, the bestest girl pet in the whole wide universe!"
 	icon_state = "roxie"
 
+/obj/item/toy/pet_rock/gold
+	name = "pet gold ore"
+	desc = "For the aspiring pet owner born with a silver spoon in their mouth."
+	icon_state = "gold"
+	attack_verb = list("luxuriously smashed", "rocked with finesse", "smashed with success", "bashed with opulence")
 
-/obj/item/toy/dummy
-	name = "ventriloquist dummy"
-	desc = "It's a dummy, dummy."
+/obj/item/toy/pet_rock/gold/attack_self(mob/user)
+	to_chat(user, "<span class='notice'>You caress \the [src] lovingly.</span>")
+
+/obj/item/toy/crystal_ball
+	name = "crystal ball"
+	desc = "A mystical crystal ball for predicting the fortune. Alt-click to change color."
 	icon = 'icons/obj/toy.dmi'
-	icon_state = "assistant"
-	item_state = "doll"
-	var/mob/living/dummy_voice/voice = null
-	var/doll_name = "Dummy"
+	icon_state = "crystal-ball-base"
+	w_class = ITEMSIZE_TINY
 
-/obj/item/toy/dummy/cursed
-	desc = " Yer here fer one reason and one reason only, ya dumb broad \
-	and that's to keep yer hand up my backside and not speak unless spoken to--ya get me?"
-	canremove = 0
-	nodrop = 1
+	var/crystal_color = "#77b39a"
+	var/crystal_type = "crystal-ball"
 
-/obj/item/toy/dummy/New(loc)
-	voice = new /mob/living/dummy_voice(loc)
-	voice.forceMove(src)
+	unique_save_vars = list("crystal_color")
+
+/obj/item/toy/crystal_ball/New()
 	..()
+	update_icon()
 
-//Add changing looks when i feel suicidal about making 20 inhands for these.
-/obj/item/toy/dummy/attack_self(mob/user)
-	var/message = "squints."
-	message = sanitize(input(usr,"Visible emote by the dummy.","Anything!", message) as null|text)
-	if(message)
-		voice.visible_message("<b>[voice.name]</b> [message]")
-
-/obj/item/toy/dummy/proc/say_thing(mob/user, var/message)
-	message = sanitize(message)
-	if(message)
-		voice.say(message)
-
-
-/obj/item/toy/dummy/verb/rename_dummy()
-	set name = "Rename Dummy"
-	set category = "Object"
-	set desc = "Click to rename your dummy."
-	set src in usr
-
-	var/new_name = sanitizeName(input(usr,"What would you like to name the dummy?","Input a name", doll_name) as null|text)
-	if(!new_name)
+/obj/item/toy/crystal_ball/AltClick(mob/living/user)
+	if(user.incapacitated() || !istype(user))
+		to_chat(user, "<span class='warning'>You can't do that right now!</span>")
 		return
-	voice.name = new_name
-	voice.real_name = voice.name
-	to_chat(usr, "<span class='notice'>You name the dummy as \"[voice.name]\".</span>")
-	name = "[initial(name)] - [voice.name]"
+	if(!in_range(src, user))
+		return
 
-/mob/living/dummy_voice
-	name = "Dummy"
-	desc = "How are you examining me, you dummy?"
-	see_invisible = SEE_INVISIBLE_LIVING
-	var/obj/item/toy/dummy/doll = null
+	var/input_color = input(user, "Choose a dye color", "Dye Color") as color
 
-	emote_type = 2 //This lets them emote through containers.  The communicator has a image feed of the person calling them so...
+	if(user.incapacitated() || !istype(user) || !in_range(src, user))
+		return
+	if(input_color)
+		crystal_color = input_color
+		update_icon()
 
-/mob/living/dummy_voice/New()
-	add_language(LANGUAGE_GALCOM)
-	set_default_language(all_languages[LANGUAGE_GALCOM])
+/obj/item/toy/crystal_ball/update_icon()
+	overlays.Cut()
 
-	if(istype(loc, /obj/item/toy/dummy))
-		doll = src.loc
+	var/image/I = image(icon, "[crystal_type]")
+	I.color = crystal_color
+	overlays |= I
+
+	set_light(2, 2, crystal_color)
+
+/obj/item/toy/crystal_ball/random/New()
+	crystal_color = pick(list(COLOR_WHITE, COLOR_DARK_GRAY, COLOR_RED, COLOR_ORANGE, COLOR_YELLOW, COLOR_GREEN, COLOR_BLUE, COLOR_VIOLET))
 	..()
-
-/mob/living/dummy_voice/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", var/whispering=0)
-	//Speech bubbles.
-	if(doll)
-		var/speech_bubble_test = say_test(message)
-		var/speech_type = speech_bubble_appearance()
-		var/image/speech_bubble = image('icons/mob/talk.dmi',doll,"[speech_type][speech_bubble_test]")
-		spawn(30)
-			qdel(speech_bubble)
-
-		for(var/mob/M in hearers(doll)) //simplifed since it's just a speech bubble
-			M << speech_bubble
-		src << speech_bubble
-
-	..(message, speaking, verb, alt_name, whispering) //mob/living/say() can do the actual talking.
-
-// Proc: speech_bubble_appearance()
-// Parameters: 0
-// Description: Gets the correct icon_state information for chat bubbles to work.
-/mob/living/dummy_voice/speech_bubble_appearance()
-	return "normal"
-
-/mob/living/dummy_voice/say_understands(var/other,var/datum/language/speaking = null)
-	//These only pertain to common. Languages are handled by mob/say_understands()
-	if (!speaking)
-		if (istype(other, /mob/living/carbon))
-			return 1
-		if (istype(other, /mob/living/silicon))
-			return 1
-		if (istype(other, /mob/living/carbon/brain))
-			return 1
-	return ..()
-
-/mob/living/dummy_voice/custom_emote(var/m_type=1,var/message = null,var/range=world.view)
-	if(!doll) return
-	..(m_type,message,range)

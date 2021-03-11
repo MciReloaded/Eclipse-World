@@ -32,20 +32,21 @@ var/list/trait_categories = list() // The categories available for the trait men
 
 /datum/category_item/player_setup_item/traits/load_character(var/savefile/S)
 	S["traits"] >> pref.traits
-	if(pref.traits.len)
-		for(var/trait_name in trait_datums)
-			var/datum/trait/T = trait_datums[trait_name]
+	if(pref.traits)
+		if(pref.traits.len)
+			for(var/trait_name in trait_datums)
+				var/datum/trait/T = trait_datums[trait_name]
 
-			if(!T.selectable)
-				continue
-
-			if(T.racial)
-				var/datum/trait/modifier/racial/R = T
-				if(!(pref.species in R.allowed_races) && pref.species != SPECIES_HUMAN)//Humans have the most adaptive DNA also because they get extra trait points
+				if(!T.selectable)
 					continue
-				else
-					if(pref.species != SPECIES_HUMAN)
-						pref.traits += T.name
+
+				if(T.racial)
+					var/datum/trait/modifier/racial/R = T
+					if(!(pref.species in R.allowed_races) && pref.species != SPECIES_HUMAN)//Humans have the most adaptive DNA also because they get extra trait points
+						continue
+					else
+						if(pref.species != SPECIES_HUMAN)
+							pref.traits += T.name
 
 /datum/category_item/player_setup_item/traits/save_character(var/savefile/S)
 	S["traits"] << pref.traits

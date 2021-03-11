@@ -11,6 +11,8 @@
 	var/syndie = 0
 	var/list/channels = list()
 
+	dont_save = TRUE
+
 /obj/item/device/encryptionkey/attackby(obj/item/weapon/W as obj, mob/user as mob)
 
 /obj/item/device/encryptionkey/syndicate
@@ -23,6 +25,14 @@
 	icon_state = "cypherkey"
 	channels = list("Raider" = 1)
 	origin_tech = list(TECH_ILLEGAL = 2)
+	syndie = 1
+
+/obj/item/device/encryptionkey/pax_synthetica
+	name = "\improper modified radio encryption key"
+	icon_state = "pax_cypherkey"
+	channels = list("Pax Synthetica" = 1)
+	origin_tech = list(TECH_ILLEGAL = 3)
+	translate_binary = 1
 	syndie = 1
 
 /obj/item/device/encryptionkey/binary
@@ -66,7 +76,7 @@
 	channels = list("Command" = 1)
 
 /obj/item/device/encryptionkey/heads/captain
-	name = "colony director's encryption key"
+	name = "mayor's encryption key"
 	icon_state = "cap_cypherkey"
 	channels = list("Command" = 1, "Police" = 1, "Fire" = 0, "Science" = 0, "Hospital" = 0, "Factory" = 0, "Diner" = 0, "Legal" = 1)
 
@@ -143,3 +153,4 @@
 
 /obj/item/device/encryptionkey/omni		//Literally only for the admin intercoms
 	channels = list("Mercenary" = 1, "Raider" = 1, "Military" = 1, "Science" = 1, "Command" = 1, "Hospital" = 1, "Fire" = 1, "Police" = 1, "Factory" = 1, "Diner" = 1)
+
