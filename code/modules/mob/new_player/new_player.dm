@@ -6,6 +6,10 @@
 	var/totalPlayers = 0		 //Player counts for the Lobby tab
 	var/totalPlayersReady = 0
 	var/datum/browser/panel
+
+	var/selected_job = "Civilian"
+	var/job_select_mode = "ALL"	// Options: All, Public or Private
+
 	universal_speak = 1
 	invisibility = 101
 
@@ -17,7 +21,7 @@
 
 /mob/new_player/New()
 	mob_list += src
-	
+
 /mob/new_player/say(var/message, var/datum/language/speaking = null, var/verb="says", var/alt_name="", whispering)
 	if (client)
 		client.ooc(message)
@@ -56,7 +60,9 @@
 
 	if(news_data.city_newspaper)
 		output += "<a href='byond://?src=\ref[src];open_city_news=1'>Show [using_map.station_name] News</A>"
-
+	if(SSpersistent_options)
+		var/ballot_no = LAZYLEN(SSpersistent_options.get_ballots(active_only = TRUE))
+		output += "<a href='byond://?src=\ref[src];show_referendums=1'>Show Referendums[ballot_no ? " ([ballot_no] Active)" : ""]</A>"
 	if(client.check_for_new_server_news())
 		output += "<b><a href='byond://?src=\ref[src];shownews=1'>Game Updates</A> (NEW!)</b>"
 	else
@@ -73,17 +79,25 @@
 	else
 		output += "<a href='byond://?src=\ref[src];manifest=1'>Citizen's Roster</A><br>"
 		output += "<p><a href='byond://?src=\ref[src];late_join=1'>Join Game!</A>"
+		if(config.allow_lobby_antagonists)
+			output += "<p><a href='byond://?src=\ref[src];join_as_antag=1'>Join As Antagonist</A>"
 
 
 	output += "<hr>Current character: <b>[client.prefs.real_name]</b>, [client.prefs.economic_status]<br>"
-
+	output += "Money: <b>[cash2text( client.prefs.money_balance, FALSE, TRUE, TRUE )]</b><br>"
+	if(SSbusiness)
+		var/datum/business/B = get_business_by_owner_uid(client.prefs.unique_id)
+		if(B)
+			output += "Business Funds: <b>[cash2text( B.get_funds(), FALSE, TRUE, TRUE )]</b><br>"
+	if(SSpersistent_options && SSpersistent_options.get_persistent_formatted_value("president_msg"))
+		output += "<b>President Broadcast:</b><br>"
+		output += "<div class='statusDisplay'>[SSpersistent_options.get_persistent_formatted_value("president_msg")]</div><br>"
 	output += "</div>"
 
 	if(news_data.city_newspaper && !client.seen_news)
 		show_latest_news(news_data.city_newspaper)
 
-
-	panel = new(src, "Welcome","Welcome, [client.prefs.real_name]", 500, 480, src)
+	panel = new(src, "Welcome","Welcome, [client.prefs.real_name]", 600, 580, src)
 	panel.set_window_options("can_close=0")
 	panel.set_content(output)
 	panel.open()
@@ -110,6 +124,35 @@
 				totalPlayers++
 				if(player.ready)totalPlayersReady++
 
+
+/mob/new_player/proc/JoinLate(selected_job_name, antag_type)
+	//Prevents people rejoining as same character.
+	for (var/mob/living/carbon/human/C in mob_list)
+		var/char_name = client.prefs.real_name
+		if(char_name == C.real_name)
+			to_chat(usr, "<span class='notice'>There is a character that already exists with the same name - <b>[C.real_name]</b>, please join with a different one.</span>")
+			return
+
+	if(!config.enter_allowed)
+		to_chat(usr, "<span class='notice'>There is an administrative lock on entering the game!</span>")
+		return
+	else if(ticker && ticker.mode && ticker.mode.explosion_in_progress)
+		to_chat(usr, "<span class='danger'>The city is currently exploding. Joining would go poorly.</span>")
+		return
+
+	if(!is_alien_whitelisted(src, all_species[client.prefs.species]))
+		src << alert("You are currently not whitelisted to play [client.prefs.species].")
+		return 0
+
+	var/datum/species/S = all_species[client.prefs.species]
+	if(!(S.spawn_flags & SPECIES_CAN_JOIN))
+		src << alert("Your current species, [client.prefs.species], is not available for play on the city.")
+		return 0
+
+	AttemptLateSpawn(selected_job_name,client.prefs.spawnpoint, antag_type)
+
+	return TRUE
+
 /mob/new_player/Topic(href, href_list[])
 	if(!client)	return 0
 
@@ -123,6 +166,10 @@
 			return 0
 		ready = !ready
 		new_player_panel_proc()
+
+	if(href_list["show_referendums"])
+		ShowReferendums()
+		return
 
 	if(href_list["refresh"])
 		//src << browse(null, "window=playersetup") //closes the player setup window
@@ -170,40 +217,86 @@
 	if(href_list["late_join"])
 
 		if(!ticker || ticker.current_state != GAME_STATE_PLAYING)
-			usr << "<font color='red'>The round is either not ready, or has already finished...</font>"
+			to_chat(usr,"<font color='red'>The round is either not ready, or has already finished...</font>")
 			return
 
 		LateChoices()
 
+	if(href_list["join_as_antag"])
+
+		if(!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			to_chat(usr,"<font color='red'>The round is either not ready, or has already finished...</font>")
+			return
+
+		JoinAsAntag()
+
+	if(href_list["JoinAsAntag"])	//pre- SelectedJob usage for new menu
+		if(!ticker || ticker.current_state != GAME_STATE_PLAYING)
+			to_chat(usr,"<font color='red'>The round is either not ready, or has already finished...</font>")
+			return
+
+		var/E = href_list["JoinAsAntag"]
+
+		var/antag_type = E
+		var/datum/antagonist/antag = null
+
+		for(var/datum/antagonist/A in GLOB.lobbyjoin_antagonists)
+			if(A.id == antag_type)
+				antag = A
+
+		if(!antag)
+			return
+
+		JoinAntag(antag)
+
+		return
+
+
+
 	if(href_list["manifest"])
 		ViewManifest()
 
-	if(href_list["SelectedJob"])
-		//Prevents people rejoining as same character.
-		for (var/mob/living/carbon/human/C in mob_list)
-			var/char_name = client.prefs.real_name
-			if(char_name == C.real_name)
-				usr << "<span class='notice'>There is a character that already exists with the same name - <b>[C.real_name]</b>, please join with a different one.</span>"
-				return
 
-		if(!config.enter_allowed)
-			usr << "<span class='notice'>There is an administrative lock on entering the game!</span>"
-			return
-		else if(ticker && ticker.mode && ticker.mode.explosion_in_progress)
-			usr << "<span class='danger'>The city is currently exploding. Joining would go poorly.</span>"
+	if(href_list["set_alt_title"])
+		var/E = locate(href_list["job"])
+
+		var/datum/job/job = E
+
+		if(!client || !client.prefs || !job)
 			return
 
-		if(!is_alien_whitelisted(src, all_species[client.prefs.species]))
-			src << alert("You are currently not whitelisted to play [client.prefs.species].")
-			return 0
+		var/choices = list(job.title) + job.alt_titles
+		var/new_title = input("Choose a title for [job.title].", "Choose Title", client.prefs.GetPlayerAltTitle(job)) as anything in choices|null
 
-		var/datum/species/S = all_species[client.prefs.species]
-		if(!(S.spawn_flags & SPECIES_CAN_JOIN))
-			src << alert("Your current species, [client.prefs.species], is not available for play on the city.")
-			return 0
+		// remove existing entry
+		client.prefs.player_alt_titles -= job.title
 
-		AttemptLateSpawn(href_list["SelectedJob"],client.prefs.spawnpoint)
+		if(job.title != new_title)
+			client.prefs.player_alt_titles[job.title] = new_title
+
+		LateChoices()
 		return
+
+	if(href_list["SelectJob"])	//pre- SelectedJob usage for new menu
+		var/E = href_list["SelectJob"]
+
+		var/select_job = "[E]"
+
+		selected_job = select_job
+		LateChoices()
+		return
+
+	if(href_list["SelectDeptType"])	//pre- SelectedJob usage for new menu
+		var/E = href_list["SelectDeptType"]
+		var/new_dept = E
+
+		job_select_mode = new_dept
+		LateChoices()
+		return
+
+	if(href_list["SelectedJob"])
+		JoinLate(href_list["SelectedJob"])
+
 
 	if(href_list["privacy_poll"])
 		establish_db_connection()
@@ -308,6 +401,54 @@
 		handle_server_news()
 		return
 
+	switch(href_list["action"])
+		if("add_vote")
+			. = 1
+
+			var/datum/voting_ballot/VO = locate(href_list["ballot"])
+			var/vote = href_list["vote"]
+
+			if(!VO || !VO.active || (lowertext(usr.ckey) in VO.ckeys_voted))
+				return
+
+			var/response = alert(usr, "Please confirm that you want to vote [vote] on \"[VO.name]\"? This cannot be undone.", "Final Referendum Confirmation", "Yes", "No")
+			if(!response || response == "No")
+				return FALSE
+
+			VO.add_vote(vote, usr)
+			ShowReferendums()
+
+		if("view_full")
+
+			var/O = locate(href_list["option"])
+			var/datum/persistent_option/PO = O
+
+			if(!O)
+				return
+
+			var/dat = PO.get_formatted_value()
+
+			var/datum/browser/popup = new(usr, "option_view", "[PO.name]", 350, 500, src)
+			popup.set_content(jointext(dat,null))
+			popup.open()
+
+			onclose(usr, "option_view")
+
+		if("view_ref_full")
+
+			var/datum/voting_ballot/VO = locate(href_list["ballot"])
+
+			if(!VO)
+				return
+
+			var/dat = VO.get_formatted_proposed_value()
+
+			var/datum/browser/popup = new(usr, "option_ref_view", "[src]", 350, 500, src)
+			popup.set_content(jointext(dat,null))
+			popup.open()
+
+			onclose(usr, "option_ref_view")
+
 /mob/new_player/proc/handle_server_news()
 	if(!client)
 		return
@@ -328,18 +469,23 @@
 		popup.open()
 
 /mob/new_player/proc/IsJobAvailable(rank)
-	var/datum/job/job = job_master.GetJob(rank)
+	var/datum/job/job = SSjobs.GetJob(rank)
 	if(!job)	return 0
+	if(!job.enabled) return 0
 	if(!job.is_position_available()) return 0
 	if(jobban_isbanned(src,rank))	return 0
 	if(!is_hard_whitelisted(src, job)) return 0
 	if(!job.player_old_enough(src.client))	return 0
+	if(job.minimum_character_age && (client.prefs.age < job.minimum_character_age)) return 0
 	if(job.title == "Prisoner" && client.prefs.criminal_status != "Incarcerated")	return 0
 	if(job.title != "Prisoner" && client.prefs.criminal_status == "Incarcerated")	return 0
-
-	if(job.clean_record_required)
-		var/list/criminal_record = client.prefs.crime_record
-		if(!isemptylist(criminal_record)) return 0
+	if(job.clean_record_required && client.prefs.crime_record && !isemptylist(client.prefs.crime_record)) return 0
+	if(!isemptylist(job.exclusive_employees) && !(client.prefs.unique_id in job.exclusive_employees)) return 0
+	if(client.prefs.is_synth() && !job.allows_synths)
+		return 0
+	if(job.business)
+		var/datum/business/biz = get_business_by_biz_uid(job.business)
+		if(biz && biz.suspended) return 0
 
 	return 1
 
@@ -395,7 +541,8 @@
 	return pass
 
 
-/mob/new_player/proc/AttemptLateSpawn(rank,var/spawning_at)
+/mob/new_player/proc/AttemptLateSpawn(rank, var/spawning_at, antag_type)
+
 	if (src != usr)
 		return 0
 	if(!ticker || ticker.current_state != GAME_STATE_PLAYING)
@@ -421,7 +568,7 @@
 
 
 	//Find our spawning point.
-	var/list/join_props = job_master.LateSpawn(client, rank)
+	var/list/join_props = SSjobs.LateSpawn(client, rank)
 	var/turf/T = join_props["turf"]
 	var/join_message = join_props["msg"]
 
@@ -431,10 +578,10 @@
 	spawning = 1
 	close_spawn_windows()
 
-	job_master.AssignRole(src, rank, 1)
+	SSjobs.AssignRole(src, rank, 1)
 
 	var/mob/living/character = create_character(T)	//creates the human and transfers vars and mind
-	character = job_master.EquipRank(character, rank, 1)					//equips the human
+	character = SSjobs.EquipRank(character, rank, 1)					//equips the human
 	UpdateFactionList(character)
 	log_game("JOINED [key_name(character)] as \"[rank]\"")
 
@@ -484,10 +631,19 @@
 		ticker.minds += character.mind//Cyborgs and AIs handle this in the transform proc.	//TODO!!!!! ~Carn
 
 		//Grab some data from the character prefs for use in random news procs.
+		if(!character.mind.prefs.silent_join)
+			AnnounceArrival(character, rank, join_message)
 
-		AnnounceArrival(character, rank, join_message)
 	else
-		AnnounceCyborg(character, rank, join_message)
+		if(!character.mind.prefs.silent_join)
+			AnnounceCyborg(character, rank, join_message)
+
+
+	//assign antag role, if any
+	var/datum/antagonist/antag = all_antag_types[antag_type]
+	if(antag)
+		antag.add_antagonist(character.mind,1,0,1)
+
 
 	qdel(src)
 
@@ -497,36 +653,6 @@
 			rank = character.mind.role_alt_title
 		// can't use their name here, since cyborg namepicking is done post-spawn, so we'll just say "A new Cyborg has arrived"/"A new Android has arrived"/etc.
 		global_announcer.autosay("A new[rank ? " [rank]" : " visitor" ] [join_message ? join_message : "has arrived to the city"].", "Arrivals Announcement Computer")
-
-/mob/new_player/proc/LateChoices()
-	var/name = client.prefs.real_name
-
-	var/dat = "<html><body><center>"
-	dat += "<b>Welcome, [name].<br></b>"
-	dat += "Round Duration: [roundduration2text()]<br>"
-
-	if(emergency_shuttle) //In case NanoTrasen decides reposess CentCom's shuttles.
-		if(emergency_shuttle.going_to_centcom()) //Shuttle is going to CentCom, not recalled
-			dat += "<font color='red'><b>The city has been evacuated.</b></font><br>"
-		if(emergency_shuttle.online())
-			if (emergency_shuttle.evac)	// Emergency shuttle is past the point of no recall
-				dat += "<font color='red'>The city is currently undergoing evacuation procedures.</font><br>"
-			else						// Crew transfer initiated
-				dat += "<font color='red'>The city is currently undergoing civilian transfer procedures.</font><br>"
-
-	dat += "Choose from the following open/valid positions:<br>"
-	for(var/datum/job/job in job_master.occupations)
-		if(job && IsJobAvailable(job.title))
-			if(job.minimum_character_age && (client.prefs.age < job.minimum_character_age))
-				continue
-			var/active = 0
-			// Only players with the job assigned and AFK for less than 10 minutes count as active
-			for(var/mob/M in player_list) if(M.mind && M.client && M.mind.assigned_role == job.title && M.client.inactivity <= 10 * 60 * 10)
-				active++
-			dat += "<a href='byond://?src=\ref[src];SelectedJob=[job.title]'>[job.title] ([job.current_positions]) (Active: [active])</a><br>"
-
-	dat += "</center>"
-	src << browse(dat, "window=latechoices;size=300x640;can_close=1")
 
 
 /mob/new_player/proc/create_character(var/turf/T)
@@ -622,6 +748,7 @@
 
 	src << browse(null, "window=latechoices") //closes late choices window
 	src << browse(null, "window=News") //closes news window
+	src << browse(null, "window=joinasantag") //closes news window
 	//src << browse(null, "window=playersetup") //closes the player setup window
 	panel.close()
 

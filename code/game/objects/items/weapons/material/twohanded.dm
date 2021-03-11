@@ -28,8 +28,9 @@
 	var/unwielded_force_divisor = 0.25
 	drop_sound = 'sound/items/drop/axe.ogg'
 
-	get_tax()
-		return WEAPONS_TAX
+	tax_type = WEAPONS_TAX
+	contraband_type = CONTRABAND_KNIFELARGE
+
 
 /obj/item/weapon/material/twohanded/update_held_icon()
 	var/mob/living/M = loc
@@ -100,12 +101,8 @@
 	applies_material_colour = 0
 	can_cleave = TRUE
 
-
-	get_tax()
-		return WEAPONS_TAX
-
-	is_contraband()
-		return CONTRABAND_KNIFELARGE
+	tax_type = WEAPONS_TAX
+	contraband_type = CONTRABAND_KNIFELARGE
 
 
 /obj/item/weapon/material/twohanded/fireaxe/update_held_icon()
@@ -171,9 +168,6 @@
 	attackspeed = 14
 
 
-	get_tax()
-		return WEAPONS_TAX
-
-	is_contraband()
-		return CONTRABAND_KNIFELARGE
+	tax_type = WEAPONS_TAX
+	contraband_type = CONTRABAND_KNIFELARGE
 

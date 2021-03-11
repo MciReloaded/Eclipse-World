@@ -64,7 +64,9 @@
 		message_admins("Admin [key_name_admin(usr)] is debugging the [antag.role_text] template.")
 
 
-/client/proc/debug_controller(controller in list("Master","Ticker","Ticker Process","Air","Jobs","Sun","Emails","Lots","Radio","Supply","Shuttles","Emergency Shuttle","Configuration","pAI", "Cameras", "Transfer Controller", "Gas Data","Event","Plants","Alarm","Nano","Chemistry","Vote","Xenobio","Planets"))
+/client/proc/debug_controller(controller in list("Master","Ticker","Ticker Process","Air","Jobs","Sun","Economy","Payroll", \
+	"Laws","Emails","Lots","Radio","Supply","Shuttles","Emergency Shuttle","Configuration","pAI", "Cameras", "Transfer Controller", \
+	"Gas Data","Event","Plants","Alarm","Nano","Chemistry","Vote","Xenobio","Planets", "Persistent Options", "Websites", "Businesses", "Bounties"))
 
 	set category = "Debug"
 	set name = "Debug Controller"
@@ -85,7 +87,7 @@
 			debug_variables(air_master)
 			feedback_add_details("admin_verb","DAir")
 		if("Jobs")
-			debug_variables(job_master)
+			debug_variables(SSjobs)
 			feedback_add_details("admin_verb","DJobs")
 		if("Radio")
 			debug_variables(radio_controller)
@@ -127,17 +129,37 @@
 			debug_variables(chemistryProcess)
 			feedback_add_details("admin_verb", "DChem")
 		if("Vote")
-			debug_variables(vote)
+			debug_variables(SSvote)
 			feedback_add_details("admin_verb", "DVote")
 		if("Planets")
 			debug_variables(SSplanets)
 			feedback_add_details("admin_verb", "DPlanets")
+		if("Persistent Options")
+			debug_variables(SSpersistent_options)
+			feedback_add_details("admin_verb", "DPersistent_options")
 		if("Lots")
 			debug_variables(SSlots)
 			feedback_add_details("admin_verb", "DLots")
 		if("Emails")
 			debug_variables(SSemails)
 			feedback_add_details("admin_verb", "DEmails")
+		if("Laws")
+			debug_variables(SSlaw)
+			feedback_add_details("admin_verb", "DLaw")
+		if("Economy")
+			debug_variables(SSeconomy)
+			feedback_add_details("admin_verb", "DEconomy")
+		if("Payroll")
+			debug_variables(SSpayroll)
+			feedback_add_details("admin_verb", "DPayroll")
+		if("Websites")
+			debug_variables(SSwebsites)
+			feedback_add_details("admin_verb", "DWebsites")
+		if("Businesses")
+			debug_variables(SSbusiness)
+			feedback_add_details("admin_verb", "DBusinesses")
+		if("Bounties")
+			debug_variables(SSbounties)
+			feedback_add_details("admin_verb", "DBounties")
 
 	message_admins("Admin [key_name_admin(usr)] is debugging the [controller] controller.")
-	return

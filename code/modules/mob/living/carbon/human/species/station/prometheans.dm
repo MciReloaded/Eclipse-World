@@ -125,7 +125,7 @@ var/datum/species/shapeshifter/promethean/prometheans
 							/obj/item/weapon/storage/toolbox/lunchbox/nymph,
 							/obj/item/weapon/storage/toolbox/lunchbox/syndicate))	//Only pick the empty types
 	var/obj/item/weapon/storage/toolbox/lunchbox/L = new boxtype(get_turf(H))
-	var/mob/living/simple_animal/mouse/mouse = new (L)
+	var/mob/living/simple_mob/animal/passive/mouse/mouse = new (L)
 	var/obj/item/weapon/holder/holder = new (L)
 	holder.held_mob = mouse
 	mouse.forceMove(holder)
@@ -245,3 +245,8 @@ var/datum/species/shapeshifter/promethean/prometheans
 
 	nutrition = nutrition * 0.5 //THERE NEEDS TO BE A PENALTY FOR THIS
 	blobify()
+
+
+/mob/living/carbon/human/proc/blobify()
+	return
+	//TODO - FINISH THIS

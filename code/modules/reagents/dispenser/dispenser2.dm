@@ -17,6 +17,17 @@
 	idle_power_usage = 100
 	anchored = 1
 	density = 1
+	table_drag = TRUE
+
+/obj/machinery/chemical_dispenser/on_persistence_load()
+	for(var/obj/item/weapon/reagent_containers/chem_disp_cartridge/C in contents)
+		add_cartridge(C)
+
+/obj/machinery/chemical_dispenser/get_saveable_contents()
+	var/list/all_carts = list()
+	for(var/obj/item/weapon/reagent_containers/chem_disp_cartridge/C in contents)
+		all_carts += C
+	return all_carts
 
 /obj/machinery/chemical_dispenser/New()
 	..()
@@ -165,8 +176,11 @@
 
 	else if(href_list["ejectBeaker"])
 		if(container)
-			var/obj/item/weapon/reagent_containers/B = container
-			B.loc = loc
+			container.forceMove(get_turf(src))
+
+			if(Adjacent(usr)) // So the AI doesn't get a beaker somehow.
+				usr.put_in_hands(container)
+
 			container = null
 
 	add_fingerprint(usr)

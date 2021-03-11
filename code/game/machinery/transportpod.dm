@@ -1,5 +1,5 @@
 /obj/machinery/transportpod
-	name = "Ballistic Transportation Pod"
+	name = "ballistic transportation pod"
 	desc = "A fast transit ballistic pod used to get from one place to the next. Batteries not included!"
 	icon = 'icons/obj/structures.dmi'
 	icon_state = "borg_pod_opened"
@@ -11,28 +11,21 @@
 	var/in_transit = 0
 	var/mob/occupant = null
 
-	var/xc = list(137, 209, 163, 110, 95, 60, 129, 201) // List of x values on the map to go to.
-	var/yc = list(134, 99, 169, 120, 96, 122, 189, 219) // List of y values on the map to go to.
+	var/id = null	// if an id is set, this will travel to any instance of /obj/effect/landmark/transport_location with the same id. See landmarks.dm
 
-	var/limit_x = 3
-	var/limit_y = 3
+	var/obj/item/weapon/device/linked_remote
 
-/obj/machinery/transportpod/process()
-	if(occupant)
-		if(in_transit)
-			var/locNum = rand(0, 7) //pick a random location
-			var/turf/L = locate(xc[locNum], yc[locNum], 1) // Pairs the X and Y to get an actual location.
-			limit_x = xc[locNum]+1
-			limit_y = yc[locNum]+1
-			build()
-			sleep(20) //Give explosion time so the pod itself doesn't go boom
-			src.forceMove(L)
-			playsound(src, pick('sound/effects/Explosion1.ogg', 'sound/effects/Explosion2.ogg', 'sound/effects/Explosion3.ogg', 'sound/effects/Explosion4.ogg'))
-			in_transit = 0
-			sleep(2)
-			go_out()
-			sleep(2)
-			del(src)
+/obj/machinery/transportpod/New()
+	..()
+	name += " #[rand(000,999)]"
+
+/obj/machinery/transportpod/president
+	name = "government ballistic transportation pod"
+	req_access = list(access_cent_general)
+
+/obj/machinery/transportpod/government
+	name = "government official's ballistic transportation pod"
+	req_access = list(access_cent_general)
 
 /obj/machinery/transportpod/relaymove(mob/user as mob)
 	if(user.stat)
@@ -54,6 +47,9 @@
 	if(occupant)
 		return
 
+	if(!ishuman(O))
+		return
+
 	if(O.incapacitated()) //aint no sleepy people getting in here
 		return
 
@@ -62,11 +58,44 @@
 	O.forceMove(src)
 	occupant = O
 	update_icon()
-	if(alert(O, "Are you sure you're ready to launch?", , "Yes", "No") == "Yes")
+	var/obj/effect/landmark/transport_location/teleport_to
+
+	if(alert(O, "Do you wish to travel to a location?", , "Yes", "No") == "Yes")
+		var/list/all_transports = list()
+		for(var/obj/effect/landmark/transport_location/T in transports_list)
+			all_transports += T.name
+
+		var/destination = input(usr, "Where would you like to go?.", "Transport Pod") as null|anything in all_transports
+		if(!destination)
+			go_out()
+			return
+		for(var/obj/effect/landmark/transport_location/B in transports_list)
+			if(destination == B.name)
+				teleport_to = B
+
+		if(!teleport_to)
+			go_out()
+			return
+
+		if(!allowed(O))
+			to_chat(O, "<b>You lack the access needed to ride this pod!</b>")
+			go_out()
+			return
+
+		var/turf/T = get_turf(teleport_to)
+		if(!T)
+			go_out()
+			return
+
 		in_transit = 1
 		playsound(src, HYPERSPACE_WARMUP)
-	else
-		go_out()
+
+		sleep(45)
+		if(occupant)
+			src.forceMove(T)
+		sleep(10)
+
+	go_out()
 	return 1
 
 /obj/machinery/transportpod/proc/go_out()
@@ -100,11 +129,47 @@
 
 	go_in(usr)
 
-/obj/machinery/transportpod/proc/build()
-	for(var/x = limit_x-2, x <= limit_x, x++)
-		for(var/y = limit_y-2, y <= limit_y, y++)
-			var/current_cell = locate(x, y, 1)
-			var/turf/T = get_turf(current_cell)
-			if(!current_cell)
-				continue
-			T.ChangeTurf(/turf/unsimulated/floor/shuttle_ceiling)
+/obj/item/weapon/device/pod_recaller
+	name = "ballistic transportation pod caller"
+	desc = "A handheld device capable of remotely launching ballistic transportation pods."
+	icon = 'icons/obj/device.dmi'
+	icon_state = "locator"
+	var/obj/machinery/transportpod/linked_pod
+
+/obj/item/weapon/device/pod_recaller/New()
+	for(var/obj/machinery/transportpod/P in world)
+		if(!(istype(P, /obj/machinery/transportpod/president)))
+			if(!P.linked_remote)
+				P.linked_remote = src
+				linked_pod = P
+				return
+
+/obj/item/weapon/device/pod_recaller/examine(mob/user)
+	..(user)
+	if(linked_pod)
+		to_chat(user, "It is linked to [linked_pod].")
+
+/obj/item/weapon/device/pod_recaller/attack_self(mob/user as mob)
+	..()
+	if(linked_pod)
+		if(linked_pod.z != 4)
+			to_chat(user, span("warning", "The linked ballistic transportation pod is already in the area and cannot be recalled!"))
+			playsound(src.loc, 'sound/machines/buzz-sigh.ogg', 50, 1)
+			return 0
+		else
+			var/turf/T = get_turf(user)
+			to_chat(user, span("notice", "Your ballistic transportation pod will arrive in approximately 20 seconds."))
+			spawn(rand(150,250)) //15-20 seconds to arrive
+			playsound(user.loc, 'sound/effects/shuttles/hyperspace_end.ogg', 50, 1)
+			linked_pod.forceMove(T)
+			return 1
+	else
+		to_chat(user, span("warning", "Your [src] does not have a linked transportation pod!"))
+		return 0
+
+/obj/item/weapon/device/pod_recaller/president/New()
+	for(var/obj/machinery/transportpod/president/P in world)
+		if(!P.linked_remote)
+			P.linked_remote = src
+			linked_pod = P
+			return

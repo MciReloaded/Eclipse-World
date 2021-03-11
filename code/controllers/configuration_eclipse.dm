@@ -7,7 +7,7 @@
 //For things that require delaying until the config loads for things (e.g. the
 //Reginald spawn code on Eclipase Station code). Will be set TRUE after load.
 	var/eclipse_config_loaded = FALSE
-	
+
 //job whitelisting.
 //Do note that the "President" job is not considered a job for the purposes of
 //our whitelisting system due to hardcoding elsewhere.

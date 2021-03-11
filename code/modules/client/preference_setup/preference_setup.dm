@@ -1,6 +1,3 @@
-#define PREF_FBP_CYBORG "cyborg"
-#define PREF_FBP_POSI "posi"
-#define PREF_FBP_SOFTWARE "software"
 
 /datum/category_group/player_setup_category/general_preferences
 	name = "General"
@@ -151,9 +148,9 @@
 	for(var/datum/category_item/player_setup_item/PI in items)
 		PI.delete_character(S)
 	for(var/datum/category_item/player_setup_item/PI in items)
-		PI.save_character(S)
-	for(var/datum/category_item/player_setup_item/PI in items)
 		PI.sanitize_character()
+	for(var/datum/category_item/player_setup_item/PI in items)
+		PI.save_character(S)
 
 /datum/category_group/player_setup_category/proc/load_preferences(var/savefile/S)
 	for(var/datum/category_item/player_setup_item/PI in items)
@@ -325,3 +322,7 @@
 		if(PREF_FBP_SOFTWARE)
 			return 150
 	return S.max_age // welp
+
+/datum/category_item/player_setup_item/proc/color_square(red, green, blue, hex)
+	var/color = hex ? hex : "#[num2hex(red, 2)][num2hex(green, 2)][num2hex(blue, 2)]"
+	return "<span style='font-face: fixedsys; font-size: 14px; background-color: [color]; color: [color]'>___</span>"

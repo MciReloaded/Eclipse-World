@@ -122,73 +122,37 @@ var/const/RESIZE_A_SMALLTINY = (RESIZE_SMALL + RESIZE_TINY) / 2
 	return 1
 */
 
+
+#define STEP_TEXT_OWNER(x) "[replacetext(x,"%prey",tmob)]"
+#define STEP_TEXT_PREY(x) "[replacetext(x,"%owner",src)]"
 /**
  * Attempt to scoop up this mob up into H's hands, if the size difference is large enough.
  * @return false if normal code should continue, 1 to prevent normal code.
  */
-/mob/living/proc/attempt_to_scoop(var/mob/living/M, var/ignoresizediff = 0)
+/mob/living/proc/attempt_to_scoop(mob/living/M, mob/living/G) //second one is for the Grabber, only exists for animals to self-grab
+	if(!(M.a_intent == I_HELP))
+		return 0
 	var/size_diff = M.get_effective_size() - get_effective_size()
 	if(!holder_default && holder_type)
 		holder_default = holder_type
 	if(!istype(M))
 		return 0
 	if(isanimal(M))
-		var/mob/living/simple_animal/SA = M
+		var/mob/living/simple_mob/SA = M
 		if(!SA.has_hands)
 			return 0
-	if(M.buckled)
+	if(buckled)
 		to_chat(usr,"<span class='notice'>You have to unbuckle \the [M] before you pick them up.</span>")
 		return 0
-	if(size_diff >= 0.50 || ignoresizediff)
+	if(size_diff >= 0.50 || mob_size < MOB_SMALL)
 		holder_type = /obj/item/weapon/holder/micro
-		var/obj/item/weapon/holder/m_holder = get_scooped(M)
+		var/obj/item/weapon/holder/m_holder = get_scooped(M, G)
 		holder_type = holder_default
 		if (m_holder)
 			return 1
 		else
 			return 0; // Unable to scoop, let other code run
 
-#define STEP_TEXT_OWNER(x) "[replacetext(x,"%prey",tmob)]"
-#define STEP_TEXT_PREY(x) "[replacetext(x,"%owner",src)]"
-/**
- * Handle bumping into someone with helping intent.
- * Called from /mob/living/Bump() in the 'brohugs all around' section.
- * @return false if normal code should continue, true to prevent normal code.
- */
-/mob/living/proc/handle_micro_bump_helping(var/mob/living/tmob)
-
-	//Both small! Go ahead and go.
-	if(src.get_effective_size() <= RESIZE_A_SMALLTINY && tmob.get_effective_size() <= RESIZE_A_SMALLTINY)
-		return TRUE
-
-	//Worthy of doing messages at all
-	if(abs(get_effective_size() - tmob.get_effective_size()) >= 0.50)
-
-		//Smaller person being stepped onto
-		if(get_effective_size() > tmob.get_effective_size() && ishuman(src))
-			var/mob/living/carbon/human/H = src
-			if(H.flying)
-				return TRUE //Silently pass without a message.
-			if(isTaurTail(H.tail_style))
-				var/datum/sprite_accessory/tail/taur/tail = H.tail_style
-				to_chat(src,STEP_TEXT_OWNER(tail.msg_owner_help_run))
-				to_chat(tmob,STEP_TEXT_PREY(tail.msg_prey_help_run))
-			else
-				to_chat(src,"You carefully step over [tmob].")
-				to_chat(tmob,"[src] steps over you carefully!")
-
-		//Smaller person stepping under larger person
-		else if(tmob.get_effective_size() > get_effective_size() && ishuman(tmob))
-			var/mob/living/carbon/human/H = tmob
-			if(isTaurTail(H.tail_style))
-				var/datum/sprite_accessory/tail/taur/tail = H.tail_style
-				to_chat(src,STEP_TEXT_OWNER(tail.msg_prey_stepunder))
-				to_chat(tmob,STEP_TEXT_PREY(tail.msg_owner_stepunder))
-			else
-				to_chat(src,"You run between [tmob]'s legs.")
-				to_chat(tmob,"[src] runs between your legs.")
-		return TRUE
-	return FALSE
 
 /**
  * Handle bumping into someone without mutual help intent.

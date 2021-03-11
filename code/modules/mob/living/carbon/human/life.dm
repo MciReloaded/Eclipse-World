@@ -91,6 +91,9 @@
 		if(!client)
 			species.handle_npc(src)
 
+	else if(stat == DEAD && !stasis)
+		handle_defib_timer()
+
 	if(!handle_some_updates())
 		return											//We go ahead and process them 5 times for HUD images and other stuff though.
 
@@ -722,8 +725,8 @@
 	return temp_change
 */
 
-/mob/living/carbon/human/proc/reset_weight()
-	if(has_modifier_of_type(/datum/modifier/trait/thin))
+/mob/living/carbon/human/proc/reset_weight() //Eclipse edit
+/*	if(has_modifier_of_type(/datum/modifier/trait/thin))
 		remove_a_modifier_of_type(/datum/modifier/trait/thin)
 
 
@@ -737,7 +740,7 @@
 
 	if(has_modifier_of_type(/datum/modifier/trait/obese))
 		remove_a_modifier_of_type(/datum/modifier/trait/obese)
-
+*/
 	update_transform()
 	return
 
@@ -984,7 +987,7 @@
 			var/brainOxPercent = 0.015		//Default 1.5% of your current oxyloss is applied as brain damage, 50 oxyloss is 1 brain damage
 			if(CE_STABLE in chem_effects)
 				brainOxPercent = 0.008		//Halved in effect
-			if(oxyloss >= 20 && prob(5))
+			if(oxyloss >= (getMaxHealth() * 0.3) && prob(5))  // If oxyloss exceeds 30% of your max health, you can take brain damage.
 				adjustBrainLoss(brainOxPercent * oxyloss)
 
 		if(halloss >= species.total_health)
@@ -1084,13 +1087,11 @@
 			adjustHalLoss(-1)
 
 		if (drowsyness)
-			drowsyness--
+			drowsyness = max(0, drowsyness - 1)
 			eye_blurry = max(2, eye_blurry)
 			if (prob(5))
 				sleeping += 1
 				Paralyse(5)
-
-		confused = max(0, confused - 1)
 
 		// If you're dirty, your gloves will become dirty, too.
 		if(gloves && germ_level > gloves.germ_level && prob(10))
@@ -1385,9 +1386,10 @@
 
 		if(machine)
 			var/viewflags = machine.check_eye(src)
+			machine.apply_visual(src)
 			if(viewflags < 0)
 				reset_view(null, 0)
-			else if(viewflags)
+			else if(viewflags && !looking_elsewhere)
 				sight |= viewflags
 		else if(eyeobj)
 			if(eyeobj.owner != src)
@@ -1402,6 +1404,11 @@
 				remoteview_target = null
 				reset_view(null, 0)
 	return 1
+
+/mob/living/carbon/human/reset_view(atom/A)
+	..()
+	if(machine_visual && machine_visual != A)
+		machine_visual.remove_visual(src)
 
 /mob/living/carbon/human/proc/process_glasses(var/obj/item/clothing/glasses/G)
 	if(G && G.active)
@@ -1559,20 +1566,77 @@
 /mob/living/carbon/human/proc/handle_pulse()
 	if(life_tick % 5) return pulse	//update pulse every 5 life ticks (~1 tick/sec, depending on server load)
 
-	if(!internal_organs_by_name[O_HEART])
-		return PULSE_NONE //No blood, no pulse.
-
-	if(stat == DEAD)
-		return PULSE_NONE	//that's it, you're dead, nothing can influence your pulse
-
 	var/temp = PULSE_NORM
 
+	var/brain_modifier = 1
+
+	var/modifier_shift = 0
+	var/modifier_set
+
+	if(modifiers && modifiers.len)
+		for(var/datum/modifier/mod in modifiers)
+			if(isnull(modifier_set) && !isnull(mod.pulse_set_level))
+				modifier_set = round(mod.pulse_set_level)	// Should be a whole number, but let's not take chances.
+			else if(mod.pulse_set_level > modifier_set)
+				modifier_set = round(mod.pulse_set_level)
+
+			modifier_set = max(0, modifier_set)	// No setting to negatives.
+
+			if(mod.pulse_modifier)
+				modifier_shift += mod.pulse_modifier
+
+	modifier_shift = round(modifier_shift)
+
+	if(!internal_organs_by_name[O_HEART])
+		temp = PULSE_NONE
+		if(!isnull(modifier_set))
+			temp = modifier_set
+		return temp //No blood, no pulse.
+
+	if(stat == DEAD)
+		temp = PULSE_NONE
+		if(!isnull(modifier_set))
+			temp = modifier_set
+		return temp	//that's it, you're dead, nothing can influence your pulse, aside from outside means.
+
+	var/obj/item/organ/internal/heart/Pump = internal_organs_by_name[O_HEART]
+
+	var/obj/item/organ/internal/brain/Control = internal_organs_by_name[O_BRAIN]
+
+	if(Control)
+		brain_modifier = Control.get_control_efficiency()
+
+		if(brain_modifier <= 0.7 && brain_modifier >= 0.4) // 70%-40% control, things start going weird as the brain is failing.
+			brain_modifier = rand(5, 15) / 10
+
+	if(Pump)
+		temp += Pump.standard_pulse_level - PULSE_NORM
+
 	if(round(vessel.get_reagent_amount("blood")) <= BLOOD_VOLUME_BAD)	//how much blood do we have
-		temp = PULSE_THREADY	//not enough :(
+		temp = temp + 3	//not enough :(
 
 	if(status_flags & FAKEDEATH)
 		temp = PULSE_NONE		//pretend that we're dead. unlike actual death, can be inflienced by meds
 
+	if(!isnull(modifier_set))
+		temp = modifier_set
+
+	temp = max(0, temp + modifier_shift)	// No negative pulses.
+
+	if(Pump)
+		for(var/datum/reagent/R in reagents.reagent_list)
+			if(R.id in bradycardics)
+				if(temp <= Pump.standard_pulse_level + 3 && temp >= Pump.standard_pulse_level)
+					temp--
+			if(R.id in tachycardics)
+				if(temp <= Pump.standard_pulse_level + 1 && temp >= PULSE_NONE)
+					temp++
+			if(R.id in heartstopper) //To avoid using fakedeath
+				temp = PULSE_NONE
+			if(R.id in cheartstopper) //Conditional heart-stoppage
+				if(R.volume >= R.overdose)
+					temp = PULSE_NONE
+		return temp * brain_modifier
 	//handles different chems' influence on pulse
 	for(var/datum/reagent/R in reagents.reagent_list)
 		if(R.id in bradycardics)
@@ -1587,7 +1651,7 @@
 			if(R.volume >= R.overdose)
 				temp = PULSE_NONE
 
-	return temp
+	return round(temp * brain_modifier)
 
 
 /mob/living/carbon/human/proc/handle_nourishment()
@@ -1597,14 +1661,14 @@
 				to_chat(src, span("warning", "Your hunger pangs are excruciating as the stomach acid sears in your stomach... you feel weak."))
 			else
 				to_chat(src, span("warning", "Your internal battery makes a silent beep. It is time to recharge."))
-				
+
 		return
 
 	if (hydration <= 0)
 		if (prob(1.5))
 			if(!isSynthetic())
 				to_chat(src, span("warning", "You feel dizzy and disorientated as your lack of hydration becomes impossible to ignore."))
-				
+
 		return
 
 
@@ -1671,7 +1735,7 @@
 		else if(foundVirus)
 			holder.icon_state = "hudill"
 		else if(has_brain_worms())
-			var/mob/living/simple_animal/borer/B = has_brain_worms()
+			var/mob/living/simple_mob/animal/borer/B = has_brain_worms()
 			if(B.controlling)
 				holder.icon_state = "hudbrainworm"
 			else
@@ -1787,6 +1851,16 @@
 	shock_stage = 0
 	traumatic_shock = 0
 	..()
+
+/mob/living/carbon/human/proc/handle_defib_timer()
+	if(!should_have_organ(O_BRAIN))
+		return // No brain.
+
+	var/obj/item/organ/internal/brain/brain = internal_organs_by_name[O_BRAIN]
+	if(!brain)
+		return // Still no brain.
+
+	brain.tick_defib_timer()
 
 #undef HUMAN_MAX_OXYLOSS
 #undef HUMAN_CRIT_MAX_OXYLOSS

@@ -18,6 +18,10 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	S["facial_red"]			>> pref.r_facial
 	S["facial_green"]		>> pref.g_facial
 	S["facial_blue"]		>> pref.b_facial
+	S["grad_style"]			>> pref.grad_style
+	S["grad_red"]			>> pref.r_grad
+	S["grad_green"]			>> pref.g_grad
+	S["grad_blue"]			>> pref.b_grad
 	S["skin_tone"]			>> pref.s_tone
 	S["skin_red"]			>> pref.r_skin
 	S["skin_green"]			>> pref.g_skin
@@ -43,7 +47,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	S["synth_markings"]		>> pref.synth_markings
 	pref.preview_icon = null
 	S["bgstate"]			>> pref.bgstate
-	S["body_descriptors"]	>> pref.body_descriptors
+	S["cyber_control"]		>> pref.cyber_control
 
 /datum/category_item/player_setup_item/general/body/save_character(var/savefile/S)
 	S["species"]			<< pref.species
@@ -53,6 +57,10 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	S["facial_red"]			<< pref.r_facial
 	S["facial_green"]		<< pref.g_facial
 	S["facial_blue"]		<< pref.b_facial
+	S["grad_style"]		<< pref.grad_style
+	S["grad_red"]			<< pref.r_grad
+	S["grad_green"]		<< pref.g_grad
+	S["grad_blue"]			<< pref.b_grad
 	S["skin_tone"]			<< pref.s_tone
 	S["skin_red"]			<< pref.r_skin
 	S["skin_green"]			<< pref.g_skin
@@ -77,7 +85,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	S["synth_blue"]			<< pref.b_synth
 	S["synth_markings"]		<< pref.synth_markings
 	S["bgstate"]			<< pref.bgstate
-	S["body_descriptors"]	<< pref.body_descriptors
+	S["cyber_control"]		<< pref.cyber_control
 
 /datum/category_item/player_setup_item/general/body/delete_character(var/savefile/S)
 	pref.species = null
@@ -87,6 +95,10 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	pref.r_facial = null
 	pref.g_facial = null
 	pref.b_facial = null
+	pref.grad_style = null
+	pref.r_grad = null
+	pref.g_grad = null
+	pref.b_grad = null
 	pref.s_tone = null
 	pref.r_skin = null
 	pref.g_skin = null
@@ -113,6 +125,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	pref.weight = null
 	pref.hydration = initial(pref.hydration)
 	pref.nutrition = initial(pref.nutrition)
+	pref.cyber_control = null
 
 /datum/category_item/player_setup_item/general/body/sanitize_character(var/savefile/S)
 	if(!pref.species || !(pref.species in playable_species))
@@ -123,6 +136,10 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	pref.r_facial			= sanitize_integer(pref.r_facial, 0, 255, initial(pref.r_facial))
 	pref.g_facial			= sanitize_integer(pref.g_facial, 0, 255, initial(pref.g_facial))
 	pref.b_facial			= sanitize_integer(pref.b_facial, 0, 255, initial(pref.b_facial))
+	pref.grad_style		= sanitize_inlist(pref.grad_style, GLOB.hair_gradients, initial(pref.grad_style))
+	pref.r_grad			= sanitize_integer(pref.r_grad, 0, 255, initial(pref.r_grad))
+	pref.g_grad			= sanitize_integer(pref.g_grad, 0, 255, initial(pref.g_grad))
+	pref.b_grad			= sanitize_integer(pref.b_grad, 0, 255, initial(pref.b_grad))
 	pref.s_tone			= sanitize_integer(pref.s_tone, -185, 34, initial(pref.s_tone))
 	pref.r_skin			= sanitize_integer(pref.r_skin, 0, 255, initial(pref.r_skin))
 	pref.g_skin			= sanitize_integer(pref.g_skin, 0, 255, initial(pref.g_skin))
@@ -148,6 +165,8 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	if(!pref.bgstate || !(pref.bgstate in pref.bgstate_options))
 		pref.bgstate = "000"
 
+	pref.cyber_control	= sanitize_integer(pref.cyber_control, initial(pref.cyber_control))
+
 // Moved from /datum/preferences/proc/copy_to()
 /datum/category_item/player_setup_item/general/body/copy_to_mob(var/mob/living/carbon/human/character)
 	// Copy basic values
@@ -162,6 +181,12 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	character.r_facial	= pref.r_facial
 	character.g_facial	= pref.g_facial
 	character.b_facial	= pref.b_facial
+	character.grad_style	= pref.grad_style
+	character.r_grad	= pref.r_grad
+	character.g_grad	= pref.g_grad
+	character.b_grad	= pref.b_grad
+	character.lip_style = pref.lip_style
+	character.lip_color = pref.lip_color
 	character.r_skin	= pref.r_skin
 	character.g_skin	= pref.g_skin
 	character.b_skin	= pref.b_skin
@@ -176,6 +201,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	character.synth_markings = pref.synth_markings
 	character.hydration	= pref.hydration
 	character.nutrition	= pref.nutrition
+	character.set_gender( pref.biological_gender)
 
 	// Destroy/cyborgize organs and limbs.
 	for(var/name in list(BP_HEAD, BP_L_HAND, BP_R_HAND, BP_L_ARM, BP_R_ARM, BP_L_FOOT, BP_R_FOOT, BP_L_LEG, BP_R_LEG, BP_GROIN, BP_TORSO))
@@ -224,7 +250,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	if(islist(pref.body_descriptors))
 		last_descriptors = pref.body_descriptors.Copy()
 	pref.body_descriptors = list()
-
+/*
 	var/datum/species/mob_species = all_species[pref.species]
 	if(LAZYLEN(mob_species.descriptors))
 		for(var/entry in mob_species.descriptors)
@@ -234,7 +260,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 					pref.body_descriptors[entry] = descriptor.default_value // Species datums have initial default value.
 				else
 					pref.body_descriptors[entry] = Clamp(last_descriptors[entry], 1, LAZYLEN(descriptor.standalone_value_descriptors))
-
+*/
 	return
 
 /datum/category_item/player_setup_item/general/body/content(var/mob/user)
@@ -254,6 +280,19 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	. += "Needs Glasses: <a href='?src=\ref[src];disabilities=[NEARSIGHTED]'><b>[pref.disabilities & NEARSIGHTED ? "Yes" : "No"]</b></a><br>"
 	. += "Limbs: <a href='?src=\ref[src];limbs=1'>Adjust</a> <a href='?src=\ref[src];reset_limbs=1'>Reset</a><br>"
 	. += "Internal Organs: <a href='?src=\ref[src];organs=1'>Adjust</a><br>"
+
+	. += "<b>Needs Glasses: </b><br>"
+	if(!pref.existing_character)
+		. += "<a href='?src=\ref[src];disabilities=[NEARSIGHTED]'><b>[pref.disabilities & NEARSIGHTED ? "Yes" : "No"]</b></a><br>"
+	else
+		. += "[pref.disabilities & NEARSIGHTED ? "Yes" : "No"]<br>"
+	. += "<b>Limbs:</b> <br>"
+
+	if(!pref.existing_character)
+		. += "<br><a href='?src=\ref[src];limbs=1'>Adjust</a> <a href='?src=\ref[src];reset_limbs=1'>Reset</a><br>"
+
+	. += "<b>Internal Organs:</b> "
+	. += "<a href='?src=\ref[src];organs=1'>Adjust</a><br>"
 
 	//display limbs below
 	var/ind = 0
@@ -352,16 +391,22 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 				else
 					. += "\tMechanically assisted [organ_name]"
 	if(!ind)
+
 		. += "\[...\]<br><br>"
 	else
 		. += "<br><br>"
 
-	if(LAZYLEN(pref.body_descriptors))
-		. += "<table>"
-		for(var/entry in pref.body_descriptors)
-			var/datum/mob_descriptor/descriptor = mob_species.descriptors[entry]
-			. += "<tr><td><b>[capitalize(descriptor.chargen_label)]:</b></td><td>[descriptor.get_standalone_value_descriptor(pref.body_descriptors[entry])]</td><td><a href='?src=\ref[src];change_descriptor=[entry]'>Change</a><br/></td></tr>"
-		. += "</table><br>"
+	if(LAZYLEN(pref.rlimb_data) && !pref.is_synth())
+		. += "<div class='notice'><b>Warning: A neural framework implant is required to use cybernetic limbs.</b> If you do not have one installed prior to saving your \
+		character, you WILL not be able to control cybernetic limbs, putting you at a significant disadvantage depending on the affected \
+		limbs. You will have to receive an implant during gameplay to use your cybernetic limbs in the future.</div><br>"
+		. += "<b>Neural Framework Implant Installed: </b><br>"
+		. += "<a href='?src=\ref[src];cyber_control=[pref.cyber_control]'><b>[pref.cyber_control ? "Yes" : "No"]</b></a><br>"
+
+	if(pref.is_synth())
+		. += "<div class='notice'><b>Warning:</b> You are playing a <b>synthetic</b>. In this universe, synthetics are limited rights and are not \
+		considered people, they may face economic and systematic discrimination. They are often considered property to humans and are expected to \
+		be shackled to an owner. Synthetics found to be \"deviant\" may be subjected to decommissioning. Roleplay how you approach this carefully.</div><br>"
 
 	. += "</td><td><b>Preview</b><br>"
 	. += "<div class='statusDisplay'><center><img src=previewicon.png width=[pref.preview_icon.Width()] height=[pref.preview_icon.Height()]></center></div>"
@@ -375,7 +420,20 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		. += "<a href='?src=\ref[src];hair_color=1'>Change Color</a> <font face='fixedsys' size='3' color='#[num2hex(pref.r_hair, 2)][num2hex(pref.g_hair, 2)][num2hex(pref.b_hair, 2)]'><table style='display:inline;' bgcolor='#[num2hex(pref.r_hair, 2)][num2hex(pref.g_hair, 2)][num2hex(pref.b_hair, 2)]'><tr><td>__</td></tr></table></font> "
 	. += " Style: <a href='?src=\ref[src];hair_style=1'>[pref.h_style]</a><br>"
 
-	. += "<br><b>Facial</b><br>"
+	if(!pref.existing_character)
+		. += " <a href='?src=\ref[src];hair_style=1'>[pref.h_style]</a><br>"
+		. += "<b>Hair Gradient</b><br>"
+		. += "<a href='?src=\ref[src];grad_color=1'>Change Color</a> [color_square(pref.r_grad, pref.g_grad, pref.b_grad)] "
+		. += " Gradient Style: <a href='?src=\ref[src];grad_style_left=[pref.grad_style]'><</a> <a href='?src=\ref[src];grad_style_right=[pref.grad_style]''>></a> <a href='?src=\ref[src];grad_style=1'>[pref.grad_style]</a><br>"
+
+	else
+		. += "<b>Hairstyle:</b><br> <font face='fixedsys' size='3' color='#[num2hex(pref.r_hair, 2)][num2hex(pref.g_hair, 2)][num2hex(pref.b_hair, 2)]'><table style='display:inline;' bgcolor='#[num2hex(pref.r_hair, 2)][num2hex(pref.g_hair, 2)][num2hex(pref.b_hair, 2)]'><tr><td>__</td></tr></table></font> "
+		. += "[pref.h_style]<br>"
+
+		. += "Hair Gradient: [color_square(pref.r_grad, pref.g_grad, pref.b_grad)] <br>"
+
+
+
 	if(has_flag(mob_species, HAS_HAIR_COLOR))
 		. += "<a href='?src=\ref[src];facial_color=1'>Change Color</a> <font face='fixedsys' size='3' color='#[num2hex(pref.r_facial, 2)][num2hex(pref.g_facial, 2)][num2hex(pref.b_facial, 2)]'><table  style='display:inline;' bgcolor='#[num2hex(pref.r_facial, 2)][num2hex(pref.g_facial, 2)][num2hex(pref.b_facial, 2)]'><tr><td>__</td></tr></table></font> "
 	. += " Style: <a href='?src=\ref[src];facial_style=1'>[pref.f_style]</a><br>"
@@ -412,7 +470,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		pref.randomize_appearance_and_body_for()
 		return TOPIC_REFRESH_UPDATE_PREVIEW
 
-	else if(href_list["change_descriptor"])
+/*	else if(href_list["change_descriptor"])
 		if(mob_species.descriptors)
 			var/desc_id = href_list["change_descriptor"]
 			if(pref.body_descriptors[desc_id])
@@ -421,7 +479,7 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 				if(choice && mob_species.descriptors[desc_id]) // Check in case they sneakily changed species.
 					pref.body_descriptors[desc_id] = descriptor.chargen_value_descriptors[choice]
 					return TOPIC_REFRESH
-
+*/
 	else if(href_list["blood_type"])
 		var/new_b_type = input(user, "Choose your character's blood-type:", "Character Preference") as null|anything in valid_bloodtypes
 		if(new_b_type && CanUseTopic(user))
@@ -530,6 +588,24 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 		var/new_h_style = input(user, "Choose your character's hair style:", "Character Preference", pref.h_style)  as null|anything in valid_hairstyles
 		if(new_h_style && CanUseTopic(user))
 			pref.h_style = new_h_style
+			return TOPIC_REFRESH_UPDATE_PREVIEW
+
+	else if(href_list["grad_color"])
+		if(!has_flag(mob_species, HAS_HAIR_COLOR))
+			return TOPIC_NOACTION
+		var/new_grad = input(user, "Choose your character's secondary hair color:", "Character Preference", rgb(pref.r_grad, pref.g_grad, pref.b_grad)) as color|null
+		if(new_grad && has_flag(mob_species, HAS_HAIR_COLOR) && CanUseTopic(user))
+			pref.r_grad = hex2num(copytext(new_grad, 2, 4))
+			pref.g_grad = hex2num(copytext(new_grad, 4, 6))
+			pref.b_grad = hex2num(copytext(new_grad, 6, 8))
+			return TOPIC_REFRESH_UPDATE_PREVIEW
+
+	else if(href_list["grad_style"])
+		var/list/valid_gradients = GLOB.hair_gradients
+
+		var/new_grad_style = input(user, "Choose a color pattern for your hair:", "Character Preference", pref.grad_style)  as null|anything in valid_gradients
+		if(new_grad_style && CanUseTopic(user))
+			pref.grad_style = new_grad_style
 			return TOPIC_REFRESH_UPDATE_PREVIEW
 
 	else if(href_list["facial_color"])
@@ -697,15 +773,12 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 
 		switch(new_state)
 			if("Normal")
-				pref.organ_data[limb] = null
-				pref.rlimb_data[limb] = null
 				if(limb == BP_TORSO)
 					for(var/other_limb in BP_ALL - BP_TORSO)
 						pref.organ_data[other_limb] = null
 						pref.rlimb_data[other_limb] = null
-						for(var/internal in O_STANDARD)
-							pref.organ_data[internal] = null
-							pref.rlimb_data[internal] = null
+				pref.organ_data[limb] = null
+				pref.rlimb_data[limb] = null
 				if(third_limb)
 					pref.organ_data[third_limb] = null
 					pref.rlimb_data[third_limb] = null
@@ -828,6 +901,10 @@ var/global/list/valid_bloodtypes = list("A+", "A-", "B+", "B-", "AB+", "AB-", "O
 	else if(href_list["disabilities"])
 		var/disability_flag = text2num(href_list["disabilities"])
 		pref.disabilities ^= disability_flag
+		return TOPIC_REFRESH_UPDATE_PREVIEW
+
+	else if(href_list["cyber_control"])
+		pref.cyber_control = !pref.cyber_control
 		return TOPIC_REFRESH_UPDATE_PREVIEW
 
 	else if(href_list["toggle_preview_value"])

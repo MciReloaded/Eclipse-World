@@ -19,6 +19,10 @@
 	var/obj/item/weapon/cell/bcell = null
 	var/hitcost = 240
 
+	unique_save_vars = list("status")
+
+	price_tag = 200
+
 /obj/item/weapon/melee/baton/get_cell()
 	return bcell
 
@@ -162,6 +166,10 @@
 	if(isrobot(target))
 		return ..()
 
+	if(user.IsAntiGrief())
+		target.visible_message("<span class='warning'>[user] tries to use [src] but fails!</span>")
+		return
+
 	var/agony = agonyforce
 	var/stun = stunforce
 	var/obj/item/organ/external/affecting = null
@@ -269,9 +277,8 @@
 
 /obj/item/weapon/melee/baton/shocker/apply_hit_effect(mob/living/target, mob/living/user, var/hit_zone)
 	..(target, user, hit_zone)
-	if(istype(target, /mob/living/simple_animal) && status)
-		var/mob/living/simple_animal/SA = target
-		SA.taunt(user)
+	if(status && target.has_AI())
+		target.taunt(user)
 
 // Borg version, for the lost module.
 /obj/item/weapon/melee/baton/shocker/robot

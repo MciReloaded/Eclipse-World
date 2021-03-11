@@ -1,5 +1,5 @@
 // GENERIC PRINTER - DO NOT USE THIS OBJECT.
-// Flesh and robot printers are defined below this object.
+// Flesh printers are defined below this object.
 
 /obj/machinery/organ_printer
 	name = "organ printer"
@@ -49,6 +49,8 @@
 		"Larynx" = list(/obj/item/organ/internal/voicebox, 20),
 		"Head" = list(/obj/item/organ/external/head, 40)
 		)
+		
+	dont_save = TRUE
 
 /obj/machinery/organ_printer/attackby(var/obj/item/O, var/mob/user)
 	if(default_deconstruction_screwdriver(user, O))

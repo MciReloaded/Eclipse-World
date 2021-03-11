@@ -18,6 +18,8 @@
 	w_class = ITEMSIZE_SMALL
 	force = 1
 
+	unique_save_vars = list("dry", "bitecount")
+
 /obj/item/weapon/reagent_containers/food/snacks/New()
 	..()
 	if(nutriment_amt)
@@ -406,7 +408,7 @@
 	nutriment_desc = list("chocolate" = 3, "undying devotion" = 3)
 
 /obj/item/weapon/reagent_containers/food/snacks/chocolateegg
-	name = "Chocolate Egg"
+	name = "chocolate egg"
 	desc = "Such sweet, fattening food."
 	icon_state = "chocolateegg"
 	filling_color = "#7D5F46"
@@ -419,6 +421,33 @@
 	reagents.add_reagent("sugar", 2)
 	reagents.add_reagent("coco", 2)
 	bitesize = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter
+	name = "easter chocolate egg"
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter/blue
+	icon_state = "egg-blue"
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter/green
+	icon_state = "egg-green"
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter/mime
+	icon_state = "egg-mime"
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter/orange
+	icon_state = "egg-orange"
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter/purple
+	icon_state = "egg-purple"
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter/rainbow
+	icon_state = "egg-rainbow"
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter/red
+	icon_state = "egg-red"
+
+/obj/item/weapon/reagent_containers/food/snacks/chocolateegg/easter/yellow
+	icon_state = "egg-yellow"
 
 /obj/item/weapon/reagent_containers/food/snacks/donut
 	name = "donut"
@@ -689,17 +718,34 @@
 	bitesize = 1
 
 /obj/item/weapon/reagent_containers/food/snacks/carpmeat
-	name = "carp fillet"
-	desc = "A fillet of spess carp meat"
+	name = "fillet"
+	desc = "A fillet of carp meat."
 	icon_state = "fishfillet"
 	filling_color = "#FFDEFE"
 	center_of_mass = list("x"=17, "y"=13)
+	var/toxin_type = "carpotoxin"
+	var/toxin_amount = 3
 
 /obj/item/weapon/reagent_containers/food/snacks/carpmeat/New()
 	..()
 	reagents.add_reagent("protein", 3)
-	reagents.add_reagent("carpotoxin", 3)
+	reagents.add_reagent(toxin_type, toxin_amount)
 	src.bitesize = 6
+
+/obj/item/weapon/reagent_containers/food/snacks/carpmeat/sif
+	desc = "A fillet of Polluxian fish meat."
+	filling_color = "#2c2cff"
+	color = "#2c2cff"
+	toxin_type = "neurotoxic_protein"
+	toxin_amount = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/carpmeat/sif/murkfish
+	toxin_type = "murk_protein"
+
+/obj/item/weapon/reagent_containers/food/snacks/carpmeat/fish
+	desc = "A fillet of fish meat."
+	toxin_type = "neurotoxic_protein"
+	toxin_amount = 1
 
 /obj/item/weapon/reagent_containers/food/snacks/fishfingers
 	name = "Fish Fingers"
@@ -902,7 +948,7 @@
 	desc = "The cheese adds a good flavor."
 	icon_state = "cheeseburger"
 	center_of_mass = list("x"=16, "y"=11)
-	nutriment_amt = 2
+	nutriment_amt = 6
 	nutriment_desc = list("cheese" = 2, "bun" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/cheeseburger/New()
@@ -915,7 +961,7 @@
 	icon_state = "hburger"
 	filling_color = "#D63C3C"
 	center_of_mass = list("x"=16, "y"=11)
-	nutriment_amt = 2
+	nutriment_amt = 6
 	nutriment_desc = list("bun" = 2)
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeyburger/New()
@@ -942,7 +988,7 @@
 	icon_state = "tofuburger"
 	filling_color = "#FFFEE0"
 	center_of_mass = list("x"=16, "y"=10)
-	nutriment_amt = 2
+	nutriment_amt = 4
 	nutriment_desc = list("bun" = 2, "pseudo-soy meat" = 3)
 
 /obj/item/weapon/reagent_containers/food/snacks/tofuburger/New()
@@ -1067,7 +1113,7 @@
 	icon_state = "berryclafoutis"
 	trash = /obj/item/trash/plate
 	center_of_mass = list("x"=16, "y"=13)
-	nutriment_amt = 4
+	nutriment_amt = 5
 	nutriment_desc = list("sweetness" = 2, "pie" = 3)
 
 /obj/item/weapon/reagent_containers/food/snacks/berryclafoutis/New()
@@ -1526,6 +1572,10 @@
 	reagents.add_reagent("carbon", 3)
 	bitesize = 2
 
+/obj/item/weapon/reagent_containers/food/snacks/badrecipe/rot
+	name = "rotten goop"
+	desc = "This was food once. Not good for much else now."
+
 /obj/item/weapon/reagent_containers/food/snacks/meatsteak
 	name = "Meat steak"
 	desc = "A piece of hot spicy meat."
@@ -1785,7 +1835,7 @@
 	center_of_mass = list("x"=16, "y"=14)
 
 	var/wrapped = 0
-	var/monkey_type = "Monkey"
+	var/spawn_type = /mob/living/carbon/human/monkey
 
 	price_tag = 2
 
@@ -1799,10 +1849,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/proc/Expand()
 	src.visible_message("<span class='notice'>\The [src] expands!</span>")
-	var/mob/living/carbon/human/H = new(get_turf(src))
-	H.set_species(monkey_type)
-	H.real_name = H.species.get_random_name()
-	H.name = H.real_name
+	new spawn_type(get_turf(src))
 	if(ismob(loc))
 		var/mob/M = loc
 		M.unEquip(src)
@@ -1837,27 +1884,35 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/farwacube
 	name = "farwa cube"
-	monkey_type = "Farwa"
+	spawn_type = /mob/living/carbon/human/farwa
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/wrapped/farwacube
 	name = "farwa cube"
-	monkey_type = "Farwa"
+	spawn_type = /mob/living/carbon/human/farwa
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/stokcube
 	name = "stok cube"
-	monkey_type = "Stok"
+	spawn_type = /mob/living/carbon/human/stok
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/wrapped/stokcube
 	name = "stok cube"
-	monkey_type = "Stok"
+	spawn_type = /mob/living/carbon/human/stok
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/neaeracube
 	name = "neaera cube"
-	monkey_type = "Neaera"
+	spawn_type = /mob/living/carbon/human/neaera
 
 /obj/item/weapon/reagent_containers/food/snacks/monkeycube/wrapped/neaeracube
 	name = "neaera cube"
-	monkey_type = "Neaera"
+	spawn_type = /mob/living/carbon/human/neaera
+
+/obj/item/weapon/reagent_containers/food/snacks/monkeycube/vatborncube
+	name = "vatborn cube"
+	spawn_type = /mob/living/carbon/human/mpl_vatborn
+
+/obj/item/weapon/reagent_containers/food/snacks/monkeycube/wrapped/vatborncube
+	name = "vatborn cube"
+	spawn_type = /mob/living/carbon/human/mpl_vatborn
 
 /obj/item/weapon/reagent_containers/food/snacks/spellburger
 	name = "Spell Burger"
@@ -2837,7 +2892,7 @@
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel
 	name = "Cheese wheel"
-	desc = "A big wheel of delcious Cheddar."
+	desc = "A big wheel of delicious Cheddar."
 	icon_state = "cheesewheel"
 	slice_path = /obj/item/weapon/reagent_containers/food/snacks/cheesewedge
 	slices_num = 5
@@ -2851,6 +2906,18 @@
 	reagents.add_reagent("protein", 10)
 	bitesize = 2
 
+/obj/item/weapon/reagent_containers/food/snacks/sliceable/cheesewheel/pule
+	name = "Pule cheese wheel"
+	desc = "A big wheel of expensive off-white pule cheese imported from Cascington. The hard rind is branded with a seal of authenticity."
+	icon_state = "pulecheesewheel"
+	slice_path = /obj/item/weapon/reagent_containers/food/snacks/cheesewedge/pule
+	slices_num = 5
+	filling_color = "#F0F0F0"
+	center_of_mass = list("x"=16, "y"=10)
+	nutriment_desc = list("aged cheese" = 10)
+	nutriment_amt = 10
+	price_tag = 30
+
 /obj/item/weapon/reagent_containers/food/snacks/cheesewedge
 	name = "Cheese wedge"
 	desc = "A wedge of delicious Cheddar. The cheese wheel it was cut from can't have gone far."
@@ -2858,6 +2925,15 @@
 	filling_color = "#FFF700"
 	bitesize = 2
 	center_of_mass = list("x"=16, "y"=10)
+
+/obj/item/weapon/reagent_containers/food/snacks/cheesewedge/pule
+	name = "Pule cheese wedge"
+	desc = "A wedge of expensive off-white pule cheese. The cheese wheel it was cut from can't have gone far."
+	icon_state = "pulecheesewedge"
+	filling_color = "#F0F0F0"
+	bitesize = 2
+	center_of_mass = list("x"=16, "y"=10)
+	price_tag = 4
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/birthdaycake
 	name = "Birthday Cake"
@@ -3013,11 +3089,30 @@
 	nutriment_desc = list("salt" = 1, "cracker" = 2)
 	nutriment_amt = 1
 
+/obj/item/weapon/reagent_containers/food/snacks/cracker/multigrain
+	name = "Multigrain Cracker"
+	desc = "A delicious and healthy multigrain cracker."
+	icon_state = "graincracker"
+	filling_color = "#F5DEB8"
+	center_of_mass = list("x"=16, "y"=6)
+	nutriment_desc = list("grains" = 1, "cracker" = 2, "salt" = 1)
+	nutriment_amt = 1
+
 /obj/item/weapon/reagent_containers/food/snacks/caviar
 	name = "Caviar"
-	desc = "It's caviar, how classy!."
-	icon = 'icons/obj/fish_items.dmi'
+	desc = "It's caviar, how classy!"
+	icon = 'icons/obj/food.dmi'
 	icon_state = "caviar"
+	filling_color = "#F5DEB8"
+	center_of_mass = list("x"=16, "y"=6)
+	nutriment_desc = list("salt" = 1, "fish" = 1)
+	nutriment_amt = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/caviar/red
+	name = "Salmon Roe"
+	desc = "Delicious salmon eggs, also known as red caviar."
+	icon = 'icons/obj/food.dmi'
+	icon_state = "salmonroe"
 	filling_color = "#F5DEB8"
 	center_of_mass = list("x"=16, "y"=6)
 	nutriment_desc = list("salt" = 1, "fish" = 1)
@@ -3183,6 +3278,16 @@
 	var/list/boxes = list() // If the boxes are stacked, they come here
 	var/boxtag = ""
 	drop_sound = 'sound/items/drop/box.ogg'
+
+/obj/item/pizzabox/on_persistence_load()
+	var/pizza_inside = locate(/obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza) in contents
+
+	if(!pizza_inside)
+		if(pizza)
+			qdel(pizza)
+			pizza = null
+	else
+		pizza = pizza_inside
 
 /obj/item/pizzabox/update_icon()
 
@@ -3633,21 +3738,21 @@
 /obj/item/weapon/reagent_containers/food/snacks/skrellsnacks/New()
 	..()
 	bitesize = 6
-
+*/
 /obj/item/weapon/reagent_containers/food/snacks/unajerky
-	name = "Moghes Imported Sissalik Jerky"
+	name = "Sol Imported Lizard Jerky"
 	icon_state = "unathitinred"
-	desc = "An incredibly well made jerky, shipped in all the way from Moghes."
+	desc = "An incredibly well made jerky, shipped in all the way from Sol."
 	trash = /obj/item/trash/unajerky
 	filling_color = "#631212"
 	center_of_mass = list("x"=15, "y"=9)
 
 /obj/item/weapon/reagent_containers/food/snacks/unajerky/New()
-		..()
-		reagents.add_reagent("protein", 8)
-		reagents.add_reagent("capsaicin", 2)
-		bitesize = 2
-*/
+	..()
+	reagents.add_reagent("protein", 8)
+	reagents.add_reagent("capsaicin", 2)
+	bitesize = 2
+
 /obj/item/weapon/reagent_containers/food/snacks/croissant
 	name = "croissant"
 	desc = "True French cuisine."

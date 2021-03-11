@@ -6,9 +6,9 @@
 	burn_state = 0 //Burnable
 	burntime = 8
 	var/list/accessories = list()
-	var/list/valid_accessory_slots
-	var/list/restricted_accessory_slots
-	var/list/starting_accessories
+	var/list/valid_accessory_slots = list()
+	var/list/restricted_accessory_slots = list()
+	var/list/starting_accessories = list()
 
 	var/flash_protection = FLASH_PROTECTION_NONE
 	var/tint = TINT_NONE
@@ -25,13 +25,17 @@
 	var/ear_protection = 0
 	var/blood_sprite_state
 	drop_sound = 'sound/items/drop/clothing.ogg'
-	
+
 	var/index			//null by default, if set, will change which dmi it uses
 	var/update_icon_define = null	// Only needed if you've got multiple files for the same type of clothing
 
-/obj/item/clothing/New()
-	..()
-	set_clothing_index()
+	matter = list("cotton" = 3250)
+
+	price_tag = 30
+
+	unique_save_vars = list("matter") // clothing matter can vary now
+
+	tax_type = CLOTHING_TAX
 
 //Updates the icons of the mob wearing the clothing item, if any.
 /obj/item/clothing/proc/update_clothing_icon()
@@ -44,6 +48,7 @@
 
 /obj/item/clothing/New()
 	..()
+	set_clothing_index()
 	if(starting_accessories)
 		for(var/T in starting_accessories)
 			var/obj/item/clothing/accessory/tie = new T(src)
@@ -163,7 +168,7 @@
 	else
 		O = src
 
-	user.u_equip(src)
+	user.unEquip(src)
 
 	if (O)
 		user.put_in_hands(O)
@@ -177,6 +182,23 @@
 		var/mob/M = src.loc
 		M.update_inv_ears()
 
+/obj/item/clothing/ears/MouseDrop(var/obj/over_object)
+	if(ishuman(usr))
+		var/mob/living/carbon/human/H = usr
+		// If this covers both ears, we want to return the result of unequipping the primary object, and kill the off-ear one
+		if(slot_flags & SLOT_TWOEARS)
+			var/obj/item/clothing/ears/O = (H.l_ear == src ? H.r_ear : H.l_ear)
+			if(istype(src, /obj/item/clothing/ears/offear))
+				. = O.MouseDrop(over_object)
+				H.drop_from_inventory(src)
+				qdel(src)
+			else
+				. = ..()
+				H.drop_from_inventory(O)
+				qdel(O)
+		else
+			. = ..()
+
 /obj/item/clothing/ears/offear
 	name = "Other ear"
 	w_class = ITEMSIZE_HUGE
@@ -184,12 +206,12 @@
 	icon_state = "block"
 	slot_flags = SLOT_EARS | SLOT_TWOEARS
 
-	New(var/obj/O)
-		name = O.name
-		desc = O.desc
-		icon = O.icon
-		icon_state = O.icon_state
-		set_dir(O.dir)
+/obj/item/clothing/ears/offear/New(var/obj/O)
+	name = O.name
+	desc = O.desc
+	icon = O.icon
+	icon_state = O.icon_state
+	set_dir(O.dir)
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //Gloves
@@ -420,7 +442,8 @@
 		cut_overlay(helmet_light)
 		helmet_light = null
 
-	user.update_inv_head() //Will redraw the helmet with the light on the mob
+	if(user)
+		user.update_inv_head() //Will redraw the helmet with the light on the mob
 
 /obj/item/clothing/head/update_clothing_icon()
 	if (ismob(src.loc))
@@ -482,6 +505,7 @@
 
 	var/water_speed = 0		//Speed boost/decrease in water, lower/negative values mean more speed
 	var/snow_speed = 0		//Speed boost/decrease on snow, lower/negative values mean more speed
+	var/rock_climbing = FALSE // If true, allows climbing cliffs with clickdrag.
 
 	var/step_volume_mod = 1	//How quiet or loud footsteps in this shoe are
 
@@ -594,8 +618,8 @@
 		SPECIES_VOX = 'icons/mob/species/vox/suit.dmi'
 		)
 
-	valid_accessory_slots = list("over", "armband")
-	restricted_accessory_slots = list("armband")
+	valid_accessory_slots = list(ACCESSORY_SLOT_OVER, ACCESSORY_SLOT_ARMBAND)
+	restricted_accessory_slots = list(ACCESSORY_SLOT_ARMBAND)
 
 /obj/item/clothing/suit/set_clothing_index()
 	..()
@@ -653,8 +677,8 @@
 	//convenience var for defining the icon state for the overlay used when the clothing is worn.
 	//Also used by rolling/unrolling.
 	var/worn_state = null
-	valid_accessory_slots = list("utility","armband","decor","over")
-	restricted_accessory_slots = list("utility", "armband")
+	valid_accessory_slots = list(ACCESSORY_SLOT_UTILITY, ACCESSORY_SLOT_ARMBAND, ACCESSORY_SLOT_DECOR, ACCESSORY_SLOT_OVER, ACCESSORY_SLOT_HOLSTER, ACCESSORY_SLOT_INSIGNIA)
+	restricted_accessory_slots = list(ACCESSORY_SLOT_UTILITY, ACCESSORY_SLOT_ARMBAND, ACCESSORY_SLOT_HOLSTER)
 
 	var/icon/rolled_down_icon = 'icons/mob/uniform_rolled_down.dmi'
 	var/icon/rolled_down_sleeves_icon = 'icons/mob/uniform_sleeves_rolled.dmi'
@@ -768,7 +792,7 @@
 
 /obj/item/clothing/under/examine(mob/user)
 	..(user)
-	switch(src.sensor_mode)
+	switch(sensor_mode)
 		if(0)
 			user << "Its sensors appear to be disabled."
 		if(1)

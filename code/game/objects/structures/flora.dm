@@ -13,6 +13,7 @@
 	icon = 'icons/obj/flora/snowflora.dmi'
 	icon_state = "snowbush1"
 	anchored = 1
+	plane = MOB_PLANE
 
 /obj/structure/flora/bush/New()
 	..()
@@ -32,6 +33,13 @@
 	icon = 'icons/obj/flora/ausflora.dmi'
 	icon_state = "firstbush_1"
 	anchored = 1
+	plane = MOB_PLANE
+
+/obj/structure/flora/ausbushes/attackby(obj/item/I as obj, mob/user as mob)
+	..()
+	if(is_sharp(I))
+		to_chat(user, "You slash away [src] with [I].")
+		qdel(src)
 
 /obj/structure/flora/ausbushes/New()
 	..()
@@ -156,14 +164,17 @@
 	icon = 'icons/obj/plants.dmi'
 	icon_state = "plant-01"
 
-	plane = OBJ_PLANE
+	plane = ABOVE_MOB_PLANE
 
 	var/obj/item/stored_item
+	table_drag = TRUE
 
 /obj/structure/flora/pottedplant/on_persistence_load()
+	if(isemptylist(contents))
+		return TRUE
+
 	if(contents[1])
 		stored_item = contents[1]
-	..()
 
 /obj/structure/flora/pottedplant/examine(mob/user)
 	..()
@@ -189,7 +200,7 @@
 		to_chat(user, "<span class='notice'>You refrain from putting things into the plant pot.</span>")
 		return
 
-	..()
+
 
 /obj/structure/flora/pottedplant/attack_hand(mob/user)
 	if(!stored_item)
@@ -332,6 +343,46 @@
 	desc = "This is the dried up remains of a dead plant. Someone should replace it."
 	icon_state = "plant-25"
 
+/obj/structure/flora/pottedplant/blueflower
+	name = "blue flower plant"
+	icon_state = "plant-26"
+
+/obj/structure/flora/pottedplant/redflower
+	name = "red flower plant"
+	icon_state = "plant-27"
+
+/obj/structure/flora/pottedplant/bigleafy
+	name = "big leafy plant"
+	icon_state = "plant-28"
+
+/obj/structure/flora/pottedplant/fernyplant
+	name = "ferny plant"
+	icon_state = "plant-29"
+
+/obj/structure/flora/pottedplant/winepalm
+	name = "wine palm plant"
+	icon_state = "plant-30"
+
+/obj/structure/flora/pottedplant/lily
+	name = "lily plant"
+	icon_state = "plant-31"
+
+/obj/structure/flora/pottedplant/greensakura
+	name = "green sakura plant"
+	icon_state = "plant-32"
+
+/obj/structure/flora/pottedplant/brownsakura
+	name = "brown sakura plant"
+	icon_state = "plant-33"
+
+/obj/structure/flora/pottedplant/pinksakura
+	name = "pink sakura plant"
+	icon_state = "plant-34"
+
+/obj/structure/flora/pottedplant/purple
+	name = "purple plant"
+	icon_state = "plant-35"
+
 /obj/structure/flora/pottedplant/decorative
 	name = "decorative potted plant"
 	desc = "This is a decorative shrub. It's been trimmed into the shape of an apple."
@@ -342,9 +393,19 @@
 	desc = "This is a tiny well lit decorative christmas tree."
 	icon_state = "plant-xmas"
 	density = 1
-	anchored = 1
+	anchored = 0
 	light_range = 2
 	light_power = 1
+
+/obj/structure/flora/pottedplant/xmas/large
+	name = "large christmas tree"
+	icon = 'icons/obj/flora/pinetrees.dmi'
+	icon_state = "pine_c"
+
+/obj/structure/flora/pottedplant/mistletoe
+	name = "mistletoe"
+	desc = "Now, this REALLY brings the room together."
+	icon_state = "mistletoe"
 
 /obj/structure/flora/sif
 	icon = 'icons/obj/flora/sifflora.dmi'

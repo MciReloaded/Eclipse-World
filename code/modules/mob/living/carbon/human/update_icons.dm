@@ -92,7 +92,7 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 #define TAIL_LAYER_ALT			30		//VOREStation edit. Simply move this up a number if things are added.
 #define MODIFIER_EFFECTS_LAYER	31		//Effects drawn by modifiers
 #define FIRE_LAYER				32		//'Mob on fire' overlay layer
-#define WATER_LAYER				33		//'Mob submerged' overlay layer
+#define SUBMERGE_LAYER				33		//'Mob submerged' overlay layer
 #define TARGETED_LAYER			34		//'Aimed at' overlay layer
 #define TOTAL_LAYERS			34//<---- KEEP THIS UPDATED, should always equal the highest number here, used to initialize a list.
 //////////////////////////////////
@@ -129,8 +129,10 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 	var/desired_scale = icon_scale
 	desired_scale *= species.icon_scale
 	for(var/datum/modifier/M in modifiers)
-		if(!isnull(M.icon_scale_percent))
-			desired_scale *= M.icon_scale_percent
+		if(!isnull(M.icon_scale_x_percent))
+			desired_scale_x *= M.icon_scale_x_percent
+		if(!isnull(M.icon_scale_y_percent))
+			desired_scale_y *= M.icon_scale_y_percent
 	*/
 	var/desired_scale = size_multiplier
 	//VOREStation Edit End
@@ -239,10 +241,7 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 	//Create a new, blank icon for our mob to use.
 	var/icon/stand_icon = new(species.icon_template ? species.icon_template : 'icons/mob/human.dmi', icon_state = "blank")
 
-	var/g = "male"
-	if(gender == FEMALE)
-		g = "female"
-
+	var/g = (gender == MALE ? "male" : "female")
 	var/icon_key = "[species.get_race_key(src)][g][s_tone][r_skin][g_skin][b_skin]"
 	if(lip_style)
 		icon_key += "[lip_style]"
@@ -424,24 +423,32 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 
 	//base icons
 	var/icon/face_standing = icon(icon = 'icons/mob/human_face.dmi', icon_state = "bald_s")
-
 	if(f_style)
 		var/datum/sprite_accessory/facial_hair_style = facial_hair_styles_list[f_style]
 		if(facial_hair_style && facial_hair_style.species_allowed && (src.species.get_bodytype(src) in facial_hair_style.species_allowed))
 			var/icon/facial_s = new/icon("icon" = facial_hair_style.icon, "icon_state" = "[facial_hair_style.icon_state]_s")
 			if(facial_hair_style.do_colouration)
 				facial_s.Blend(rgb(r_facial, g_facial, b_facial), ICON_MULTIPLY) //Eclipse edit
-
 			face_standing.Blend(facial_s, ICON_OVERLAY)
-
-	if(h_style && !(head && (head.flags_inv & BLOCKHEADHAIR)))
+	if(h_style)
 		var/datum/sprite_accessory/hair/hair_style = hair_styles_list[h_style]
+		if(head && (head.flags_inv & BLOCKHEADHAIR))
+			if(!(hair_style.flags & HAIR_VERY_SHORT))
+				hair_style = hair_styles_list["Short Hair"]
+
 		if(hair_style && (src.species.get_bodytype(src) in hair_style.species_allowed))
+			var/icon/grad_s = null
 			var/icon/hair_s = new/icon("icon" = hair_style.icon, "icon_state" = "[hair_style.icon_state]_s")
 			var/icon/hair_s_add = new/icon("icon" = hair_style.icon_add, "icon_state" = "[hair_style.icon_state]_s")
 			if(hair_style.do_colouration)
+				if(grad_style)
+					grad_s = new/icon("icon" = 'icons/mob/hair_gradients.dmi', "icon_state" = GLOB.hair_gradients[grad_style])
+					grad_s.Blend(hair_s, ICON_AND)
+					grad_s.Blend(rgb(r_grad, g_grad, b_grad), ICON_MULTIPLY)
 				hair_s.Blend(rgb(r_hair, g_hair, b_hair), ICON_MULTIPLY)
 				hair_s.Blend(hair_s_add, ICON_ADD)
+				if(!isnull(grad_s))
+					hair_s.Blend(grad_s, ICON_OVERLAY)
 
 			face_standing.Blend(hair_s, ICON_OVERLAY)
 
@@ -520,9 +527,8 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 			if(underlay)
 				standing.underlays += underlay
 
-	for(var/mut in mutations)
-		if(LASER)
-			standing.overlays += "lasereyes_s" //TODO
+	if(LASER in mutations)
+		standing.overlays += "lasereyes_s" //TODO
 
 	overlays_standing[MUTATIONS_LAYER]	= standing
 	apply_layer(MUTATIONS_LAYER)
@@ -1009,15 +1015,15 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 	if(QDESTROYING(src))
 		return
 
-	remove_layer(WATER_LAYER)
+	remove_layer(SUBMERGE_LAYER)
 
 	var/depth = check_submerged()
 	if(!depth || lying)
 		return
 
-	overlays_standing[WATER_LAYER] = image(icon = 'icons/mob/submerged.dmi', icon_state = "human_swimming_[depth]", layer = BODY_LAYER+WATER_LAYER) //TODO: Improve
+	overlays_standing[SUBMERGE_LAYER] = image(icon = 'icons/mob/submerged.dmi', icon_state = "human_swimming_[depth]", layer = BODY_LAYER+SUBMERGE_LAYER) //TODO: Improve
 
-	apply_layer(WATER_LAYER)
+	apply_layer(SUBMERGE_LAYER)
 
 /mob/living/carbon/human/proc/update_surgery()
 	if(QDESTROYING(src))
@@ -1130,6 +1136,6 @@ var/global/list/damage_icon_parts = list() //see UpdateDamageIcon()
 #undef R_HAND_LAYER
 #undef MODIFIER_EFFECTS_LAYER
 #undef FIRE_LAYER
-#undef WATER_LAYER
+#undef SUBMERGE_LAYER
 #undef TARGETED_LAYER
 #undef TOTAL_LAYERS

@@ -17,6 +17,8 @@
 	var/clickedx = 0
 	var/clickedy = 0
 
+	var/has_base = TRUE
+
 	// For racks.
 	var/can_reinforce = 1
 	var/can_plate = 1
@@ -32,6 +34,38 @@
 	connections = list("nw0", "ne0", "sw0", "se0")
 
 	var/item_place = 1 //allows items to be placed on the table, but not on benches.
+
+	unique_save_vars = list("health", "carpeted")
+
+
+/obj/structure/table/vars_to_save()
+	 return list("x","y","z","density","anchored","dir","name","pixel_x","pixel_y","suit_fibers","tagged_price", "fingerprintslast")+unique_save_vars
+
+/obj/structure/table/get_persistent_metadata()
+	if(!material)
+		return FALSE
+
+	var/list/table_data = list()
+	table_data["material"] = material.name
+	if(reinforced)
+		table_data["reinforced"] = reinforced.name
+
+	return table_data
+
+/obj/structure/table/load_persistent_metadata(metadata)
+	var/list/table_data = metadata
+	if(!islist(table_data))
+		return
+	if(get_material_by_name(table_data["material"]))
+		material = get_material_by_name(table_data["material"])
+	if(get_material_by_name(table_data["reinforced"]))
+		reinforced = get_material_by_name(table_data["reinforced"])
+
+	update_icon()
+	update_desc()
+	update_material()
+
+	return TRUE
 
 
 /obj/structure/table/proc/update_material()
@@ -231,10 +265,11 @@
 				W.plane = ABOVE_MOB_PLANE
 
 	return
-
+	/*
 	if(W && W.loc)
 		W.loc = src.loc
 		return 1
+	*/
 
 /obj/structure/table/attack_hand(mob/user as mob)
 	if(istype(user, /mob/living/carbon/human))
@@ -270,6 +305,12 @@
 		return ..()
 
 /obj/structure/table/MouseDrop_T(obj/O as obj, mob/user as mob)
+	if(istype(O, /obj))
+		if(O.table_drag && !O.anchored)	// you can place potted plants on tables by click dragging them.
+			O.forceMove(get_turf(src))
+			O.pixel_y = O.table_shift
+			return
+
 	if ((!( istype(O, /obj/item/weapon) ) ||  user.get_active_hand() != O))
 		return ..()
 	if(isrobot(usr))
@@ -359,7 +400,7 @@
 /obj/structure/table/proc/remove_material(obj/item/weapon/W, mob/user)
 	material = common_material_remove(user, material, 20 * W.toolspeed, "plating", "bolts", W.usesound)
 
-/obj/structure/table/proc/dismantle(obj/item/W, mob/user)
+/obj/structure/table/dismantle(obj/item/W, mob/user)
 	if(manipulating) return
 	manipulating = 1
 	user.visible_message("<span class='notice'>\The [user] begins dismantling \the [src].</span>",
@@ -415,10 +456,11 @@
 
 		var/image/I
 
-		// Base frame shape. Mostly done for glass/diamond tables, where this is visible.
-		for(var/i = 1 to 4)
-			I = image(icon, dir = 1<<(i-1), icon_state = connections[i])
-			overlays += I
+		if(has_base)
+			// Base frame shape. Mostly done for glass/diamond tables, where this is visible.
+			for(var/i = 1 to 4)
+				I = image(icon, dir = 1<<(i-1), icon_state = connections[i])
+				overlays += I
 
 		// Standard table image
 		if(material)

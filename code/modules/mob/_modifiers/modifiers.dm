@@ -43,10 +43,11 @@
 	var/accuracy_dispersion				// Positive numbers make gun firing cover a wider tile range, and therefore more inaccurate.  Negatives help negate dispersion penalties.
 	var/metabolism_percent				// Adjusts the mob's metabolic rate, which affects reagent processing.  Won't affect mobs without reagent processing.
 	var/icon_scale_percent				// Makes the holder's icon get scaled up or down.
-	var/icon_width_percent				// Makes the holder's icon get scaled up or down.
 	var/attack_speed_percent			// Makes the holder's 'attack speed' (click delay) shorter or longer.
 	var/pain_immunity					// Makes the holder not care about pain while this is on. Only really useful to human mobs.
 	var/thirst_modifier					// Gives the holder alternative thirst modifier
+	var/pulse_modifier					// Modifier for pulse, will be rounded on application, then added to the normal 'pulse' multiplier which ranges between 0 and 5 normally. Only applied if they're living.
+	var/pulse_set_level					// Positive number. If this is non-null, it will hard-set the pulse level to this. Pulse ranges from 0 to 5 normally.
 
 /datum/modifier/New(var/new_holder, var/new_origin)
 	holder = new_holder

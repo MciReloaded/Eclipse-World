@@ -23,7 +23,7 @@
 	var/open_sound = 'sound/machines/airlock_heavy.ogg'
 	var/close_sound = 'sound/machines/AirlockClose_heavy.ogg'
 
-	closed_layer = 3.3 // Above airlocks when closed
+	closed_layer = ON_WINDOW_LAYER // Above airlocks when closed
 	var/id = 1.0
 	dir = 1
 	explosion_resistance = 25
@@ -33,6 +33,12 @@
 	block_air_zones = 0
 
 	var/begins_closed = TRUE
+
+
+	unique_save_vars = list("id", "density")
+
+/obj/machinery/door/blast/on_persistence_load()
+	update_icon()
 
 /obj/machinery/door/blast/initialize()
 	..()

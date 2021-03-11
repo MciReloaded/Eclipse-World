@@ -4,7 +4,7 @@
 		return
 	weight = calories_to_weight(calories)
 	var/body_weight = get_weight(calories, species)
-
+/* Eclipse edit - thin and fat sprites are ugly as hell
 	// MIN TO THINNER
 	if (body_weight == "very underweight")
 		if(!has_modifier_of_type(/datum/modifier/trait/thinner))
@@ -40,7 +40,8 @@
 			reset_weight()
 			add_modifier(/datum/modifier/trait/obese, null, src)
 			return
-
+*/
+	return body_weight
 
 /proc/calories_to_weight(var/calories)
 	var/pounds

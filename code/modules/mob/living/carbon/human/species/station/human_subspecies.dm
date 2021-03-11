@@ -36,7 +36,7 @@
 
 /datum/species/human/vatgrown
 	name = SPECIES_HUMAN_VATBORN
-	name_plural = "Vatborn"
+	name_plural = "Baseline Vatborn"
 	blurb = "With cloning on the forefront of human scientific advancement, cheap mass production \
 	of bodies is a very real and rather ethically grey industry. Vat-grown or Vatborn humans tend to be \
 	paler than baseline, with no appendix and fewer inherited genetic disabilities, but a more aggressive metabolism."
@@ -50,13 +50,43 @@
 		O_LIVER =    /obj/item/organ/internal/liver,
 		O_VOICE =    /obj/item/organ/internal/voicebox,
 		O_KIDNEYS =  /obj/item/organ/internal/kidneys,
-		O_BRAIN =    /obj/item/organ/internal/brain,
+		O_BRAIN = 	 /obj/item/organ/internal/brain,
 		O_SPLEEN =   /obj/item/organ/internal/spleen/minor,
 		O_EYES =     /obj/item/organ/internal/eyes,
 		O_STOMACH =	 /obj/item/organ/internal/stomach,
 		O_INTESTINE =/obj/item/organ/internal/intestine
 		)
 
+	portal_vote_id = "voting_bvatborn"
+
+/datum/species/human/vatgrown/mpl
+	name = SPECIES_HUMAN_VATBORN_MPL
+	name_plural = "Mass-Produced Vatborn"
+	blurb = "Vat-grown or Vatborn humans tend to be paler than baseline, with no appendix and fewer inherited genetic \
+	disabilities, but a more aggressive metabolism. Mass-Produced Vatborn differ from other Vatborn in that they have \
+	a cortical stack implanted in the nape of their neck that serves to store the sum total of their experience and \
+	memories. Mass-Produced Vatborn tend to lack the full set of social skills that other Vatborn develop due to their existence \
+	as tools, rather than people. Their biological ages often differ from their actual age and it is common to see Mass-Produced Vatborn \
+	as young as 2 years old working in positions often relegated to humans with several years of experience. <br><br> \
+	And lo, did humans cross the boundary and manufacture their own people, to do the menial, tedious work no-one wished to do. \
+	Impressed with false memories and even false dreams to keep them placid, these creatures are considered with the disdain and disgust of Frankenstein's monster; <br>\
+	With all the importance of a roomba. It is best not to entertain their delusions."
+
+	has_organ = list(
+		O_HEART =    /obj/item/organ/internal/heart,
+		O_LUNGS =    /obj/item/organ/internal/lungs,
+		O_LIVER =    /obj/item/organ/internal/liver,
+		O_VOICE =    /obj/item/organ/internal/voicebox,
+		O_KIDNEYS =  /obj/item/organ/internal/kidneys,
+		O_FAKEBRAIN = /obj/item/organ/internal/fake_brain,
+		O_STACK =    /obj/item/organ/internal/brain/vatborn,
+		O_SPLEEN =   /obj/item/organ/internal/spleen/minor,
+		O_EYES =     /obj/item/organ/internal/eyes,
+		O_STOMACH =	 /obj/item/organ/internal/stomach,
+		O_INTESTINE =/obj/item/organ/internal/intestine
+		)
+
+	portal_vote_id = "voting_mpvatborn"
 /*
 // These guys are going to need full resprites of all the suits/etc so I'm going to
 // define them and commit the sprites, but leave the clothing for another day.
@@ -80,8 +110,8 @@
 	bandages_icon = 'icons/mob/bandage.dmi'
 	total_health = 85
 	additional_wage = 20
-	icon_scale = 0.9
-	icon_width = 1
+	icon_scale_y = 0.9
+	icon_scale_x = 1
 	brute_mod = 0.5
 	male_scream_sound	= 'sound/voice/human/boy_scream.ogg'
 	female_scream_sound	= 'sound/voice/human/girl_scream.ogg'
@@ -113,8 +143,8 @@
 	total_health = 50
 	brute_mod = 0.2
 	additional_wage = 10
-	icon_scale = 0.75
-	icon_width = 0.75
+	icon_scale_y = 0.75
+	icon_scale_x = 0.75
 	male_scream_sound		= 'sound/voice/human/boy_scream.ogg'
 	female_scream_sound	= 'sound/voice/human/girl_scream.ogg'
 	can_drive = 0

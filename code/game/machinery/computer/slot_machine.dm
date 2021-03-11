@@ -131,7 +131,7 @@
 	//Charge money:
 	if(stored_money >= get_spin_cost()) //If there's cash in the machine
 		stored_money -= get_spin_cost()
-		department_accounts["[station_name()] Funds"].money += post_tax_cost()
+		SSeconomy.charge_head_department( post_tax_cost() )
 	else
 		return
 
@@ -220,7 +220,7 @@
 
 			if(CHICKEN)
 				win_value = 400 * get_spin_cost() //6000$
-				var/mob/living/simple_animal/chicken/C = new(src.loc)
+				var/mob/living/simple_mob/animal/passive/chicken/C = new(src.loc)
 				C.name = "Pomf chicken"
 				C.body_color = "white"
 				C.icon_state = "chicken_white"

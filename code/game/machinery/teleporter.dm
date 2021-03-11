@@ -69,7 +69,7 @@
 				for(var/obj/machinery/teleport/hub/H in range(1))
 					var/amount = rand(2,5)
 					for(var/i=0;i<amount;i++)
-						new /mob/living/simple_animal/hostile/carp(get_turf(H))
+						new /mob/living/simple_mob/animal/space/carp(get_turf(H))
 				//
 			else
 				for(var/mob/O in hearers(src, null))
@@ -210,7 +210,13 @@
 		return
 	if(istype(M, /atom/movable))
 		if(prob(5) && !accurate) //oh dear a problem, put em in deep space
-			do_teleport(M, locate(rand((2*TRANSITIONEDGE), world.maxx - (2*TRANSITIONEDGE)), rand((2*TRANSITIONEDGE), world.maxy - (2*TRANSITIONEDGE)), 3), 2)
+			if(istype(M, /mob/living/carbon/human))
+				var/mob/living/carbon/human/L = M
+				to_chat(L, "<span class ='warning'>You rebound off of the portal!</span>")
+				L.custom_pain("Your feel very dizzy for a moment!",0)
+				L.Confuse(2)
+			else
+				visible_message("<span class='warning'>[M] rebounds off the portal!</span>")
 		else
 			do_teleport(M, com.locked) //dead-on precision
 

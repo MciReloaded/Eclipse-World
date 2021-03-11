@@ -22,7 +22,7 @@
 
 
 	if (message)
-		message = say_emphasis(message)
+		message = encode_html_emphasis(message)
 
  // Hearing gasp and such every five seconds is not good emotes were not global for a reason.
  // Maybe some people are okay with that.
@@ -44,6 +44,13 @@
 			spawn(0)
 				if(O)
 					O.see_emote(src, message, m_type)
+
+// Shortcuts for above proc
+/mob/proc/visible_emote(var/act_desc)
+	custom_emote(1, act_desc)
+
+/mob/proc/audible_emote(var/act_desc)
+	custom_emote(2, act_desc)
 
 /mob/proc/emote_dead(var/message)
 
@@ -67,7 +74,7 @@
 	else
 		input = message
 
-	input = say_emphasis(input)
+	input = encode_html_emphasis(input)
 
 	if(input)
 		log_ghostemote(input, src)

@@ -37,7 +37,7 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	var/company = "Unbranded"                            // Shown when selecting the limb.
 	var/desc = "A generic unbranded robotic prosthesis." // Seen when examining a limb.
 	var/icon = 'icons/mob/human_races/robotic.dmi'       // Icon base to draw from.
-	var/unavailable_at_chargen                           // If set, not available at chargen.
+	var/unavailable_at_chargen = 0                          // If set, not available at chargen.
 	var/unavailable_to_build							 // If set, can't be constructed.
 	var/lifelike										 // If set, appears organic.
 	var/skin_tone										 // If set, applies skin tone rather than part color
@@ -48,6 +48,8 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	var/health_hud_intensity = 1						 // Intensity modifier for the health GUI indicator.
 	var/suggested_species = "Human"						 //If it should make the torso a species
 	var/speech_bubble_appearance = "synthetic"			 // What icon_state to use for speech bubbles when talking.  Check talk.dmi for all the icons.
+	var/robo_brute_mod = 1								 // Multiplier for incoming brute damage.
+	var/robo_burn_mod = 1								 // As above for burn.
 
 /datum/robolimb/unbranded_monitor
 	company = "Unbranded Monitor"
@@ -67,25 +69,40 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	desc = "This limb has a white polymer casing with blue holo-displays."
 	icon = 'icons/mob/human_races/cyberlimbs/bishop/bishop_main.dmi'
 	unavailable_to_build = 1
+	unavailable_at_chargen = 1
+	robo_brute_mod = 1.05
+	robo_burn_mod = 1.05
 
 /datum/robolimb/bishop_alt1
 	company = "Bishop - Glyph"
 	desc = "This limb has a white polymer casing with blue holo-displays."
 	icon = 'icons/mob/human_races/cyberlimbs/bishop/bishop_alt1.dmi'
 	unavailable_to_build = 1
+	unavailable_at_chargen = 1
 	parts = list(BP_HEAD)
+	robo_brute_mod = 1.05
+	robo_burn_mod = 1.05
 
 /datum/robolimb/bishop_alt2
 	company = "Bishop - Rook"
 	desc = "This limb has a solid plastic casing with blue lights along it."
 	icon = 'icons/mob/human_races/cyberlimbs/bishop/bishop_alt2.dmi'
 	unavailable_to_build = 1
+	unavailable_at_chargen = 1
+
+/datum/robolimb/bishop_alt3
+	company = "Bishop - Rook(Red)"
+	desc = "This limb has a solid plastic casing with blue lights along it."
+	icon = 'icons/mob/human_races/cyberlimbs/bishop/bishop_alt3.dmi'
+	unavailable_to_build = 1
+	unavailable_at_chargen = 1
 
 /datum/robolimb/bishop_monitor
 	company = "Bishop Monitor"
 	desc = "Bishop Cybernetics' unique spin on a popular prosthetic head model. The themes conflict in an intriguing way."
 	icon = 'icons/mob/human_races/cyberlimbs/bishop/bishop_monitor.dmi'
 	unavailable_to_build = 1
+	unavailable_at_chargen = 1
 	parts = list(BP_HEAD)
 	monitor_styles = standard_monitor_styles
 
@@ -94,6 +111,8 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	desc = "This limb is grey and rough, with little in the way of aesthetic."
 	icon = 'icons/mob/human_races/cyberlimbs/cybersolutions/cybersolutions_main.dmi'
 	unavailable_to_build = 1
+	robo_brute_mod = 1.15
+	robo_burn_mod = 1.15
 
 /datum/robolimb/cybersolutions_alt2
 	company = "Cyber Solutions - Array"
@@ -101,12 +120,16 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	icon = 'icons/mob/human_races/cyberlimbs/cybersolutions/cybersolutions_alt2.dmi'
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
+	robo_brute_mod = 1.15
+	robo_burn_mod = 1.15
 
 /datum/robolimb/cybersolutions_alt1
 	company = "Cyber Solutions - Wight"
 	desc = "This limb has cheap plastic panels mounted on grey metal."
 	icon = 'icons/mob/human_races/cyberlimbs/cybersolutions/cybersolutions_alt1.dmi'
 	unavailable_to_build = 1
+	robo_brute_mod = 1.15
+	robo_burn_mod = 1.15
 
 /datum/robolimb/grayson
 	company = "Grayson"
@@ -116,6 +139,9 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	monitor_styles = "blank=grayson_off;\
 		green=grayson_green;\
 		rgb=grayson_rgb"
+	robo_brute_mod = 0.95
+	robo_burn_mod = 0.95
+	unavailable_at_chargen = 1
 
 /datum/robolimb/grayson_alt1
 	company = "Grayson - Reinforced"
@@ -128,6 +154,9 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 		scroll=grayson_alt_scroll;\
 		rgb=grayson_alt_rgb;\
 		rainbow=grayson_alt_rainbow"
+	robo_brute_mod = 0.9
+	robo_burn_mod = 0.9
+	unavailable_at_chargen = 1
 
 /datum/robolimb/grayson_monitor
 	company = "Grayson Monitor"
@@ -136,12 +165,18 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
 	monitor_styles = standard_monitor_styles
+	robo_brute_mod = 0.95
+	robo_burn_mod = 0.95
+	unavailable_at_chargen = 1
 
 /datum/robolimb/hephaestus
 	company = "Hephaestus"
 	desc = "This limb has a militaristic black and green casing with gold stripes."
 	icon = 'icons/mob/human_races/cyberlimbs/hephaestus/hephaestus_main.dmi'
 	unavailable_to_build = 1
+	robo_brute_mod = 0.9
+	robo_burn_mod = 0.9
+	unavailable_at_chargen = 1
 
 /datum/robolimb/hephaestus_alt1
 	company = "Hephaestus - Frontier"
@@ -156,13 +191,18 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 		scroll=hephaestus_alt_scroll;\
 		rgb=hephaestus_alt_rgb;\
 		rainbow=hephaestus_alt_rainbow"
+	robo_brute_mod = 0.9
+	robo_burn_mod = 0.9
+	unavailable_at_chargen = 1
 
 /datum/robolimb/hephaestus_alt2
 	company = "Hephaestus - Athena"
 	desc = "This rather thick limb has a militaristic green plating."
 	icon = 'icons/mob/human_races/cyberlimbs/hephaestus/hephaestus_alt2.dmi'
 	unavailable_to_build = 1
-
+	robo_brute_mod = 0.9
+	robo_burn_mod = 0.9
+	unavailable_at_chargen = 1
 
 /datum/robolimb/hephaestus_monitor
 	company = "Hephaestus Monitor"
@@ -171,6 +211,9 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
 	monitor_styles = standard_monitor_styles
+	robo_brute_mod = 0.95
+	robo_burn_mod = 0.95
+	unavailable_at_chargen = 1
 
 /datum/robolimb/morpheus
 	company = "Morpheus"
@@ -202,12 +245,39 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	skin_tone = 1
 	blood_color = "#CCCCCC"
 	speech_bubble_appearance = "normal"
+	robo_brute_mod = 1.1
+	robo_burn_mod = 1.1
+	unavailable_at_chargen = 1
+
+/datum/robolimb/veymed_alt1
+	company = "Vey-Med - Reinforced"
+	desc = "This high quality limb is nearly indistinguishable from an organic one, save for some visible cybernetic reinforcement in key areas."
+	icon = 'icons/mob/human_races/cyberlimbs/veymed/veymed_alt1.dmi'
+	unavailable_to_build = 1
+	unavailable_at_chargen = 1
+	lifelike = 1
+	skin_tone = 1
+	blood_color = "#CCCCCC"
+	speech_bubble_appearance = "normal"
+	robo_brute_mod = 1.05
+	robo_burn_mod = 1.05
+
+/datum/robolimb/veymed_alt2
+	company = "Vey-Med - Cyberwalker"
+	desc = "This limb features bleeding edge cooling technology that allows for the continuous operation of high intensity cyberware implants with minimal impact on user health."
+	icon = 'icons/mob/human_races/cyberlimbs/veymed/veymed_alt2.dmi'
+	unavailable_to_build = 1
+	unavailable_at_chargen = 1
+	skin_tone = 1
+	blood_color = "#8A0303"
+	speech_bubble_appearance = "normal"
 
 /datum/robolimb/wardtakahashi
 	company = "Ward-Takahashi"
 	desc = "This limb features sleek black and white polymers."
 	icon = 'icons/mob/human_races/cyberlimbs/wardtakahashi/wardtakahashi_main.dmi'
 	unavailable_to_build = 1
+	unavailable_at_chargen = 1
 
 /datum/robolimb/wardtakahashi_alt1
 	company = "Ward-Takahashi - Shroud"
@@ -215,12 +285,14 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	icon = 'icons/mob/human_races/cyberlimbs/wardtakahashi/wardtakahashi_alt1.dmi'
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
+	unavailable_at_chargen = 1
 
 /datum/robolimb/wardtakahashi_alt2
 	company = "Ward-Takahashi - Spirit"
 	desc = "This limb has white and purple features, with a heavier casing."
 	icon = 'icons/mob/human_races/cyberlimbs/wardtakahashi/wardtakahashi_alt2.dmi'
 	unavailable_to_build = 1
+	unavailable_at_chargen = 1
 
 /datum/robolimb/wardtakahashi_monitor
 	company = "Ward-Takahashi Monitor"
@@ -229,12 +301,14 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
 	monitor_styles = standard_monitor_styles
+	unavailable_at_chargen = 1
 
 /datum/robolimb/xion
 	company = "Xion"
 	desc = "This limb has a minimalist black and red casing."
 	icon = 'icons/mob/human_races/cyberlimbs/xion/xion_main.dmi'
 	unavailable_to_build = 1
+	unavailable_at_chargen = 1
 
 /datum/robolimb/xion_alt1
 	company = "Xion - Breach"
@@ -242,6 +316,7 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	icon = 'icons/mob/human_races/cyberlimbs/xion/xion_alt1.dmi'
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
+	unavailable_at_chargen = 1
 
 /datum/robolimb/xion_alt2
 	company = "Xion - Hull"
@@ -251,12 +326,14 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	monitor_styles = "blank=xion_off;\
 		green=xion_green;\
 		rgb=xion_rgb"
+	unavailable_at_chargen = 1
 
 /datum/robolimb/xion_alt3
 	company = "Xion - Whiteout"
 	desc = "This limb has a minimalist black and white casing."
 	icon = 'icons/mob/human_races/cyberlimbs/xion/xion_alt3.dmi'
 	unavailable_to_build = 1
+	unavailable_at_chargen = 1
 
 /datum/robolimb/xion_alt4
 	company = "Xion - Breach - Whiteout"
@@ -264,7 +341,7 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	icon = 'icons/mob/human_races/cyberlimbs/xion/xion_alt4.dmi'
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
-
+	unavailable_at_chargen = 1
 
 /datum/robolimb/xion_monitor
 	company = "Xion Monitor"
@@ -273,6 +350,7 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	unavailable_to_build = 1
 	parts = list(BP_HEAD)
 	monitor_styles = standard_monitor_styles
+	unavailable_at_chargen = 1
 
 /datum/robolimb/zenghu
 	company = "Zeng-Hu"
@@ -280,6 +358,9 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 	icon = 'icons/mob/human_races/cyberlimbs/zenghu/zenghu_main.dmi'
 	unavailable_to_build = 1
 	skin_tone = 1
+	unavailable_at_chargen = 1
+	robo_burn_mod = 1.1
+	robo_brute_mod = 1.05
 
 /obj/item/weapon/disk/limb
 	name = "Limb Blueprints"
@@ -296,26 +377,86 @@ var/const/standard_monitor_styles = "blank=ipc_blank;\
 /obj/item/weapon/disk/limb/bishop
 	company = "Bishop"
 
+/obj/item/weapon/disk/limb/bishop/rook
+	company = "Bishop - Rook"
+
+/obj/item/weapon/disk/limb/bishop/rook_red
+	company = "Bishop - Rook(Red)"
+
 /obj/item/weapon/disk/limb/cybersolutions
 	company = "Cyber Solutions"
+
+/obj/item/weapon/disk/limb/cybersolutions/array
+	company = "Cyber Solutions - Array"
+
+/obj/item/weapon/disk/limb/cybersolutions/wight
+	company = "Cyber Solutions - Wight"
 
 /obj/item/weapon/disk/limb/grayson
 	company = "Grayson"
 
+/obj/item/weapon/disk/limb/grayson/reinforced
+	company = "Grayson - Reinforced"
+
+/obj/item/weapon/disk/limb/grayson/monitor
+	company = "Grayson - Monitor"
+
 /obj/item/weapon/disk/limb/hephaestus
 	company = "Hephaestus"
+
+/obj/item/weapon/disk/limb/hephaestus/athena
+	company = "Hephaestus - Athena"
+
+/obj/item/weapon/disk/limb/hephaestus/frontier
+	company = "Hephaestus - Frontier"
+
+/obj/item/weapon/disk/limb/hephaestus/monitor
+	company = "Hephaestus Monitor"
 
 /obj/item/weapon/disk/limb/morpheus
 	company = "Morpheus"
 
+/obj/item/weapon/disk/limb/morpheus/zenith
+	company = "Morpheus - Zenith"
+
+/obj/item/weapon/disk/limb/morpheus/skeletoncrew
+	company = "Morpheus - Skeleton Crew"
+
 /obj/item/weapon/disk/limb/veymed
 	company = "Vey-Med"
+
+/obj/item/weapon/disk/limb/veymed/reinforced
+	company = "Vey-Med - Reinforced"
+
+/obj/item/weapon/disk/limb/veymed/cyberwalker
+	company = "Vey-Med - Cyberwalker"
 
 /obj/item/weapon/disk/limb/wardtakahashi
 	company = "Ward-Takahashi"
 
+/obj/item/weapon/disk/limb/wardtakahashi/shroud
+	company = "Ward-Takahashi - Shroud"
+
+/obj/item/weapon/disk/limb/wardtakahashi/spirit
+	company = "Ward-Takahashi - Spirit"
+
+/obj/item/weapon/disk/limb/wardtakahashi/monitor
+	company = "Ward-Takahashi Monitor"
+
 /obj/item/weapon/disk/limb/xion
 	company = "Xion"
+
+/obj/item/weapon/disk/limb/xion/breach
+	company = "Xion - Breach"
+
+/obj/item/weapon/disk/limb/xion/breach_whiteout
+	company = "Xion - Breach - Whiteout"
+
+/obj/item/weapon/disk/limb/xion/hull
+	company = "Xion - Hull"
+
+/obj/item/weapon/disk/limb/xion/whiteout
+	company = "Xion - Whiteout"
 
 /obj/item/weapon/disk/limb/zenghu
 	company = "Zeng-Hu"
