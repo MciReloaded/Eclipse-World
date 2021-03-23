@@ -2984,7 +2984,7 @@
 #include "code\ZAS\Zone.dm"
 #include "interface\interface.dm"
 #include "interface\skin.dmf"
-#include "maps\geminus_neue\geminus_neue.dm"
+#include "maps\Eclipse\Eclipse.dm"
 #include "maps\geminus_neue\turfs\neue_turfs.dm"
 #include "maps\southern_cross\structures\closets\misc.dm"
 #include "maps\submaps\_readme.dm"

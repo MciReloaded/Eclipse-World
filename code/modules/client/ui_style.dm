@@ -8,7 +8,9 @@
 	"old-noborder" = 'icons/mob/screen/old-noborder.dmi',
 	"minimalist"   = 'icons/mob/screen/minimalist.dmi',
 	"Hologram"     = 'icons/mob/screen/holo.dmi',
-	"Octa"			= 'icons/mob/screen/octa.dmi'
+	"Octa"			= 'icons/mob/screen/octa.dmi',
+	"Eris"			= 'icons/mob/screen/ErisStyle.dmi',
+	"ErisHolo:" 	= 'icons/mob/screen/ErisStyleHolo.dmi'
 	)
 
 /var/all_ui_styles_robot = list(
@@ -27,7 +29,9 @@ var/global/list/all_tooltip_styles = list(
 	"Retro",
 	"Slimecore",
 	"Operative",
-	"Clockwork"
+	"Clockwork",
+	"Eris",
+	"ErisHolo"
 	)
 
 /proc/ui_style2icon(ui_style)

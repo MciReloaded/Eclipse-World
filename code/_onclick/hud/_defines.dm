@@ -101,8 +101,8 @@
 #define ui_alien_oxygen "EAST-1:28,NORTH-4:25"
 
 //Middle right (status indicators)
-#define ui_nutrition "EAST-0:4,CENTER-2:11"
 #define ui_hydration "EAST-1:20,CENTER-2:11"
+#define ui_nutrition "EAST-1:28,CENTER-2:11"
 #define ui_temp "EAST-1:28,CENTER-1:13"
 #define ui_health "EAST-1:28,CENTER:15"
 #define ui_internal "EAST-1:28,CENTER+1:17"
@@ -134,6 +134,7 @@
 #define ui_disarm_small "EAST-3:15,SOUTH:18"
 #define ui_grab_small "EAST-3:32,SOUTH:18"
 #define ui_harm_small "EAST-3:39,SOUTH:1"
+
 
 //#define ui_swapbutton "6:-16,1:5" //Unused
 
